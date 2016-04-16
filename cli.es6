@@ -1,2 +1,1 @@
-
-console.log('Done');
+import ParserGen from './index.js';
