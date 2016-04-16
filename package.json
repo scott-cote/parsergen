@@ -12,6 +12,9 @@
   },
   "author": "Scott Cote",
   "license": "GPL-3.0",
+  "bin": {
+    "parsergen": "./bin/cli.js"
+  },
   "bugs": {
     "url": "https://github.com/scott-cote/parsergen/issues"
   },
