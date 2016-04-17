@@ -1,14 +1,16 @@
 
 let StatesModule = {
 
-  createClass: function() {
+  createClass: function(State) {
 
-    let State = function() {
+    let States = function(simpleRules) {
+
+      let states = [new State().addTerm(simpleRules.createStartTerm())];
     };
 
-    return State;
+    return States;
   }
-  
+
 };
 
 export default StatesModule;

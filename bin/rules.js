@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -6,18 +6,22 @@ Object.defineProperty(exports, "__esModule", {
 
 var RulesModule = {
 
-  createClass: function createClass(Rule) {
+  createClass: function createClass(Rule, SimpleRules) {
 
-    var Rules = function Rules() {
+    var Rules = function Rules(startSymbol) {
 
-      var rules = [];
+      var rules = [new Rule(startSymbol, startSymbol + ' EOF')];
 
       this.addRule = function (left, right) {
         rules.push(new Rule(left, right));
       };
 
       this.createSimpleRules = function () {
-        // ...
+        var simpleRules = new SimpleRules();
+        rules.forEach(function (rule) {
+          return simpleRules.push(rule.simplify());
+        });
+        return simpleRules;
       };
     };
 

@@ -6,11 +6,14 @@ Object.defineProperty(exports, "__esModule", {
 
 var StatesModule = {
 
-  createClass: function createClass() {
+  createClass: function createClass(State) {
 
-    var State = function State() {};
+    var States = function States(simpleRules) {
 
-    return State;
+      var states = [new State().addTerm(simpleRules.createStartTerm())];
+    };
+
+    return States;
   }
 
 };

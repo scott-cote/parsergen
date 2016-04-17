@@ -1,9 +1,13 @@
 
 let RuleModule = {
 
-  createClass: function() {
+  createClass: function(SimpleRule) {
 
-    let Rule = function() {
+    let Rule = function(left, right) {
+
+      this.simplify = function() {
+        return [new SimpleRule(left, right.split(' '))];
+      };
     };
 
     return Rule;

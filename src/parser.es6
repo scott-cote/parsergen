@@ -8,7 +8,6 @@ let ParserModule = {
       this.save = function() {
 
       };
-
     };
 
     return Parser;

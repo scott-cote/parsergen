@@ -1,9 +1,9 @@
 import ParserGen from './index.js';
 
-let rules = new ParserGen.Rules();
+let rules = new ParserGen.Rules('S');
 
-rules.addRule('S', 'aSbS'.split(''));
-rules.addRule('S', 'a'.split(''));
+rules.addRule('S', 'a S b S');
+rules.addRule('S', 'a');
 
 let simpleRules = rules.createSimpleRules();
 let states = new ParserGen.States(simpleRules);
