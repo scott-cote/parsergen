@@ -4,15 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var StatesModule = {
+var RuleModule = {
 
   createClass: function createClass() {
 
-    var State = function State() {};
+    var Rule = function Rule() {};
 
-    return State;
+    return Rule;
   }
-
 };
 
-exports.default = StatesModule;
+exports.default = RuleModule;

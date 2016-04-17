@@ -4,16 +4,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var Parser = {
+var ParserModule = {
 
-  create: function create() {
+  createClass: function createClass() {
 
-    var ParserClass = function ParserClass() {};
+    var Parser = function Parser() {
 
-    ParserClass.prototype.save = function () {};
+      this.save = function () {};
+    };
 
-    return new ParserClass();
+    return Parser;
   }
 };
 
-exports.default = Parser;
+exports.default = ParserModule;

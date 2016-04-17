@@ -1,12 +1,15 @@
 
-import Rules from './rules.js';
-import States from './states.js';
-import Parser from './parser.js';
+import RulesModule from './rules.js';
+import StatesModule from './states.js';
+import ParserModule from './parser.js';
+import RuleModule from './rule.js';
+
+let Rule = RuleModule.createClass();
 
 let ParserGen = {
-  Rules: Rules,
-  States: States,
-  Parser: Parser
+  Rules: RulesModule.createClass(Rule),
+  States: StatesModule.createClass(),
+  Parser: ParserModule.createClass()
 };
 
 export default ParserGen;

@@ -4,22 +4,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var Rules = {
+var RulesModule = {
 
-  create: function create(Rule) {
+  createClass: function createClass(Rule) {
 
-    var rules = [];
+    var Rules = function Rules() {
 
-    var RulesClass = function RulesClass() {};
+      var rules = [];
 
-    RulesClass.prototype.addRule = function (left, right) {
-      rules.push(new Rule(left, right));
+      this.addRule = function (left, right) {
+        rules.push(new Rule(left, right));
+      };
+
+      this.createSimpleRules = function () {
+        // ...
+      };
     };
 
-    RulesClass.prototype.createSimpleRules = function () {};
-
-    return new RulesClass();
+    return Rules;
   }
 };
 
-exports.default = Rules;
+exports.default = RulesModule;

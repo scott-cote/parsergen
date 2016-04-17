@@ -1,24 +1,23 @@
 
-let Rules = {
+let RulesModule = {
 
-  create: function(Rule) {
+  createClass: function(Rule) {
 
-    let rules = [];
+    let Rules = function() {
 
-    let RulesClass = function() {
+      let rules = [];
 
+      this.addRule = function(left, right) {
+        rules.push(new Rule(left, right));
+      };
+
+      this.createSimpleRules = function() {
+        // ...
+      };
     };
 
-    RulesClass.prototype.addRule = function(left, right) {
-      rules.push(new Rule(left, right));
-    };
-
-    RulesClass.prototype.createSimpleRules = function() {
-
-    };
-
-    return new RulesClass();
+    return Rules;
   }
 };
 
-export default Rules;
+export default RulesModule;

@@ -1,9 +1,14 @@
 
-let States = {
+let StatesModule = {
 
-  create: function() {
-    // ...
+  createClass: function() {
+
+    let State = function() {
+    };
+
+    return State;
   }
+  
 };
 
-export default States;
+export default StatesModule;

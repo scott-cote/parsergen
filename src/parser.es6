@@ -1,18 +1,18 @@
 
-let Parser = {
+let ParserModule = {
 
-  create: function() {
+  createClass: function() {
 
-    let ParserClass = function() {
+    let Parser = function() {
+
+      this.save = function() {
+
+      };
 
     };
 
-    ParserClass.prototype.save = function() {
-
-    };
-
-    return new ParserClass();
+    return Parser;
   }
 };
 
-export default Parser;
+export default ParserModule;
