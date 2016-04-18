@@ -12,7 +12,7 @@ let SimpleRulesModule = {
       };
 
       this.createStartTerm = function() {
-        return rules[0].createTerm();  
+        return rules[0].createTerm();
       };
     };
 

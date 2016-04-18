@@ -13,8 +13,13 @@ var rules = new _index2.default.Rules('S');
 rules.addRule('S', 'a S b S');
 rules.addRule('S', 'a');
 
-var simpleRules = rules.createSimpleRules();
+var terminals = ['a', 'b', '$'];
+
+var simpleRules = rules.createSimpleRules(terminals);
 var states = new _index2.default.States(simpleRules);
+
+//states.debugPrint();
+
 var parser = new _index2.default.Parser(states);
 
 parser.save();

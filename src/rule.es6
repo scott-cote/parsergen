@@ -5,8 +5,12 @@ let RuleModule = {
 
     let Rule = function(left, right) {
 
-      this.simplify = function() {
-        return [new SimpleRule(left, right.split(' '))];
+      this.simplify = function(terminals) {
+        let tokens = right.split(' ').map(symbol => { return {
+          symbol: symbol,
+          type: 'TERMINAL'
+        }});
+        return [new SimpleRule(left, tokens)];
       };
     };
 
