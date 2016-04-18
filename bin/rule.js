@@ -10,8 +10,14 @@ var RuleModule = {
 
     var Rule = function Rule(left, right) {
 
-      this.simplify = function () {
-        return [new SimpleRule(left, right.split(' '))];
+      this.simplify = function (terminals) {
+        var tokens = right.split(' ').map(function (symbol) {
+          return {
+            symbol: symbol,
+            type: 'TERMINAL'
+          };
+        });
+        return [new SimpleRule(left, tokens)];
       };
     };
 
