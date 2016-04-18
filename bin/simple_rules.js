@@ -19,6 +19,14 @@ var SimpleRulesModule = {
       this.createStartTerm = function () {
         return rules[0].createTerm();
       };
+
+      this.createTermsFor = function (symbol) {
+        return rules.filter(function (rule) {
+          return rule.leftMatches(symbol);
+        }).map(function (rule) {
+          return rule.createTerm();
+        });
+      };
     };
 
     return SimpleRules;

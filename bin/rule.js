@@ -14,7 +14,9 @@ var RuleModule = {
         var tokens = right.split(' ').map(function (symbol) {
           return {
             symbol: symbol,
-            type: 'TERMINAL'
+            type: terminals.find(function (token) {
+              return token === symbol;
+            }) ? 'TERMINAL' : 'NONTERMINAL'
           };
         });
         return [new SimpleRule(left, tokens)];

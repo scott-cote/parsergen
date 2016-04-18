@@ -18,7 +18,7 @@ var terminals = ['a', 'b', '$'];
 var simpleRules = rules.createSimpleRules(terminals);
 var states = new _index2.default.States(simpleRules);
 
-//states.debugPrint();
+states.debugPrint();
 
 var parser = new _index2.default.Parser(states);
 

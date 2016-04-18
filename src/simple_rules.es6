@@ -14,6 +14,11 @@ let SimpleRulesModule = {
       this.createStartTerm = function() {
         return rules[0].createTerm();
       };
+
+      this.createTermsFor = function(symbol) {
+        return rules.filter(rule => rule.leftMatches(symbol))
+          .map(rule => rule.createTerm());
+      };
     };
 
     return SimpleRules;

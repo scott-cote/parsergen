@@ -10,7 +10,7 @@ let terminals = ['a', 'b', '$'];
 let simpleRules = rules.createSimpleRules(terminals);
 let states = new ParserGen.States(simpleRules);
 
-//states.debugPrint();
+states.debugPrint();
 
 let parser = new ParserGen.Parser(states);
 

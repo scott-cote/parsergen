@@ -10,7 +10,7 @@ let StatesModule = {
       let selectorIndex = {};
 
       this.addState = function(selector) {
-        let state = new State();
+        let state = new State(states.length);
         states.push(state);
         selectorIndex[selector] = state;
         return state;
@@ -28,11 +28,10 @@ let StatesModule = {
       };
 
       let startTerm = simpleRules.createStartTerm();
-      let selector = startTerm.getRightToken();
-      this.addState(selector).addUniqueTerms(startTerm);
+      this.addState('FOO').addUniqueTerms(startTerm);
 
       let index = 0; while (index < states.length) {
-        states[index].expand(this);
+        states[index].expand(this, simpleRules);
         index++;
       }
     };

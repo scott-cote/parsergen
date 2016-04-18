@@ -10,6 +10,10 @@ var SimpleRuleModule = {
 
     var SimpleRule = function SimpleRule(left, right) {
 
+      this.leftMatches = function (symbol) {
+        return symbol === left;
+      };
+
       this.createTerm = function () {
         return new Term(left, [], right);
       };

@@ -16,6 +16,14 @@ var TermModule = {
       };
       */
 
+      this.getId = function () {
+        return left + ' -> ' + middle.map(function (element) {
+          return element.symbol;
+        }).join(' ') + ' . ' + right.map(function (element) {
+          return element.symbol;
+        }).join(' ');
+      };
+
       this.getRightToken = function () {
         if (right[0]) return right[0].symbol;
       };
@@ -30,7 +38,7 @@ var TermModule = {
       };
 
       this.debugPrint = function () {
-        console.log(left + ' -> ' + middle.join(' ') + ' . ' + right.join(' '));
+        console.log(this.getId());
       };
     };
 

@@ -8,7 +8,7 @@ let RuleModule = {
       this.simplify = function(terminals) {
         let tokens = right.split(' ').map(symbol => { return {
           symbol: symbol,
-          type: 'TERMINAL'
+          type: terminals.find(token => token === symbol) ? 'TERMINAL' : 'NONTERMINAL' 
         }});
         return [new SimpleRule(left, tokens)];
       };

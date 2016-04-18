@@ -11,6 +11,10 @@ let TermModule = {
       };
       */
 
+      this.getId = function() {
+        return left+' -> '+middle.map(element => element.symbol).join(' ')+' . '+right.map(element => element.symbol).join(' ');
+      };
+
       this.getRightToken = function() {
         if (right[0]) return right[0].symbol;
       };
@@ -25,7 +29,7 @@ let TermModule = {
       };
 
       this.debugPrint = function() {
-        console.log(left+' -> '+middle.join(' ')+' . '+right.join(' '));
+        console.log(this.getId());
       };
     };
 
