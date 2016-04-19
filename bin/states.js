@@ -15,6 +15,7 @@ var StatesModule = {
       var selectorIndex = {};
 
       this.addState = function (selector) {
+        console.log('add state');
         var state = new State(states.length);
         states.push(state);
         selectorIndex[selector] = state;
