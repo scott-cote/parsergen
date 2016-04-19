@@ -15,6 +15,19 @@ rules.addRule('S', 'a');
 
 var terminals = ['a', 'b', '$'];
 
+/*
+let rules = new ParserGen.Rules('E');
+
+rules.addRule('E', 'E + T');
+rules.addRule('E', 'T');
+rules.addRule('T', 'T * F');
+rules.addRule('T', 'F');
+rules.addRule('F', '( E )');
+rules.addRule('F', 'i');
+
+let terminals = ['i', '$'];
+*/
+
 var simpleRules = rules.createSimpleRules(terminals);
 var states = new _index2.default.States(simpleRules);
 

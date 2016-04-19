@@ -10,6 +10,7 @@ let StatesModule = {
       let selectorIndex = {};
 
       this.addState = function(selector) {
+        console.log('add state')
         let state = new State(states.length);
         states.push(state);
         selectorIndex[selector] = state;

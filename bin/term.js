@@ -17,6 +17,7 @@ var TermModule = {
       */
 
       this.getId = function () {
+        //console.log(JSON.stringify(middle))
         return left + ' -> ' + middle.map(function (element) {
           return element.symbol;
         }).join(' ') + ' . ' + right.map(function (element) {
@@ -34,7 +35,8 @@ var TermModule = {
       };
 
       this.createShiftTerm = function () {
-        return new Term(left, middle.concat(right[0]), right.slice(1));
+        var newMiddle = right[0] ? middle.concat(right[0]) : middle;
+        return new Term(left, newMiddle, right.slice(1));
       };
 
       this.debugPrint = function () {
