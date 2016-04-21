@@ -1,107 +1,74 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 var StateModule = {
 
   createClass: function createClass() {
 
-    var idIndex = {};
+    var State = function State(id, simpleRules, rootTerms) {
 
-    var State = function State(id) {
+      var terms = [].concat(rootTerms);
 
-      var terms = [];
+      var stateComplete = false;
 
-      var termIndex = {};
+      var symbolLookup = void 0;
 
-      this.addUniqueTerms = function (newTerms) {
-        newTerms = [].concat(newTerms);
-        //console.log('newTerms')
-        //newTerms.forEach(term => console.log(term.getId()));
-        //if (id === 0) console.log('adding to zero');
-        [].concat(newTerms).forEach(function (newTerm) {
-          var id = newTerm.getId();
-          if (!termIndex[id]) {
-            termIndex[id] = true;
-            terms.push(newTerm);
-          }
-        });
-        //console.log('done')
-        return this;
-      };
+      var completeState = function completeState() {
 
-      this.addUniqueTerms2 = function (newTerms) {
-        //console.log('newTerms2')
-        //newTerms.forEach(term => console.log(term.getId()));
+        if (stateComplete) return;
 
-        //if (id === 0) console.log('adding to zero');
-        [].concat(newTerms).forEach(function (newTerm) {
-          var id = newTerm.getId();
-          if (!termIndex[id]) {
-            termIndex[id] = true;
-            terms.push(newTerm);
-          }
-        });
+        var termIndex = {};
 
-        //console.log('done')
-        return this;
-      };
-
-      this.expand = function (states, simpleRules) {
-
-        //console.log('expanding '+id)
-
-        var self = this;
-
-        var expandStates = function expandStates(term) {
-          var newTerm = term.createShiftTerm();
-          var selector = term.getRightToken();
-          if (selector) {
-            //console.log(selector)
-            //console.log(states.findBySelector(selector));
-            var state = states.findBySelector(selector) || states.addState(selector);
-            state.addUniqueTerms(newTerm);
-          }
-        };
-
-        var expandTerms = function expandTerms(term) {
-          var selector = term.getRightNonterminal();
-          if (selector) {
-            var newTerms = simpleRules.createTermsFor(selector);
-            self.addUniqueTerms(newTerms);
+        var expandTerm = function expandTerm(term) {
+          var symbol = term.getRightNonterminal();
+          if (symbol) {
+            var newTerms = simpleRules.createTermsFor(symbol).filter(function (term) {
+              return !termIndex[term.getId()];
+            });
+            newTerms.forEach(function (term) {
+              return termIndex[term.getId()] = true;
+            });
+            terms = terms.concat(newTerms);
           }
         };
 
         var index = 0;while (index < terms.length) {
-          var term = terms[index];
-          //expandStates(term);
-          expandTerms(term);
+          expandTerm(terms[index]);
           index++;
         }
 
-        var tokens = [].concat(_toConsumableArray(new Set(terms.map(function (term) {
-          return term.getRightToken();
-        }))));
+        stateComplete = true;
+      };
 
-        tokens.forEach(function (token) {
-          if (token === '$') return;
-          var newTerms = terms.filter(function (term) {
-            return token === term.getRightToken();
-          }).map(function (term) {
-            return term.createShiftTerm();
-          }).filter(function (term) {
-            return !idIndex[term.getId()];
-          });
-          newTerms.forEach(function (term) {
-            return idIndex[term.getId()] = true;
-          });
-          if (newTerms.length) {
-            states.addState().addUniqueTerms2(newTerms);
-          }
+      var createSymbolLookup = function createSymbolLookup() {
+        if (symbolLookup) return;
+        symbolLookup = {};
+        terms.filter(function (term) {
+          return !!term.getRightSymbol();
+        }).forEach(function (term) {
+          return symbolLookup[term.getRightSymbol()] = true;
+        });
+      };
+
+      this.getRootTermsFor = function (symbol) {
+        completeState();
+        createSymbolLookup();
+        if (!symbolLookup[symbol]) return [];
+        return terms.filter(function (term) {
+          return symbol === term.getRightSymbol();
+        }).map(function (term) {
+          return term.createShiftTerm();
+        });
+      };
+
+      this.setGotoFor = function (symbol, value) {
+        terms.filter(function (term) {
+          return symbol === term.getRightSymbol();
+        }).forEach(function (term) {
+          return term.setGoto(value);
         });
       };
 
@@ -114,7 +81,6 @@ var StateModule = {
 
     return State;
   }
-
 };
 
 exports.default = StateModule;

@@ -10,22 +10,17 @@ var TermModule = {
 
     var Term = function Term(left, middle, right) {
 
-      /*
-      this.hasRight = function() {
-        return right.length > 0;
-      };
-      */
+      var goto = void 0;
 
       this.getId = function () {
-        //console.log(JSON.stringify(middle))
-        return left + ' -> ' + middle.map(function (element) {
+        return left + '>' + middle.map(function (element) {
           return element.symbol;
-        }).join(' ') + ' . ' + right.map(function (element) {
+        }).join(':') + '.' + right.map(function (element) {
           return element.symbol;
-        }).join(' ');
+        }).join(':');
       };
 
-      this.getRightToken = function () {
+      this.getRightSymbol = function () {
         if (right[0]) return right[0].symbol;
       };
 
@@ -39,8 +34,12 @@ var TermModule = {
         return new Term(left, newMiddle, right.slice(1));
       };
 
+      this.setGoto = function (value) {
+        goto = value;
+      };
+
       this.debugPrint = function () {
-        console.log(this.getId());
+        console.log(this.getId(), ' ', goto ? goto : '');
       };
     };
 

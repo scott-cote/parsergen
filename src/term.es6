@@ -5,18 +5,13 @@ let TermModule = {
 
     let Term = function(left, middle, right) {
 
-      /*
-      this.hasRight = function() {
-        return right.length > 0;
-      };
-      */
+      let goto;
 
       this.getId = function() {
-        //console.log(JSON.stringify(middle))
-        return left+' -> '+middle.map(element => element.symbol).join(' ')+' . '+right.map(element => element.symbol).join(' ');
+        return left+'>'+middle.map(element => element.symbol).join(':')+'.'+right.map(element => element.symbol).join(':');
       };
 
-      this.getRightToken = function() {
+      this.getRightSymbol = function() {
         if (right[0]) return right[0].symbol;
       };
 
@@ -30,8 +25,12 @@ let TermModule = {
         return new Term(left, newMiddle, right.slice(1));
       };
 
+      this.setGoto = function(value) {
+        goto = value;
+      }
+
       this.debugPrint = function() {
-        console.log(this.getId());
+        console.log(this.getId(),' ',goto ? goto : '');
       };
     };
 

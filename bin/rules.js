@@ -17,7 +17,7 @@ var RulesModule = {
       };
 
       this.createSimpleRules = function (terminals) {
-        var simpleRules = new SimpleRules();
+        var simpleRules = new SimpleRules(terminals);
         rules.forEach(function (rule) {
           return simpleRules.push(rule.simplify(terminals));
         });

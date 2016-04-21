@@ -12,7 +12,7 @@ let RulesModule = {
       };
 
       this.createSimpleRules = function(terminals) {
-        let simpleRules = new SimpleRules();
+        let simpleRules = new SimpleRules(terminals);
         rules.forEach(rule => simpleRules.push(rule.simplify(terminals)));
         return simpleRules;
       };
