@@ -12,32 +12,34 @@ var StatesModule = {
 
       var states = [];
 
-      var selectorIndex = {};
-
-      this.addState = function (selector) {
-        console.log('add state');
-        var state = new State(states.length);
-        states.push(state);
-        selectorIndex[selector] = state;
-        return state;
-      };
-
-      this.findBySelector = function (selector) {
-        return selectorIndex[selector];
-      };
+      var rootTermsState = {};
 
       this.debugPrint = function () {
         states.forEach(function (state, index) {
+          console.log('');
           console.log('I' + index);
           state.debugPrint();
         });
       };
 
-      var startTerm = simpleRules.createStartTerm();
-      this.addState('FOO').addUniqueTerms(startTerm);
+      states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       var index = 0;while (index < states.length) {
-        states[index].expand(this, simpleRules);
+        simpleRules.getSymbols().forEach(function (symbol) {
+          if (symbol === '$') return;
+          var rootTerms = states[index].getRootTermsFor(symbol);
+          if (rootTerms.length) {
+            var id = rootTerms.map(function (term) {
+              return term.getId();
+            }).sort().join();
+            var state = rootTermsState[id] || states.length;
+            if (state === states.length) {
+              rootTermsState[id] = state;
+              states.push(new State(states.length, simpleRules, rootTerms));
+            }
+            states[index].setGotoFor(symbol, state);
+          }
+        });
         index++;
       }
     };

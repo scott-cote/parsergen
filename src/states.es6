@@ -7,32 +7,32 @@ let StatesModule = {
 
       let states = [];
 
-      let selectorIndex = {};
-
-      this.addState = function(selector) {
-        console.log('add state')
-        let state = new State(states.length);
-        states.push(state);
-        selectorIndex[selector] = state;
-        return state;
-      };
-
-      this.findBySelector = function(selector) {
-        return selectorIndex[selector];
-      };
+      let rootTermsState = {};
 
       this.debugPrint = function() {
         states.forEach((state, index) => {
+          console.log('');
           console.log('I'+index);
           state.debugPrint();
         });
       };
 
-      let startTerm = simpleRules.createStartTerm();
-      this.addState('FOO').addUniqueTerms(startTerm);
+      states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       let index = 0; while (index < states.length) {
-        states[index].expand(this, simpleRules);
+        simpleRules.getSymbols().forEach(symbol => {
+          if (symbol === '$') return;
+          let rootTerms = states[index].getRootTermsFor(symbol);
+          if (rootTerms.length) {
+            let id = rootTerms.map(term => term.getId()).sort().join();
+            let state = rootTermsState[id] || states.length;
+            if (state === states.length) {
+              rootTermsState[id] = state;
+              states.push(new State(states.length, simpleRules, rootTerms));
+            }
+            states[index].setGotoFor(symbol, state);
+          }
+        });
         index++;
       }
     };

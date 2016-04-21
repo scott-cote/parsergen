@@ -3,103 +3,68 @@ let StateModule = {
 
   createClass: function() {
 
-      let idIndex = {};
+      let State = function(id, simpleRules, rootTerms) {
 
-      let State = function(id) {
+        let terms = [].concat(rootTerms);
 
-      let terms = [];
+        let stateComplete = false;
 
-      let termIndex = {};
+        let symbolLookup;
 
-      this.addUniqueTerms = function(newTerms) {
-        newTerms = [].concat(newTerms);
-        //console.log('newTerms')
-        //newTerms.forEach(term => console.log(term.getId()));
-        //if (id === 0) console.log('adding to zero');
-        [].concat(newTerms).forEach(newTerm => {
-          let id = newTerm.getId();
-          if (!termIndex[id]) {
-            termIndex[id] = true;
-            terms.push(newTerm);
+        let completeState = function() {
+
+          if (stateComplete) return;
+
+          let termIndex = {};
+
+          let expandTerm = function(term) {
+            let symbol = term.getRightNonterminal();
+            if (symbol) {
+              let newTerms = simpleRules.createTermsFor(symbol)
+                .filter(term => !termIndex[term.getId()]);
+              newTerms.forEach(term => termIndex[term.getId()] = true);
+              terms = terms.concat(newTerms);
+            }
+          };
+
+          let index = 0; while (index < terms.length) {
+            expandTerm(terms[index]);
+            index++;
           }
-        });
-        //console.log('done')
-        return this;
-      };
 
-      this.addUniqueTerms2 = function(newTerms) {
-        //console.log('newTerms2')
-        //newTerms.forEach(term => console.log(term.getId()));
-
-        //if (id === 0) console.log('adding to zero');
-        [].concat(newTerms).forEach(newTerm => {
-          let id = newTerm.getId();
-          if (!termIndex[id]) {
-            termIndex[id] = true;
-            terms.push(newTerm);
-          }
-        });
-
-        //console.log('done')
-        return this;
-      };
-
-      this.expand = function(states, simpleRules) {
-
-        //console.log('expanding '+id)
-
-        let self = this;
-
-        let expandStates = function(term) {
-          let newTerm = term.createShiftTerm();
-          let selector = term.getRightToken();
-          if (selector) {
-            //console.log(selector)
-            //console.log(states.findBySelector(selector));
-            let state = states.findBySelector(selector) || states.addState(selector);
-            state.addUniqueTerms(newTerm);
-          }
+          stateComplete = true;
         };
 
-        let expandTerms = function(term) {
-          let selector = term.getRightNonterminal();
-          if (selector) {
-            let newTerms = simpleRules.createTermsFor(selector);
-            self.addUniqueTerms(newTerms);
-          }
-        };
-
-        let index = 0; while (index < terms.length) {
-          let term = terms[index];
-          //expandStates(term);
-          expandTerms(term);
-          index++;
+        let createSymbolLookup = function() {
+          if (symbolLookup) return;
+          symbolLookup = {};
+          terms
+            .filter(term => !!term.getRightSymbol())
+            .forEach(term => symbolLookup[term.getRightSymbol()] = true);
         }
 
-        let tokens = [...new Set(terms.map(term => term.getRightToken()))];
+        this.getRootTermsFor = function(symbol) {
+          completeState();
+          createSymbolLookup();
+          if (!symbolLookup[symbol]) return [];
+          return terms
+            .filter(term => symbol === term.getRightSymbol())
+            .map(term => term.createShiftTerm());
+        };
 
-        tokens.forEach(token => {
-          if (token === '$') return;
-          let newTerms = terms
-            .filter(term => token === term.getRightToken())
-            .map(term => term.createShiftTerm())
-            .filter(term => !idIndex[term.getId()]);
-          newTerms.forEach(term => idIndex[term.getId()] = true);
-          if (newTerms.length) {
-            states.addState().addUniqueTerms2(newTerms);
-          }
-        });
+        this.setGotoFor = function(symbol, value) {
+          terms
+            .filter(term => symbol === term.getRightSymbol())
+            .forEach(term => term.setGoto(value));
+        };
 
-      };
-
-      this.debugPrint = function() {
-        terms.forEach(term => term.debugPrint());
-      };
+        this.debugPrint = function() {
+          terms.forEach(term => term.debugPrint());
+        };
     };
 
     return State;
   }
-
 };
 
 export default StateModule;

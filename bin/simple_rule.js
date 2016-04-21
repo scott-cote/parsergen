@@ -14,6 +14,10 @@ var SimpleRuleModule = {
         return symbol === left;
       };
 
+      this.getLeft = function () {
+        return left;
+      };
+
       this.createTerm = function () {
         return new Term(left, [], right);
       };
