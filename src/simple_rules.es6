@@ -7,7 +7,7 @@ let SimpleRulesModule = {
 
       let rules = [];
 
-      let symbols;
+      let nonterminals;
 
       this.push = function(newRules) {
         rules = rules.concat(newRules);
@@ -21,14 +21,30 @@ let SimpleRulesModule = {
         return rules[0].createTerm();
       };
 
+      this.getTerminals = function() {
+        return terminals;
+      };
+
+      this.getNonterminals = function() {
+        nonterminals = nonterminals || [...new Set(terminals.concat(rules.map(rule => rule.getLeft())))];
+        return nonterminals;
+      };
+
       this.getSymbols = function() {
-        symbols = symbols || [...new Set(terminals.concat(rules.map(rule => rule.getLeft())))];
-        return symbols;
+        return this.getNonterminals().concat(terminals);
       };
 
       this.createTermsFor = function(symbol) {
         return rules.filter(rule => rule.leftMatches(symbol))
           .map(rule => rule.createTerm());
+      };
+
+      this.getNontermMap = function() {
+        return rules.slice(1).map(rule => rule.getLeft());
+      };
+
+      this.getPopMap = function() {
+        return rules.slice(1).map(rule => rule.getRightCount());
       };
     };
 

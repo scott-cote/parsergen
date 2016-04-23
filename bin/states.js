@@ -22,6 +22,16 @@ var StatesModule = {
         });
       };
 
+      this.printTable = function () {
+        console.log(JSON.stringify(simpleRules.getNontermMap()));
+        console.log(JSON.stringify(simpleRules.getPopMap()));
+        states.forEach(function (state, index) {
+          var row = state.createRow();
+          row.state = index;
+          console.log(JSON.stringify(row));
+        });
+      };
+
       states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       var index = 0;while (index < states.length) {

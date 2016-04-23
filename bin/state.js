@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -76,6 +76,27 @@ var StateModule = {
         terms.forEach(function (term) {
           return term.debugPrint();
         });
+      };
+
+      this.createRow = function () {
+        this.debugPrint();
+        var row = {};
+        terms.filter(function (term) {
+          return term.getRightNonterminal();
+        }).forEach(function (term) {
+          row[term.getRightNonterminal()] = term.getGoto();
+        });
+        terms.filter(function (term) {
+          return term.getRightTerminal();
+        }).forEach(function (term) {
+          row[term.getRightTerminal()] = 's(' + term.getGoto() + ')';
+        });
+        terms.filter(function (term) {
+          return !term.getRightSymbol();
+        }).forEach(function (term) {
+          row['follow ' + term.getLeft()] = 'r(' + term.getRule() + ')';
+        });
+        return row;
       };
     };
 

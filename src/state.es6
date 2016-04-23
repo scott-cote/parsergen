@@ -61,6 +61,21 @@ let StateModule = {
         this.debugPrint = function() {
           terms.forEach(term => term.debugPrint());
         };
+
+        this.createRow = function() {
+          this.debugPrint();
+          let row = {};
+          terms.filter(term => term.getRightNonterminal()).forEach(term => {
+            row[term.getRightNonterminal()] = term.getGoto();
+          });
+          terms.filter(term => term.getRightTerminal()).forEach(term => {
+            row[term.getRightTerminal()] = 's('+term.getGoto()+')';
+          });
+          terms.filter(term => !term.getRightSymbol()).forEach(term => {
+            row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+          });
+          return row;
+        };
     };
 
     return State;

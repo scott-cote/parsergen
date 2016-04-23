@@ -18,8 +18,12 @@ var SimpleRuleModule = {
         return left;
       };
 
+      this.getRightCount = function () {
+        return right.length;
+      };
+
       this.createTerm = function () {
-        return new Term(left, [], right);
+        return new Term(0, left, [], right);
       };
     };
 

@@ -14,7 +14,7 @@ var SimpleRulesModule = {
 
       var rules = [];
 
-      var symbols = void 0;
+      var nonterminals = void 0;
 
       this.push = function (newRules) {
         rules = rules.concat(newRules);
@@ -28,11 +28,19 @@ var SimpleRulesModule = {
         return rules[0].createTerm();
       };
 
-      this.getSymbols = function () {
-        symbols = symbols || [].concat(_toConsumableArray(new Set(terminals.concat(rules.map(function (rule) {
+      this.getTerminals = function () {
+        return terminals;
+      };
+
+      this.getNonterminals = function () {
+        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set(terminals.concat(rules.map(function (rule) {
           return rule.getLeft();
         })))));
-        return symbols;
+        return nonterminals;
+      };
+
+      this.getSymbols = function () {
+        return this.getNonterminals().concat(terminals);
       };
 
       this.createTermsFor = function (symbol) {
@@ -40,6 +48,18 @@ var SimpleRulesModule = {
           return rule.leftMatches(symbol);
         }).map(function (rule) {
           return rule.createTerm();
+        });
+      };
+
+      this.getNontermMap = function () {
+        return rules.slice(1).map(function (rule) {
+          return rule.getLeft();
+        });
+      };
+
+      this.getPopMap = function () {
+        return rules.slice(1).map(function (rule) {
+          return rule.getRightCount();
         });
       };
     };
