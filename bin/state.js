@@ -89,7 +89,12 @@ var StateModule = {
         terms.filter(function (term) {
           return term.getRightTerminal();
         }).forEach(function (term) {
-          row[term.getRightTerminal()] = 's(' + term.getGoto() + ')';
+          var terminal = term.getRightTerminal();
+          if (terminal === '$') {
+            row[terminal] = 'a()';
+          } else {
+            row[terminal] = 's(' + term.getGoto() + ')';
+          }
         });
         terms.filter(function (term) {
           return !term.getRightSymbol();

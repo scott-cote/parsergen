@@ -69,7 +69,12 @@ let StateModule = {
             row[term.getRightNonterminal()] = term.getGoto();
           });
           terms.filter(term => term.getRightTerminal()).forEach(term => {
-            row[term.getRightTerminal()] = 's('+term.getGoto()+')';
+            let terminal = term.getRightTerminal();
+            if (terminal === '$') {
+              row[terminal] = 'a()';
+            } else {
+              row[terminal] = 's('+term.getGoto()+')';
+            }
           });
           terms.filter(term => !term.getRightSymbol()).forEach(term => {
             row['follow '+term.getLeft()] = 'r('+term.getRule()+')';

@@ -8,7 +8,7 @@ rules.addRule('E', 'B');
 rules.addRule('B', '0');
 rules.addRule('B', '1');
 
-let terminals = ['0', '1', '+', '*'];
+let terminals = ['0', '1', '+', '*','$'];
 
 /*
 let rules = new ParserGen.Rules('S');
