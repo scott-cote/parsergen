@@ -19,7 +19,7 @@ var RuleModule = {
             }) ? 'TERMINAL' : 'NONTERMINAL'
           };
         });
-        return [new SimpleRule(left, tokens)];
+        return [new SimpleRule(0, left, tokens)];
       };
     };
 

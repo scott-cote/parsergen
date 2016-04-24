@@ -10,7 +10,7 @@ let RuleModule = {
           symbol: symbol,
           type: terminals.find(token => token === symbol) ? 'TERMINAL' : 'NONTERMINAL'
         }});
-        return [new SimpleRule(left, tokens)];
+        return [new SimpleRule(0, left, tokens)];
       };
     };
 

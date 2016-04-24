@@ -8,7 +8,7 @@ var SimpleRuleModule = {
 
   createClass: function createClass(Term) {
 
-    var SimpleRule = function SimpleRule(left, right) {
+    var SimpleRule = function SimpleRule(id, left, right) {
 
       this.leftMatches = function (symbol) {
         return symbol === left;
@@ -31,7 +31,7 @@ var SimpleRuleModule = {
       };
 
       this.createTerm = function () {
-        return new Term(0, left, [], right);
+        return new Term(id, left, [], right);
       };
     };
 

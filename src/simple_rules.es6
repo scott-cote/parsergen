@@ -14,7 +14,7 @@ let SimpleRulesModule = {
       let nonterminals;
 
       this.addRule = function(left, right) {
-        rules.push(new SimpleRule(left, right));
+        rules.push(new SimpleRule(rules.length, left, right));
       };
 
       this.createStartTerm = function() {
