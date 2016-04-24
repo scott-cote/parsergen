@@ -1,7 +1,7 @@
 
 let SimpleRulesModule = {
 
-  createClass: function() {
+  createClass: function(SimpleRule) {
 
     let SimpleRules = function(terminals) {
 
@@ -13,8 +13,8 @@ let SimpleRulesModule = {
 
       let nonterminals;
 
-      this.push = function(newRules) {
-        rules = rules.concat(newRules);
+      this.addRule = function(left, right) {
+        rules.push(new SimpleRule(left, right));
       };
 
       this.createStartTerm = function() {

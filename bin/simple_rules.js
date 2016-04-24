@@ -8,7 +8,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var SimpleRulesModule = {
 
-  createClass: function createClass() {
+  createClass: function createClass(SimpleRule) {
 
     var SimpleRules = function SimpleRules(terminals) {
 
@@ -20,8 +20,8 @@ var SimpleRulesModule = {
 
       var nonterminals = void 0;
 
-      this.push = function (newRules) {
-        rules = rules.concat(newRules);
+      this.addRule = function (left, right) {
+        rules.push(new SimpleRule(left, right));
       };
 
       this.createStartTerm = function () {

@@ -41,7 +41,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Term = _term2.default.createClass();
 var SimpleRule = _simple_rule2.default.createClass(Term);
 var Rule = _rule2.default.createClass(SimpleRule);
-var SimpleRules = _simple_rules2.default.createClass();
+var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
 var State = _state2.default.createClass();
 
 var ParserGen = {
