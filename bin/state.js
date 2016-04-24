@@ -99,7 +99,11 @@ var StateModule = {
         terms.filter(function (term) {
           return !term.getRightSymbol();
         }).forEach(function (term) {
-          row['follow ' + term.getLeft()] = 'r(' + term.getRule() + ')';
+          //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+          var follow = simpleRules.getFollowFor(term.getLeft());
+          follow.forEach(function (symbol) {
+            row[symbol] = 'r(' + term.getRule() + ')';
+          });
         });
         return row;
       };

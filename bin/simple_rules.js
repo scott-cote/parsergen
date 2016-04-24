@@ -14,6 +14,10 @@ var SimpleRulesModule = {
 
       var rules = [];
 
+      var first = {};
+
+      var follow = {};
+
       var nonterminals = void 0;
 
       this.push = function (newRules) {
@@ -61,6 +65,47 @@ var SimpleRulesModule = {
         return rules.slice(1).map(function (rule) {
           return rule.getRightCount();
         });
+      };
+
+      this.getFirstFor = function (symbol) {
+        var self = this;
+        if (!first[symbol]) {
+          if (terminals.find(function (terminal) {
+            return symbol === terminal;
+          })) {
+            first[symbol] = [symbol];
+          } else {
+            first[symbol] = [].concat(_toConsumableArray(new Set(rules.filter(function (rule) {
+              return symbol === rule.getLeft() && symbol !== rule.getFirstRight().symbol;
+            }).reduce(function (value, rule) {
+              return value.concat(self.getFirstFor(rule.getFirstRight().symbol));
+            }, []))));
+          }
+        }
+        return first[symbol];
+      };
+
+      this.getFollowFor = function (nonterminal) {
+        var self = this;
+        if (!follow[nonterminal]) {
+          var allFollow = rules.reduce(function (outterValue, rule) {
+            outterValue = outterValue.concat(rule.getRight().reduce(function (value, token, index, array) {
+              if (nonterminal === token.symbol) {
+                if (index < array.length - 1) {
+                  var newVal = self.getFirstFor(array[index + 1].symbol);
+                  return value.concat(newVal);
+                } else {
+                  var _newVal = self.getFollowFor(rule.getLeft());
+                  return value.concat(_newVal);
+                }
+              }
+              return value;
+            }, []));
+            return outterValue;
+          }, []);
+          follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
+        }
+        return follow[nonterminal];
       };
     };
 

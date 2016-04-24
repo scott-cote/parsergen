@@ -18,8 +18,6 @@ let StatesModule = {
       };
 
       this.printTable = function() {
-        console.log(JSON.stringify(simpleRules.getNontermMap()));
-        console.log(JSON.stringify(simpleRules.getPopMap()));
         states.forEach((state, index) => {
           let row = state.createRow();
           row.state = index;

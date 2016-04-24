@@ -77,7 +77,11 @@ let StateModule = {
             }
           });
           terms.filter(term => !term.getRightSymbol()).forEach(term => {
-            row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+            //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+            let follow = simpleRules.getFollowFor(term.getLeft());
+            follow.forEach(symbol => {
+              row[symbol] = 'r('+term.getRule()+')';
+            });
           });
           return row;
         };
