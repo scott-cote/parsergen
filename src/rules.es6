@@ -13,7 +13,10 @@ let RulesModule = {
 
       this.createSimpleRules = function(terminals) {
         let simpleRules = new SimpleRules(terminals);
-        rules.forEach(rule => simpleRules.push(rule.simplify(terminals)));
+        rules.forEach(rule => {
+          //simpleRules.push(rule.simplify(terminals)));
+          rule.simplify(terminals).forEach(rule => simpleRules.addRule(rule.getLeft(), rule.getRight()));
+        });
         return simpleRules;
       };
     };

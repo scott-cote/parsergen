@@ -11,7 +11,7 @@ import TermModule from './term.js';
 let Term = TermModule.createClass();
 let SimpleRule = SimpleRuleModule.createClass(Term);
 let Rule = RuleModule.createClass(SimpleRule);
-let SimpleRules = SimpleRulesModule.createClass();
+let SimpleRules = SimpleRulesModule.createClass(SimpleRule);
 let State = StateModule.createClass();
 
 let ParserGen = {

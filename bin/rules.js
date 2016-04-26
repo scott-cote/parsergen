@@ -19,7 +19,10 @@ var RulesModule = {
       this.createSimpleRules = function (terminals) {
         var simpleRules = new SimpleRules(terminals);
         rules.forEach(function (rule) {
-          return simpleRules.push(rule.simplify(terminals));
+          //simpleRules.push(rule.simplify(terminals)));
+          rule.simplify(terminals).forEach(function (rule) {
+            return simpleRules.addRule(rule.getLeft(), rule.getRight());
+          });
         });
         return simpleRules;
       };

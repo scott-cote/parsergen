@@ -17,6 +17,14 @@ let StatesModule = {
         });
       };
 
+      this.printTable = function() {
+        states.forEach((state, index) => {
+          let row = state.createRow();
+          row.state = index;
+          console.log(JSON.stringify(row));
+        });
+      };
+
       states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       let index = 0; while (index < states.length) {

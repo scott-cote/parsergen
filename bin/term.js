@@ -8,7 +8,7 @@ var TermModule = {
 
   createClass: function createClass() {
 
-    var Term = function Term(left, middle, right) {
+    var Term = function Term(rule, left, middle, right) {
 
       var goto = void 0;
 
@@ -29,13 +29,30 @@ var TermModule = {
         if (token && token.type === 'NONTERMINAL') return token.symbol;
       };
 
+      this.getRightTerminal = function () {
+        var token = right[0];
+        if (token && token.type === 'TERMINAL') return token.symbol;
+      };
+
       this.createShiftTerm = function () {
         var newMiddle = right[0] ? middle.concat(right[0]) : middle;
-        return new Term(left, newMiddle, right.slice(1));
+        return new Term(rule, left, newMiddle, right.slice(1));
       };
 
       this.setGoto = function (value) {
         goto = value;
+      };
+
+      this.getGoto = function () {
+        return goto;
+      };
+
+      this.getLeft = function () {
+        return left;
+      };
+
+      this.getRule = function () {
+        return rule;
       };
 
       this.debugPrint = function () {

@@ -61,6 +61,30 @@ let StateModule = {
         this.debugPrint = function() {
           terms.forEach(term => term.debugPrint());
         };
+
+        this.createRow = function() {
+          this.debugPrint();
+          let row = {};
+          terms.filter(term => term.getRightNonterminal()).forEach(term => {
+            row[term.getRightNonterminal()] = term.getGoto();
+          });
+          terms.filter(term => term.getRightTerminal()).forEach(term => {
+            let terminal = term.getRightTerminal();
+            if (terminal === '$') {
+              row[terminal] = 'a()';
+            } else {
+              row[terminal] = 's('+term.getGoto()+')';
+            }
+          });
+          terms.filter(term => !term.getRightSymbol()).forEach(term => {
+            //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+            let follow = simpleRules.getFollowFor(term.getLeft());
+            follow.forEach(symbol => {
+              row[symbol] = 'r('+term.getRule()+')';
+            });
+          });
+          return row;
+        };
     };
 
     return State;
