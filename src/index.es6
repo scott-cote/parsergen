@@ -1,4 +1,4 @@
-
+import through2 from 'through2';
 import ParserModule from './parser.js';
 import RuleModule from './rule.js';
 import RulesModule from './rules.js';
@@ -14,10 +14,18 @@ let Rule = RuleModule.createClass(SimpleRule);
 let SimpleRules = SimpleRulesModule.createClass(SimpleRule);
 let State = StateModule.createClass();
 
+/*
 let ParserGen = {
   Rules: RulesModule.createClass(Rule, SimpleRules),
   States: StatesModule.createClass(State),
   Parser: ParserModule.createClass()
 };
+*/
 
-export default ParserGen;
+let generator = function(options) {
+  return through2((chunk, enc, done) => {
+    return done(null, chunk.toString().toLowerCase());
+  });
+};
+
+export default generator;

@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _through = require('through2');
+
+var _through2 = _interopRequireDefault(_through);
+
 var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
@@ -44,10 +48,18 @@ var Rule = _rule2.default.createClass(SimpleRule);
 var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
 var State = _state2.default.createClass();
 
-var ParserGen = {
-  Rules: _rules2.default.createClass(Rule, SimpleRules),
-  States: _states2.default.createClass(State),
-  Parser: _parser2.default.createClass()
+/*
+let ParserGen = {
+  Rules: RulesModule.createClass(Rule, SimpleRules),
+  States: StatesModule.createClass(State),
+  Parser: ParserModule.createClass()
+};
+*/
+
+var generator = function generator(options) {
+  return (0, _through2.default)(function (chunk, enc, done) {
+    return done(null, chunk.toString().toLowerCase());
+  });
 };
 
-exports.default = ParserGen;
+exports.default = generator;

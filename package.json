@@ -27,5 +27,8 @@
     "gulp-insert": "^0.5.0",
     "gulp-rename": "^1.2.2",
     "merge-stream": "^1.0.0"
+  },
+  "dependencies": {
+    "through2": "^2.0.1"
   }
 }
