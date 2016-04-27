@@ -1,4 +1,4 @@
-import through2 from 'through2';
+import through from 'through2';
 import ParserModule from './parser.js';
 import RuleModule from './rule.js';
 import RulesModule from './rules.js';
@@ -16,24 +16,26 @@ let State = StateModule.createClass();
 let GeneratorRules = RulesModule.createClass(Rule, SimpleRules);
 let States = StatesModule.createClass(State);
 
-let generator = function(options = {}) {
-  return through2((chunk, enc, done) => {
-    let input = chunk.toString();
-    let rules = input.split(';')
-      .map(rule => rule.trim())
-      .filter(rule => !!rule)
-      .map(rule => {
-        let [left, right] = rule.split('->').map(part => part.trim());
-        return { left, right };
-      });
-    let nonterminals = [...new Set(rules.map(rule => rule.left))];
-    let symbols = rules
-      .map(rule => rule.right.split(' ').map(sym => sym.trim()))
-      .reduce((value, syms) => value.concat(syms), [])
-      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
+let parseRules = function(input) {
+  let rules = input.split(';')
+    .map(rule => rule.trim())
+    .filter(rule => !!rule)
+    .map(rule => {
+      let [left, right] = rule.split('->').map(part => part.trim());
+      return { left, right };
+    });
+  let nonterminals = [...new Set(rules.map(rule => rule.left))];
+  let symbols = rules
+    .map(rule => rule.right.split(' ').map(sym => sym.trim()))
+    .reduce((value, syms) => value.concat(syms), [])
+    .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
 
-    let terminals = [...new Set(symbols.concat('$'))];
+  let terminals = [...new Set(symbols.concat('$'))];
+  return rules;
+};
 
+let Generator = {
+  createParser: function(rules) {
     let generatorRules = new GeneratorRules(rules[0].left);
     rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
 
@@ -42,7 +44,29 @@ let generator = function(options = {}) {
 
     states.printTable();
 
-    return done(null, chunk.toString().toLowerCase());
+    return 'parser';
+  }
+};
+
+let generator = function(options = {}) {
+  return through((chunk, enc, done) => {
+
+    /*
+
+    RULES -> RULES RULE;
+    RULES -> RULE;
+    RULE -> LEFT TOKEN_ROCKET RIGHT TOKEN_SEMICOLON;
+    LEFT -> TOKEN_IDENTIFIER;
+    RIGHT -> RIGHT TOKEN_IDENTIFIER;
+    RIGHT -> TOKEN_IDENTIFIER;
+
+
+    */
+
+    let rules = parseRules(chunk.toString());
+    let parser = Generator.createParser(rules);
+
+    return done(null, parser);
   });
 };
 
