@@ -8,4 +8,4 @@ let stream = createMergeStream();
 minimist(process.argv.slice(2))._.forEach(filename =>
   stream.add(fs.createReadStream(filename)));
 
-stream.pipe(generator()).pipe(fs.createWriteStream('./output'));
+stream.pipe(generator()).pipe(fs.createWriteStream('./parser.js'));

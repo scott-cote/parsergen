@@ -1,4 +1,5 @@
 import through from 'through2';
+import fs from 'fs';
 import ParserModule from './parser.js';
 import RuleModule from './rule.js';
 import RulesModule from './rules.js';
@@ -24,44 +25,32 @@ let parseRules = function(input) {
       let [left, right] = rule.split('->').map(part => part.trim());
       return { left, right };
     });
-  let nonterminals = [...new Set(rules.map(rule => rule.left))];
-  let symbols = rules
-    .map(rule => rule.right.split(' ').map(sym => sym.trim()))
-    .reduce((value, syms) => value.concat(syms), [])
-    .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
-
-  let terminals = [...new Set(symbols.concat('$'))];
   return rules;
 };
 
 let Generator = {
   createParser: function(rules) {
+    let nonterminals = [...new Set(rules.map(rule => rule.left))];
+    let symbols = rules
+      .map(rule => rule.right.split(' ').map(sym => sym.trim()))
+      .reduce((value, syms) => value.concat(syms), [])
+      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
+
+    let terminals = [...new Set(symbols.concat('$'))];
     let generatorRules = new GeneratorRules(rules[0].left);
     rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
 
     let simpleRules = generatorRules.createSimpleRules(terminals);
     let states = new States(simpleRules);
 
-    states.printTable();
+    //states.printTable();
 
-    return 'parser';
+    return fs.readFileSync('parser_template.js');
   }
 };
 
 let generator = function(options = {}) {
   return through((chunk, enc, done) => {
-
-    /*
-
-    RULES -> RULES RULE;
-    RULES -> RULE;
-    RULE -> LEFT TOKEN_ROCKET RIGHT TOKEN_SEMICOLON;
-    LEFT -> TOKEN_IDENTIFIER;
-    RIGHT -> RIGHT TOKEN_IDENTIFIER;
-    RIGHT -> TOKEN_IDENTIFIER;
-
-
-    */
 
     let rules = parseRules(chunk.toString());
     let parser = Generator.createParser(rules);

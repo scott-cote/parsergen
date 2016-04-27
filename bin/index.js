@@ -10,6 +10,10 @@ var _through = require('through2');
 
 var _through2 = _interopRequireDefault(_through);
 
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
 var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
@@ -54,27 +58,28 @@ var State = _state2.default.createClass();
 var GeneratorRules = _rules2.default.createClass(Rule, SimpleRules);
 var States = _states2.default.createClass(State);
 
-var generator = function generator() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  return (0, _through2.default)(function (chunk, enc, done) {
-    var input = chunk.toString();
-    var rules = input.split(';').map(function (rule) {
-      return rule.trim();
-    }).filter(function (rule) {
-      return !!rule;
-    }).map(function (rule) {
-      var _rule$split$map = rule.split('->').map(function (part) {
-        return part.trim();
-      });
-
-      var _rule$split$map2 = _slicedToArray(_rule$split$map, 2);
-
-      var left = _rule$split$map2[0];
-      var right = _rule$split$map2[1];
-
-      return { left: left, right: right };
+var parseRules = function parseRules(input) {
+  var rules = input.split(';').map(function (rule) {
+    return rule.trim();
+  }).filter(function (rule) {
+    return !!rule;
+  }).map(function (rule) {
+    var _rule$split$map = rule.split('->').map(function (part) {
+      return part.trim();
     });
+
+    var _rule$split$map2 = _slicedToArray(_rule$split$map, 2);
+
+    var left = _rule$split$map2[0];
+    var right = _rule$split$map2[1];
+
+    return { left: left, right: right };
+  });
+  return rules;
+};
+
+var Generator = {
+  createParser: function createParser(rules) {
     var nonterminals = [].concat(_toConsumableArray(new Set(rules.map(function (rule) {
       return rule.left;
     }))));
@@ -91,7 +96,6 @@ var generator = function generator() {
     });
 
     var terminals = [].concat(_toConsumableArray(new Set(symbols.concat('$'))));
-
     var generatorRules = new GeneratorRules(rules[0].left);
     rules.forEach(function (rule) {
       return generatorRules.addRule(rule.left, rule.right);
@@ -100,9 +104,21 @@ var generator = function generator() {
     var simpleRules = generatorRules.createSimpleRules(terminals);
     var states = new States(simpleRules);
 
-    states.printTable();
+    //states.printTable();
 
-    return done(null, chunk.toString().toLowerCase());
+    return _fs2.default.readFileSync('parser_template.js');
+  }
+};
+
+var generator = function generator() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  return (0, _through2.default)(function (chunk, enc, done) {
+
+    var rules = parseRules(chunk.toString());
+    var parser = Generator.createParser(rules);
+
+    return done(null, parser);
   });
 };
 

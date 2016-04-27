@@ -26,4 +26,4 @@ var stream = (0, _mergeStream2.default)();
   return stream.add(_fs2.default.createReadStream(filename));
 });
 
-stream.pipe((0, _index2.default)()).pipe(_fs2.default.createWriteStream('./output'));
+stream.pipe((0, _index2.default)()).pipe(_fs2.default.createWriteStream('./parser.js'));
