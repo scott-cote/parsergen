@@ -63,7 +63,6 @@ let StateModule = {
         };
 
         this.createRow = function() {
-          this.debugPrint();
           let row = {};
           terms.filter(term => term.getRightNonterminal()).forEach(term => {
             row[term.getRightNonterminal()] = term.getGoto();

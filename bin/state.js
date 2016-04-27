@@ -79,7 +79,6 @@ var StateModule = {
       };
 
       this.createRow = function () {
-        this.debugPrint();
         var row = {};
         terms.filter(function (term) {
           return term.getRightNonterminal();
