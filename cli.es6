@@ -1,8 +1,11 @@
 import fs from 'fs';
+import minimist from 'minimist';
+import createMergeStream from 'merge-stream';
 import generator from './index.js';
 
-let writeStream = fs.createWriteStream('./output');
+let stream = createMergeStream();
 
-fs.createReadStream('./simple.grammar')
-  .pipe(generator())
-  .pipe(writeStream);
+minimist(process.argv.slice(2))._.forEach(filename =>
+  stream.add(fs.createReadStream(filename)));
+
+stream.pipe(generator()).pipe(fs.createWriteStream('./output'));
