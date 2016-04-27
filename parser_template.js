@@ -1,6 +1,13 @@
 
-var Parse = function(tokenStream) {
-  return { nodes: [] };
+var Parser = function() {
+
+  this.processToken = function(token, type) {
+    console.log(type);
+  };
+
+  this.end = function() {
+    return { nodes: [] };
+  }
 };
 
-exports.default = Parse;
+exports.default = Parser;
