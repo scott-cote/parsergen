@@ -22,6 +22,25 @@ let ParserGen = {
 };
 */
 
+/*
+
+let rules = new ParserGen.Rules('E');
+
+rules.addRule('E', 'E * B');
+rules.addRule('E', 'E + B');
+rules.addRule('E', 'B');
+rules.addRule('B', '0');
+rules.addRule('B', '1');
+
+let terminals = ['0', '1', '+', '*','$'];
+
+let simpleRules = rules.createSimpleRules(terminals);
+let states = new ParserGen.States(simpleRules);
+
+states.printTable();
+
+*/
+
 let generator = function(options) {
   return through2((chunk, enc, done) => {
     return done(null, chunk.toString().toLowerCase());
