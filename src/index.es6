@@ -13,36 +13,35 @@ let SimpleRule = SimpleRuleModule.createClass(Term);
 let Rule = RuleModule.createClass(SimpleRule);
 let SimpleRules = SimpleRulesModule.createClass(SimpleRule);
 let State = StateModule.createClass();
+let GeneratorRules = RulesModule.createClass(Rule, SimpleRules);
+let States = StatesModule.createClass(State);
 
-/*
-let ParserGen = {
-  Rules: RulesModule.createClass(Rule, SimpleRules),
-  States: StatesModule.createClass(State),
-  Parser: ParserModule.createClass()
-};
-*/
-
-/*
-
-let rules = new ParserGen.Rules('E');
-
-rules.addRule('E', 'E * B');
-rules.addRule('E', 'E + B');
-rules.addRule('E', 'B');
-rules.addRule('B', '0');
-rules.addRule('B', '1');
-
-let terminals = ['0', '1', '+', '*','$'];
-
-let simpleRules = rules.createSimpleRules(terminals);
-let states = new ParserGen.States(simpleRules);
-
-states.printTable();
-
-*/
-
-let generator = function(options) {
+let generator = function(options = {}) {
   return through2((chunk, enc, done) => {
+    let input = chunk.toString();
+    let rules = input.split(';')
+      .map(rule => rule.trim())
+      .filter(rule => !!rule)
+      .map(rule => {
+        let [left, right] = rule.split('->').map(part => part.trim());
+        return { left, right };
+      });
+    let nonterminals = [...new Set(rules.map(rule => rule.left))];
+    let symbols = rules
+      .map(rule => rule.right.split(' ').map(sym => sym.trim()))
+      .reduce((value, syms) => value.concat(syms), [])
+      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
+
+    let terminals = [...new Set(symbols.concat('$'))];
+
+    let generatorRules = new GeneratorRules(rules[0].left);
+    rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
+
+    let simpleRules = generatorRules.createSimpleRules(terminals);
+    let states = new States(simpleRules);
+
+    states.printTable();
+
     return done(null, chunk.toString().toLowerCase());
   });
 };
