@@ -2,23 +2,28 @@
 
 var Parser = function(error) {
 
-  var rules, parseTable, input, stack;
+  var rules, parseTable, input, stack, references;
 
   var nodes = [];
 
-  var LeafNode = function() {
-
+  var LeafNode = function(contents, type) {
+    this.id = nodes.length;
+    this.contents = contents;
+    this.type = type;
   };
 
-  var TrunkNode = function() {
-
+  var TrunkNode = function(type, root) {
+    this.id = nodes.length;
+    this.type = type;
+    this.root = root;
   };
 
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
-      nodes.push(new LeafNode());
+      references.push(nodes.length);
+      nodes.push(new LeafNode(token, type));
       return true;
     };
   };
@@ -37,14 +42,14 @@ var Parser = function(error) {
     return function(token, type) {
       var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
-      nodes.push(new TrunkNode())
+      nodes.push(new TrunkNode(type))
       return true;
     };
   };
 
   var accept = function() {
     return function(token, type) {
-      nodes.push(new TrunkNode())
+      nodes.push(new TrunkNode(type, true));
       return true;
     };
   }
@@ -74,6 +79,8 @@ var Parser = function(error) {
 
   stack = [parseTable[0]];
 
+  references = [];
+
   error = error || function() {
     throw 'parser error';
   }
@@ -91,6 +98,7 @@ var Parser = function(error) {
 
   this.end = function() {
     this.processToken('', '$');
+    return nodes;
   }
 };
 
