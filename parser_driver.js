@@ -30,9 +30,16 @@ var createTokenizer = function(processToken, end) {
 
 var parser = new Parser();
 
-fs.createReadStream('simple.grammar')
-  .pipe(createTokenizer(function(token, type) {
-    parser.processToken(token, type);
+var reader = fs.createReadStream('simple.grammar');
+
+reader.on('end', function() {
+  parser.end();  
+});
+
+reader
+  .pipe(createTokenizer(function(token) {
+    parser.processToken(token.content, token.type);
   }, function() {
+    console.log('n')
     var ast = parser.end();
   }));

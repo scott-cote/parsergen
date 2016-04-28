@@ -1,13 +1,11 @@
 
 var Parser = function() {
 
-  var rules, parseTable, stack;
+  var rules, parseTable, input, stack;
 
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      console.log('in state: '+top.state);
-      console.log('encountered '+type);
       console.log('shift to '+newState);
       stack.push(parseTable[newState]);
       return true;
@@ -17,20 +15,31 @@ var Parser = function() {
   var reduce = function(ruleIndex) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      console.log('in state: '+top.state);
-      console.log('encountered '+type);
+      var rule = rules[ruleIndex-1];
       console.log('reduce using rule '+ruleIndex);
+      console.log('removing from stack '+rule.rightCount);
+      stack.splice(-rule.rightCount, rule.rightCount)
+      top = stack[stack.length-1];
+      console.log(JSON.stringify(rule))
+      input.push({ content: '', type: rule.left });
     };
   };
 
   var goto = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      console.log('in state: '+top.state);
-      console.log('encountered '+type);
-      console.log('goto '+ruleIndex);
+      console.log('goto '+newState);
+      stack.push(parseTable[newState]);
+      return true;
     };
   };
+
+  var accept = function() {
+    return function(token, type) {
+      console.log('accept');
+      return true;
+    };
+  }
 
   rules = [
     { left: 'RULES', rightCount: 2 }, // RULES -> RULES RULE;
@@ -38,35 +47,47 @@ var Parser = function() {
     { left: 'RULE', rightCount: 4 }, // RULE -> LEFT TOKEN_ROCKET RIGHT TOKEN_SEMICOLON;
     { left: 'LEFT', rightCount: 1 }, // LEFT -> TOKEN_IDENTIFIER;
     { left: 'RIGHT', rightCount: 2 }, // RIGHT -> RIGHT TOKEN_IDENTIFIER;
-    { right: 'RIGHT', rightCount: 1 } // RIGHT -> TOKEN_IDENTIFIER;
+    { left: 'RIGHT', rightCount: 1 } // RIGHT -> TOKEN_IDENTIFIER;
   ];
 
   parseTable = [
     {"RULES":goto(2),"RULE":goto(3),"LEFT":goto(4),"TOKEN_IDENTIFIER":shift(1),"state":0},
     {"TOKEN_ROCKET":reduce(4),"state":1},
     {"RULE":goto(5),"LEFT":goto(4),"$":accept(),"TOKEN_IDENTIFIER":shift(1),"state":2},
-    {"$":r(2),"TOKEN_IDENTIFIER":r(2),"state":3},
-    {"TOKEN_ROCKET":s(6),"state":4},
-    {"$":r(1),"TOKEN_IDENTIFIER":r(1),"state":5},
-    {"RIGHT":8,"TOKEN_IDENTIFIER":"s(7)","state":6},
-    {"TOKEN_SEMICOLON":"r(6)","TOKEN_IDENTIFIER":"r(6)","state":7},
-    {"TOKEN_SEMICOLON":"s(9)","TOKEN_IDENTIFIER":"s(10)","state":8},
-    {"$":"r(3)","TOKEN_IDENTIFIER":"r(3)","state":9},
-    {"TOKEN_SEMICOLON":"r(5)","TOKEN_IDENTIFIER":"r(5)","state":10}
+    {"$":reduce(2),"TOKEN_IDENTIFIER":reduce(2),"state":3},
+    {"TOKEN_ROCKET":shift(6),"state":4},
+    {"$":reduce(1),"TOKEN_IDENTIFIER":reduce(1),"state":5},
+    {"RIGHT":goto(8),"TOKEN_IDENTIFIER":shift(7),"state":6},
+    {"TOKEN_SEMICOLON":reduce(6),"TOKEN_IDENTIFIER":reduce(6),"state":7},
+    {"TOKEN_SEMICOLON":shift(9),"TOKEN_IDENTIFIER":shift(10),"state":8},
+    {"$":reduce(3),"TOKEN_IDENTIFIER":reduce(3),"state":9},
+    {"TOKEN_SEMICOLON":reduce(5),"TOKEN_IDENTIFIER":reduce(5),"state":10}
   ];
 
   stack = [parseTable[0]];
 
   var error = function() {
-    console.log('error')
+    throw 'error';
   }
 
-  this.processToken = function(token, type) {
-    while(!(stack[stack.length-1][type]||error)(token, type));
+  this.processToken = function(content, type) {
+    input = [{ content, type }];
+    while (input.length) {
+      console.log(JSON.stringify(input));
+      console.log(JSON.stringify(stack));
+      var symbol = input[input.length-1];
+      var top = stack[stack.length-1];
+      console.log('in state '+top.state);
+      console.log('encountered '+symbol.type);
+      if ((stack[stack.length-1][symbol.type]||error)(symbol.content, symbol.type)) {
+        input.pop();
+      }
+    }
   };
 
   this.end = function() {
-    return { nodes: [] };
+    console.log('end')
+    this.processToken('', '$');
   }
 };
 
