@@ -1,4 +1,5 @@
 
+
 var Parser = function() {
 
   var rules, parseTable, input, stack;
@@ -96,3 +97,4 @@ var Parser = function() {
 };
 
 exports.default = Parser;
+
