@@ -1,17 +1,24 @@
 
 
-var Parser = function() {
+var Parser = function(error) {
 
   var rules, parseTable, input, stack;
 
-  var nodeCount = 0;
+  var nodes = [];
+
+  var LeafNode = function() {
+
+  };
+
+  var TrunkNode = function() {
+
+  };
 
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      //console.log('shift to '+newState);
       stack.push(parseTable[newState]);
-      console.log('LEAF '+type+' '+token+' '+(++nodeCount))
+      nodes.push(new LeafNode());
       return true;
     };
   };
@@ -20,11 +27,8 @@ var Parser = function() {
     return function(token, type) {
       var top = stack[stack.length-1];
       var rule = rules[ruleIndex-1];
-      //console.log('reduce using rule '+ruleIndex);
-      //console.log('removing from stack '+rule.rightCount);
       stack.splice(-rule.rightCount, rule.rightCount)
       top = stack[stack.length-1];
-      //console.log(JSON.stringify(rule))
       input.push({ content: '', type: rule.left });
     };
   };
@@ -32,16 +36,15 @@ var Parser = function() {
   var goto = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      //console.log('goto '+newState);
       stack.push(parseTable[newState]);
-      console.log('TRUNK '+type+' '+token+' '+(++nodeCount))
+      nodes.push(new TrunkNode())
       return true;
     };
   };
 
   var accept = function() {
     return function(token, type) {
-      console.log('ROOT');
+      nodes.push(new TrunkNode())
       return true;
     };
   }
@@ -71,27 +74,22 @@ var Parser = function() {
 
   stack = [parseTable[0]];
 
-  var error = function() {
-    throw 'error';
+  error = error || function() {
+    throw 'parser error';
   }
 
   this.processToken = function(content, type) {
     input = [{ content, type }];
     while (input.length) {
-      //console.log(JSON.stringify(input));
-      //console.log(JSON.stringify(stack));
       var symbol = input[input.length-1];
       var top = stack[stack.length-1];
-      //console.log('in state '+top.state);
-      //console.log('encountered '+symbol.type);
-      if ((stack[stack.length-1][symbol.type]||error)(symbol.content, symbol.type)) {
+      if ((top[symbol.type]||error)(symbol.content, symbol.type)) {
         input.pop();
       }
     }
   };
 
   this.end = function() {
-    //console.log('end')
     this.processToken('', '$');
   }
 };
