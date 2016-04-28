@@ -3,11 +3,14 @@ var Parser = function() {
 
   var rules, parseTable, input, stack;
 
+  var nodeCount = 0;
+
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      console.log('shift to '+newState);
+      //console.log('shift to '+newState);
       stack.push(parseTable[newState]);
+      console.log('LEAF '+type+' '+token+' '+(++nodeCount))
       return true;
     };
   };
@@ -16,11 +19,11 @@ var Parser = function() {
     return function(token, type) {
       var top = stack[stack.length-1];
       var rule = rules[ruleIndex-1];
-      console.log('reduce using rule '+ruleIndex);
-      console.log('removing from stack '+rule.rightCount);
+      //console.log('reduce using rule '+ruleIndex);
+      //console.log('removing from stack '+rule.rightCount);
       stack.splice(-rule.rightCount, rule.rightCount)
       top = stack[stack.length-1];
-      console.log(JSON.stringify(rule))
+      //console.log(JSON.stringify(rule))
       input.push({ content: '', type: rule.left });
     };
   };
@@ -28,15 +31,16 @@ var Parser = function() {
   var goto = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
-      console.log('goto '+newState);
+      //console.log('goto '+newState);
       stack.push(parseTable[newState]);
+      console.log('TRUNK '+type+' '+token+' '+(++nodeCount))
       return true;
     };
   };
 
   var accept = function() {
     return function(token, type) {
-      console.log('accept');
+      console.log('ROOT');
       return true;
     };
   }
@@ -73,12 +77,12 @@ var Parser = function() {
   this.processToken = function(content, type) {
     input = [{ content, type }];
     while (input.length) {
-      console.log(JSON.stringify(input));
-      console.log(JSON.stringify(stack));
+      //console.log(JSON.stringify(input));
+      //console.log(JSON.stringify(stack));
       var symbol = input[input.length-1];
       var top = stack[stack.length-1];
-      console.log('in state '+top.state);
-      console.log('encountered '+symbol.type);
+      //console.log('in state '+top.state);
+      //console.log('encountered '+symbol.type);
       if ((stack[stack.length-1][symbol.type]||error)(symbol.content, symbol.type)) {
         input.pop();
       }
@@ -86,7 +90,7 @@ var Parser = function() {
   };
 
   this.end = function() {
-    console.log('end')
+    //console.log('end')
     this.processToken('', '$');
   }
 };
