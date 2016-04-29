@@ -33,7 +33,9 @@ var reader = fs.createReadStream('simple.grammar');
 
 reader.on('end', function() {
   var nodes = parser.end();
-  console.log(JSON.stringify(nodes));
+  nodes.forEach(node => {
+    console.log(node.id+' '+node.type+' '+node.references);
+  });
 });
 
 reader
