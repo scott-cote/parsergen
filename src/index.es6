@@ -22,11 +22,9 @@ let template = `
 
 var Parser = function(error) {
 
-  var rules, parseTable, input, stack;
+  var rules, parseTable, input, stack, references;
 
   var nodes = [];
-
-  var nodeStack = [];
 
   var LeafNode = function(contents, type) {
     this.id = nodes.length;
@@ -34,19 +32,18 @@ var Parser = function(error) {
     this.type = type;
   };
 
-  var TrunkNode = function(type, nodes) {
+  var TrunkNode = function(type, root) {
     this.id = nodes.length;
     this.type = type;
-    this.references = nodes.map(function(node) { return node.id });
+    this.root = root;
   };
 
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
-      var node = new LeafNode(token, type);
-      nodes.push(node);
-      nodeStack.push(node.id);
+      references.push(nodes.length);
+      nodes.push(new LeafNode(token, type));
       return true;
     };
   };
@@ -56,9 +53,7 @@ var Parser = function(error) {
       var top = stack[stack.length-1];
       var rule = rules[ruleIndex-1];
       stack.splice(-rule.rightCount, rule.rightCount)
-      var node = new TrunkNode(type, nodeStack.splice(-rule.rightCount, rule.rightCount));
-      nodes.push(node);
-      nodeStack.push(node);
+      top = stack[stack.length-1];
       input.push({ content: '', type: rule.left });
     };
   };
@@ -67,12 +62,14 @@ var Parser = function(error) {
     return function(token, type) {
       var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
+      nodes.push(new TrunkNode(type))
       return true;
     };
   };
 
   var accept = function() {
     return function(token, type) {
+      nodes.push(new TrunkNode(type, true));
       return true;
     };
   }
