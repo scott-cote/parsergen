@@ -2,28 +2,26 @@
 
 var Parser = function(error) {
 
-  var rules, parseTable, input, stack, references;
+  var rules, parseTable, input, stack;
 
   var nodes = [];
 
-  var LeafNode = function(contents, type) {
+  var LeafNode = function(type, contents) {
     this.id = nodes.length;
-    this.contents = contents;
     this.type = type;
+    this.contents = contents;
   };
 
-  var TrunkNode = function(type, root) {
+  var TrunkNode = function(type) {
     this.id = nodes.length;
     this.type = type;
-    this.root = root;
   };
 
   var shift = function(newState) {
     return function(token, type) {
       var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
-      references.push(nodes.length);
-      nodes.push(new LeafNode(token, type));
+      nodes.push(new LeafNode(type, token));
       return true;
     };
   };
@@ -78,8 +76,6 @@ var Parser = function(error) {
   ];
 
   stack = [parseTable[0]];
-
-  references = [];
 
   error = error || function() {
     throw 'parser error';
