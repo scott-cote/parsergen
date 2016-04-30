@@ -39,7 +39,6 @@ var Parser = function(error) {
 
   var shift = function(newState) {
     return function(token, type) {
-      var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
       nodes.push(new LeafNode(type, token));
       return true;
@@ -48,17 +47,14 @@ var Parser = function(error) {
 
   var reduce = function(ruleIndex) {
     return function(token, type) {
-      var top = stack[stack.length-1];
       var rule = rules[ruleIndex-1];
       stack.splice(-rule.rightCount, rule.rightCount)
-      top = stack[stack.length-1];
       input.push({ content: '', type: rule.left });
     };
   };
 
   var goto = function(newState) {
     return function(token, type) {
-      var top = stack[stack.length-1];
       stack.push(parseTable[newState]);
       nodes.push(new TrunkNode(type))
       return true;
@@ -67,7 +63,6 @@ var Parser = function(error) {
 
   var accept = function() {
     return function(token, type) {
-      nodes.push(new TrunkNode(type, true));
       return true;
     };
   }
