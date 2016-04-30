@@ -72,6 +72,9 @@ var Parser = function(error) {
 
   var accept = function() {
     return function(token, type) {
+      curNodes = nodeStack.splice(-1, 1);
+      var node = new TrunkNode(type, curNodes);
+      nodes.push(node);
       return true;
     };
   }
