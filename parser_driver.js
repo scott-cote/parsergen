@@ -34,7 +34,7 @@ var reader = fs.createReadStream('simple.grammar');
 reader.on('end', function() {
   var nodes = parser.end();
   nodes.forEach(function(node) {
-    console.log(node.id+' '+node.type);
+    console.log(node.id+' '+node.type+' '+node.children);
   });
 });
 

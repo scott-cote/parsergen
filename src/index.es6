@@ -22,25 +22,31 @@ let template = `
 
 var Parser = function(error) {
 
-  var rules, parseTable, input, stack;
+  var rules, parseTable, input, stack, curNodes;
 
   var nodes = [];
+
+  var nodeStack = [];
 
   var LeafNode = function(type, contents) {
     this.id = nodes.length;
     this.type = type;
     this.contents = contents;
+    this.children = [];
   };
 
-  var TrunkNode = function(type) {
+  var TrunkNode = function(type, children) {
     this.id = nodes.length;
     this.type = type;
+    this.children = children.map(function(child) { return child.id });
   };
 
   var shift = function(newState) {
     return function(token, type) {
+      var node = new LeafNode(type, token);
+      nodes.push(node);
+      nodeStack.push(node);
       stack.push(parseTable[newState]);
-      nodes.push(new LeafNode(type, token));
       return true;
     };
   };
@@ -48,6 +54,7 @@ var Parser = function(error) {
   var reduce = function(ruleIndex) {
     return function(token, type) {
       var rule = rules[ruleIndex-1];
+      curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);
       stack.splice(-rule.rightCount, rule.rightCount)
       input.push({ content: '', type: rule.left });
     };
@@ -55,8 +62,10 @@ var Parser = function(error) {
 
   var goto = function(newState) {
     return function(token, type) {
+      var node = new TrunkNode(type, curNodes);
+      nodes.push(node);
+      nodeStack.push(node);
       stack.push(parseTable[newState]);
-      nodes.push(new TrunkNode(type))
       return true;
     };
   };
