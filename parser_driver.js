@@ -31,11 +31,17 @@ var parser = new Parser();
 
 var reader = fs.createReadStream('simple.grammar');
 
+var compile = require('./bin/compile.js').default;
+
 reader.on('end', function() {
   var nodes = parser.end();
+  var rules = compile(nodes);
+  console.log(JSON.stringify(rules))
+  /*
   nodes.forEach(function(node) {
     console.log(node.id+' '+node.type+' '+node.children);
   });
+  */
 });
 
 reader
