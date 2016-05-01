@@ -1,6 +1,6 @@
 var fs = require('fs');
 var Parser = require('./parser.js').default;
-var scan = require('./bin/scan.js').default;
+var scanner = require('./bin/scanner.js').default;
 var compile = require('./bin/compile.js').default;
 
 var parser = new Parser();
@@ -13,6 +13,6 @@ reader.on('end', function() {
   console.log(JSON.stringify(rules))
 });
 
-scan(reader, function(token) {
+reader.pipe(scanner(function(token) {
   parser.processToken(token.content, token.type);
-});
+}));

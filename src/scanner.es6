@@ -1,6 +1,6 @@
 var Tokenizer = require('tokenizer');
 
-let createTokenizer = function(processToken) {
+let scanner = function(processToken) {
 
   let translateToken = function(token, match) {
     // NOOP for now
@@ -20,8 +20,4 @@ let createTokenizer = function(processToken) {
   return tokenizer;
 };
 
-let scan = function(reader, processToken) {
-  reader.pipe(createTokenizer(processToken));
-};
-
-export default scan;
+export default scanner;
