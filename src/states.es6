@@ -25,6 +25,10 @@ let StatesModule = {
         });
       };
 
+      this.render = function() {
+        return states.map(state => state.render()).join(',\n')  ;
+      };
+
       states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       let index = 0; while (index < states.length) {

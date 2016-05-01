@@ -46,6 +46,10 @@ var _term = require('./term.js');
 
 var _term2 = _interopRequireDefault(_term);
 
+var _render = require('./render.js');
+
+var _render2 = _interopRequireDefault(_render);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -106,7 +110,9 @@ var Generator = {
     var simpleRules = generatorRules.createSimpleRules(terminals);
     var states = new States(simpleRules);
 
-    return template;
+    var statesRender = states.render();
+
+    return (0, _render2.default)(simpleRules.render(), statesRender);
   }
 };
 

@@ -1,4 +1,5 @@
-
+export default function(rules, states) {
+  return `
 
 var Parser = function(error) {
 
@@ -60,26 +61,11 @@ var Parser = function(error) {
   }
 
   rules = [
-    {"left":"RULES","rightCount":2},
-{"left":"RULES","rightCount":1},
-{"left":"RULE","rightCount":4},
-{"left":"LEFT","rightCount":1},
-{"left":"RIGHT","rightCount":2},
-{"left":"RIGHT","rightCount":1}
+    ${rules}
   ];
 
   parseTable = [
-    { "RULES": goto(2),"RULE": goto(3),"LEFT": goto(4),"TOKEN_IDENTIFIER": shift(1) },
-{ "TOKEN_ROCKET": reduce(4) },
-{ "RULE": goto(5),"LEFT": goto(4),"$": accept(),"TOKEN_IDENTIFIER": shift(1) },
-{ "$": reduce(2),"TOKEN_IDENTIFIER": reduce(2) },
-{ "TOKEN_ROCKET": shift(6) },
-{ "$": reduce(1),"TOKEN_IDENTIFIER": reduce(1) },
-{ "RIGHT": goto(8),"TOKEN_IDENTIFIER": shift(7) },
-{ "TOKEN_SEMICOLON": reduce(6),"TOKEN_IDENTIFIER": reduce(6) },
-{ "TOKEN_SEMICOLON": shift(9),"TOKEN_IDENTIFIER": shift(10) },
-{ "$": reduce(3),"TOKEN_IDENTIFIER": reduce(3) },
-{ "TOKEN_SEMICOLON": reduce(5),"TOKEN_IDENTIFIER": reduce(5) }
+    ${states}
   ];
 
   stack = [parseTable[0]];
@@ -107,3 +93,5 @@ var Parser = function(error) {
 
 exports.default = Parser;
 
+`;
+}

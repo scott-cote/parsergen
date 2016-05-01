@@ -83,16 +83,16 @@ var StateModule = {
         terms.filter(function (term) {
           return term.getRightNonterminal();
         }).forEach(function (term) {
-          row[term.getRightNonterminal()] = term.getGoto();
+          row[term.getRightNonterminal()] = 'goto(' + term.getGoto() + ')';
         });
         terms.filter(function (term) {
           return term.getRightTerminal();
         }).forEach(function (term) {
           var terminal = term.getRightTerminal();
           if (terminal === '$') {
-            row[terminal] = 'a()';
+            row[terminal] = 'accept()';
           } else {
-            row[terminal] = 's(' + term.getGoto() + ')';
+            row[terminal] = 'shift(' + term.getGoto() + ')';
           }
         });
         terms.filter(function (term) {
@@ -101,10 +101,18 @@ var StateModule = {
           //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
           var follow = simpleRules.getFollowFor(term.getLeft());
           follow.forEach(function (symbol) {
-            row[symbol] = 'r(' + term.getRule() + ')';
+            row[symbol] = 'reduce(' + term.getRule() + ')';
           });
         });
         return row;
+      };
+
+      this.render = function () {
+        var row = this.createRow();
+        var values = Object.keys(row).map(function (key) {
+          return '"' + key + '": ' + row[key];
+        }).join();
+        return '{ ' + values + ' }';
       };
     };
 

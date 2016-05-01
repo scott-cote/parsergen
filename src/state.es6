@@ -65,25 +65,33 @@ let StateModule = {
         this.createRow = function() {
           let row = {};
           terms.filter(term => term.getRightNonterminal()).forEach(term => {
-            row[term.getRightNonterminal()] = term.getGoto();
+            row[term.getRightNonterminal()] = `goto(${term.getGoto()})`;
           });
           terms.filter(term => term.getRightTerminal()).forEach(term => {
             let terminal = term.getRightTerminal();
             if (terminal === '$') {
-              row[terminal] = 'a()';
+              row[terminal] = 'accept()';
             } else {
-              row[terminal] = 's('+term.getGoto()+')';
+              row[terminal] = 'shift('+term.getGoto()+')';
             }
           });
           terms.filter(term => !term.getRightSymbol()).forEach(term => {
             //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
             let follow = simpleRules.getFollowFor(term.getLeft());
             follow.forEach(symbol => {
-              row[symbol] = 'r('+term.getRule()+')';
+              row[symbol] = 'reduce('+term.getRule()+')';
             });
           });
           return row;
         };
+
+        this.render = function() {
+          let row = this.createRow();
+          let values = Object.keys(row).map(key => {
+            return `"${key}": ${row[key]}`;
+          }).join();
+          return `{ ${values} }`;
+        }
     };
 
     return State;

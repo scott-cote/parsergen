@@ -28,6 +28,10 @@ let SimpleRuleModule = {
       this.createTerm = function() {
         return new Term(id, left, [], right);
       };
+
+      this.render = function() {
+        return JSON.stringify({ left: left, rightCount: right.length });
+      }
     };
 
     return SimpleRule;

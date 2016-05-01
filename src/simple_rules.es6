@@ -51,6 +51,10 @@ let SimpleRulesModule = {
         return rules.slice(1).map(rule => rule.getRightCount());
       };
 
+      this.render = function() {
+        return rules.slice(1).map(rule => rule.render()).join(',\n');
+      };
+
       this.getFirstFor = function(symbol) {
         let self = this;
         if (!first[symbol]) {
