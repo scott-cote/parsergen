@@ -2,11 +2,11 @@ var Tokenizer = require('tokenizer');
 
 let createTokenizer = function(processToken) {
 
-  var translateToken = function(token, match) {
+  let translateToken = function(token, match) {
     // NOOP for now
   };
 
-  var tokenizer = new Tokenizer(translateToken);
+  let tokenizer = new Tokenizer(translateToken);
 
   tokenizer.addRule(/^(\s)+$/, 'TOKEN_WHITESPACE');
   tokenizer.addRule(/^\w+$/, 'TOKEN_IDENTIFIER');
