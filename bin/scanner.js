@@ -4,8 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var Tokenizer = require('tokenizer');
+var through2 = require('through2');
 
-var scanner = function scanner(processToken) {
+var createTokenizer = function createTokenizer(processToken) {
 
   var translateToken = function translateToken(token, match) {
     // NOOP for now
@@ -24,5 +25,16 @@ var scanner = function scanner(processToken) {
 
   return tokenizer;
 };
+
+var scanner = through2.obj(function (chunk, encoding, callback) {
+  var self = this;
+  var ss = createTokenizer(function (token) {
+    self.push(token);
+  });
+  ss.on('finish', function () {
+    callback();
+  });
+  ss.end(chunk);
+});
 
 exports.default = scanner;
