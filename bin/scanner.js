@@ -26,15 +26,17 @@ var createTokenizer = function createTokenizer(processToken) {
   return tokenizer;
 };
 
-var scanner = through2.obj(function (chunk, encoding, callback) {
-  var self = this;
-  var ss = createTokenizer(function (token) {
-    self.push(token);
+var scanner = function scanner() {
+  return through2.obj(function (chunk, encoding, callback) {
+    var self = this;
+    var ss = createTokenizer(function (token) {
+      self.push(token);
+    });
+    ss.on('finish', function () {
+      callback();
+    });
+    ss.end(chunk);
   });
-  ss.on('finish', function () {
-    callback();
-  });
-  ss.end(chunk);
-});
+};
 
 exports.default = scanner;

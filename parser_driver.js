@@ -21,26 +21,9 @@ reader.pipe(scanner(function(token) {
 }));
 */
 
-
 var fs = require('fs');
 var through2 = require('through2')
-var scan = require('./bin/scanner.js').default;
-
-var scanner = through2.obj(function(chunk, encoding, callback) {
-    this.push({ key: 1 })
-    this.push({ key: 2 })
-    this.push({ key: 3 })
-    callback()
-});
-
-var scanner2 = through2.obj(function(chunk, encoding, callback) {
-    var self = this;
-    var ss = scan(function(token) {
-      self.push(token);
-    });
-    ss.on('finish', function() { callback() });
-    ss.end(chunk);
-});
+var scanner = require('./bin/scanner.js').default;
 
 var arr = [];
 
@@ -59,7 +42,7 @@ var compiler = through2.obj(function(chunk, encoding, callback) {
 
 var reader = fs.createReadStream('simple.grammar');
 
-reader.pipe(scan).pipe(parser).pipe(compiler).pipe(process.stdout)
+reader.pipe(scanner()).pipe(parser).pipe(compiler).pipe(process.stdout)
 
 
 
