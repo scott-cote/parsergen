@@ -1,7 +1,7 @@
 export default function(rules, states) {
   return `
 
-var Parser = function(error) {
+var parser = function(error) {
 
   var rules, parseTable, input, stack, curNodes;
 
@@ -91,7 +91,7 @@ var Parser = function(error) {
   }
 };
 
-exports.default = Parser;
+exports.default = parser;
 
 `;
 }
