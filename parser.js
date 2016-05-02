@@ -1,6 +1,8 @@
 
+  
+var through2 = require('through2');
 
-var parser = function(error) {
+var parser = function() {
 
   var rules, parseTable, input, stack, curNodes;
 
@@ -84,6 +86,7 @@ var parser = function(error) {
 
   stack = [parseTable[0]];
 
+  /*
   error = error || function() {
     throw 'parser error';
   }
@@ -103,6 +106,17 @@ var parser = function(error) {
     this.processToken('', '$');
     return nodes;
   }
+  */
+
+  var arr = [];
+
+  return through2.obj(function(chunk, encoding, callback) {
+    arr.push(chunk);
+    callback();
+  }, function(callback) {
+    this.push(arr);
+    callback();
+  });
 };
 
 exports.default = parser;
