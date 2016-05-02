@@ -6,22 +6,15 @@ Object.defineProperty(exports, "__esModule", {
 var Tokenizer = require('tokenizer');
 var through2 = require('through2');
 
-var createTokenizer = function createTokenizer(processToken) {
+var createTokenizer = function createTokenizer() {
 
-  var translateToken = function translateToken(token, match) {
-    // NOOP for now
-  };
-
-  var tokenizer = new Tokenizer(translateToken);
+  var tokenizer = new Tokenizer();
 
   tokenizer.addRule(/^(\s)+$/, 'TOKEN_WHITESPACE');
   tokenizer.addRule(/^\w+$/, 'TOKEN_IDENTIFIER');
   tokenizer.addRule(/^;$/, 'TOKEN_SEMICOLON');
   tokenizer.addRule(/^->$/, 'TOKEN_ROCKET');
-
   tokenizer.ignore('TOKEN_WHITESPACE');
-
-  tokenizer.on('token', processToken);
 
   return tokenizer;
 };
@@ -29,13 +22,14 @@ var createTokenizer = function createTokenizer(processToken) {
 var scanner = function scanner() {
   return through2.obj(function (chunk, encoding, callback) {
     var self = this;
-    var ss = createTokenizer(function (token) {
+    var tokenizer = createTokenizer();
+    tokenizer.on('token', function (token) {
       self.push(token);
     });
-    ss.on('finish', function () {
+    tokenizer.on('finish', function () {
       callback();
     });
-    ss.end(chunk);
+    tokenizer.end(chunk);
   });
 };
 
