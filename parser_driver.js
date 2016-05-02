@@ -27,7 +27,7 @@ var scanner = require('./bin/scanner.js').default;
 
 var arr = [];
 
-var parser = through2.obj(function(chunk, encoding, callback) {
+var par = through2.obj(function(chunk, encoding, callback) {
   arr.push(chunk);
   callback();
 }, function(callback) {
@@ -35,14 +35,14 @@ var parser = through2.obj(function(chunk, encoding, callback) {
   callback();
 });
 
-var compiler = through2.obj(function(chunk, encoding, callback) {
+var comp = through2.obj(function(chunk, encoding, callback) {
     this.push(JSON.stringify(chunk)+'\n')
     callback()
 })
 
 var reader = fs.createReadStream('simple.grammar');
 
-reader.pipe(scanner()).pipe(parser).pipe(compiler).pipe(process.stdout)
+reader.pipe(scanner()).pipe(par).pipe(comp).pipe(process.stdout)
 
 
 
