@@ -1,14 +1,12 @@
 
 var fs = require('fs');
-var through2 = require('through2')
+var through2 = require('through2');
 var scanner = require('./bin/scanner.js').default;
 var parser = require('./parser.js').default;
+var compiler = require('./bin/compiler.js').default;
 
-var comp = through2.obj(function(chunk, encoding, callback) {
-    this.push(JSON.stringify(chunk)+'\n')
-    callback()
-})
-
-var reader = fs.createReadStream('simple.grammar');
-
-reader.pipe(scanner()).pipe(parser()).pipe(comp).pipe(process.stdout)
+fs.createReadStream('simple.grammar')
+  .pipe(scanner())
+  .pipe(parser())
+  .pipe(compiler())
+  .pipe(process.stdout);
