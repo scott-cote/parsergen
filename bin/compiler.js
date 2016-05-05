@@ -55,7 +55,7 @@ var compiler = function compiler() {
   };
 
   return through2.obj(function (chunk, encoding, callback) {
-    this.push(JSON.stringify(compile(chunk)));
+    this.push(compile(chunk));
     callback();
   });
 };
