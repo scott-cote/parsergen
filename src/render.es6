@@ -1,6 +1,6 @@
 export default function(rules, states) {
   return `
-  
+
 var through2 = require('through2');
 
 var parser = function() {
@@ -72,35 +72,23 @@ var parser = function() {
 
   stack = [parseTable[0]];
 
-  /*
-  error = error || function() {
-    throw 'parser error';
-  }
-
-  this.processToken = function(content, type) {
-    input = [{ content, type }];
+  var processToken = function(token) {
+    input = [token];
     while (input.length) {
       var symbol = input[input.length-1];
       var top = stack[stack.length-1];
-      if ((top[symbol.type]||error)(symbol.content, symbol.type)) {
+      if (top[symbol.type](symbol.content, symbol.type)) {
         input.pop();
       }
     }
   };
 
-  this.end = function() {
-    this.processToken('', '$');
-    return nodes;
-  }
-  */
-
-  var arr = [];
-
   return through2.obj(function(chunk, encoding, callback) {
-    arr.push(chunk);
+    processToken(chunk);
     callback();
   }, function(callback) {
-    this.push(arr);
+    processToken({ content: '', type: '$' });
+    this.push(nodes);
     callback();
   });
 };
