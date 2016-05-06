@@ -3,7 +3,7 @@ export default function(rules, states) {
 
 var through2 = require('through2');
 
-var parser = function() {
+var parser = function parser() {
 
   var rules, parseTable, input, stack, curNodes;
 

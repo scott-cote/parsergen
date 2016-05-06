@@ -1,6 +1,7 @@
 
 
-var Parser = function(error) {
+
+var parser = function parser() {
 
   var rules, parseTable, input, stack, curNodes;
 
@@ -84,26 +85,26 @@ var Parser = function(error) {
 
   stack = [parseTable[0]];
 
-  error = error || function() {
-    throw 'parser error';
-  }
-
-  this.processToken = function(content, type) {
-    input = [{ content, type }];
+  var processToken = function(token) {
+    input = [token];
     while (input.length) {
       var symbol = input[input.length-1];
       var top = stack[stack.length-1];
-      if ((top[symbol.type]||error)(symbol.content, symbol.type)) {
+      if (top[symbol.type](symbol.content, symbol.type)) {
         input.pop();
       }
     }
   };
+var through2 = require('through2');
 
-  this.end = function() {
-    this.processToken('', '$');
-    return nodes;
-  }
+  return through2.obj(function(chunk, encoding, callback) {
+    processToken(chunk);
+    callback();
+  }, function(callback) {
+    processToken({ content: '', type: '$' });
+    this.push(nodes);
+    callback();
+  });
 };
 
-exports.default = Parser;
-
+exports.default = parser;

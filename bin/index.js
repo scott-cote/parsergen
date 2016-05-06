@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _through = require('through2');
 
 var _through2 = _interopRequireDefault(_through);
@@ -62,25 +60,18 @@ var State = _state2.default.createClass();
 var GeneratorRules = _rules2.default.createClass(Rule, SimpleRules);
 var States = _states2.default.createClass(State);
 
-var parseRules = function parseRules(input) {
-  var rules = input.split(';').map(function (rule) {
-    return rule.trim();
-  }).filter(function (rule) {
-    return !!rule;
-  }).map(function (rule) {
-    var _rule$split$map = rule.split('->').map(function (part) {
-      return part.trim();
+/*
+let parseRules = function(input) {
+  let rules = input.split(';')
+    .map(rule => rule.trim())
+    .filter(rule => !!rule)
+    .map(rule => {
+      let [left, right] = rule.split('->').map(part => part.trim());
+      return { left, right };
     });
-
-    var _rule$split$map2 = _slicedToArray(_rule$split$map, 2);
-
-    var left = _rule$split$map2[0];
-    var right = _rule$split$map2[1];
-
-    return { left: left, right: right };
-  });
   return rules;
 };
+*/
 
 var Generator = {
   createParser: function createParser(rules) {
@@ -88,7 +79,7 @@ var Generator = {
       return rule.left;
     }))));
     var symbols = rules.map(function (rule) {
-      return rule.right.split(' ').map(function (sym) {
+      return rule.right.map(function (sym) {
         return sym.trim();
       });
     }).reduce(function (value, syms) {
@@ -114,14 +105,21 @@ var Generator = {
   }
 };
 
+/*
+let generator = function(options = {}) {
+  return through((chunk, enc, done) => {
+
+    let rules = parseRules(chunk.toString());
+    let parser = Generator.createParser(rules);
+
+    return done(null, parser);
+  });
+};
+*/
+
 var generator = function generator() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  return (0, _through2.default)(function (chunk, enc, done) {
-
-    var rules = parseRules(chunk.toString());
-    var parser = Generator.createParser(rules);
-
+  return _through2.default.obj(function (chunk, enc, done) {
+    var parser = Generator.createParser(chunk);
     return done(null, parser);
   });
 };

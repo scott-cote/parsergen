@@ -18,6 +18,7 @@ let State = StateModule.createClass();
 let GeneratorRules = RulesModule.createClass(Rule, SimpleRules);
 let States = StatesModule.createClass(State);
 
+/*
 let parseRules = function(input) {
   let rules = input.split(';')
     .map(rule => rule.trim())
@@ -28,12 +29,13 @@ let parseRules = function(input) {
     });
   return rules;
 };
+*/
 
 let Generator = {
   createParser: function(rules) {
     let nonterminals = [...new Set(rules.map(rule => rule.left))];
     let symbols = rules
-      .map(rule => rule.right.split(' ').map(sym => sym.trim()))
+      .map(rule => rule.right.map(sym => sym.trim ()))
       .reduce((value, syms) => value.concat(syms), [])
       .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
 
@@ -50,12 +52,21 @@ let Generator = {
   }
 };
 
+/*
 let generator = function(options = {}) {
   return through((chunk, enc, done) => {
 
     let rules = parseRules(chunk.toString());
     let parser = Generator.createParser(rules);
 
+    return done(null, parser);
+  });
+};
+*/
+
+let generator = function() {
+  return through.obj((chunk, enc, done) => {
+    let parser = Generator.createParser(chunk);
     return done(null, parser);
   });
 };
