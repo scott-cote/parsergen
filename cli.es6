@@ -21,7 +21,7 @@ var render = function() {
 
 stream
   .pipe(scanner())
-  .pipe(parser.default())
+  .pipe(parser())
   .pipe(compiler())
   .pipe(generator())
-  .pipe(fs.createWriteStream('./parser.js'));
+  .pipe(fs.createWriteStream('./parser.es6'));

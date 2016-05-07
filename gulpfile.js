@@ -6,8 +6,6 @@ var chmod = require('gulp-chmod');
 var merge = require('merge-stream');
 
 gulp.task('scripts', function() {
-  var raw = gulp.src('src/*.js')
-    .pipe(gulp.dest('bin'));
   var src = gulp.src('src/*.es6')
     .pipe(babel())
     .pipe(rename(function (path) { path.extname = ".js"; }))
@@ -18,7 +16,7 @@ gulp.task('scripts', function() {
     .pipe(insert.prepend('#!/usr/bin/env node\n\n'))
     .pipe(chmod(755))
     .pipe(gulp.dest('bin'));
-  return merge(raw, src, cli);
+  return merge(src, cli);
 });
 
 gulp.task('default', ['scripts']);

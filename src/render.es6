@@ -93,7 +93,7 @@ var parser = function parser() {
   });
 };
 
-exports.default = parser;
+export default parser;
 
 `;
 }
