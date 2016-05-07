@@ -20,6 +20,12 @@ var SimpleRulesModule = {
 
       var nonterminals = void 0;
 
+      this.toString = function () {
+        return rules.map(function (rule) {
+          return rule.toString();
+        }).join();
+      };
+
       this.addRule = function (left, right) {
         rules.push(new SimpleRule(rules.length, left, right));
       };

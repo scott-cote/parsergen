@@ -92,8 +92,13 @@ var Generator = {
     rules.forEach(function (rule) {
       return generatorRules.addRule(rule.left, rule.right);
     });
-    //console.log(JSON.stringify(generatorRules));
-    generatorRules.debugPrint();
+
+    var simpleRules = generatorRules.createSimpleRules(terminals);
+    var states = new States(simpleRules);
+
+    var statesRender = states.render();
+    return (0, _render2.default)(simpleRules.render(), statesRender);
+
     /*
     let symbols = rules
       .map(rule => rule.right.map(sym => sym.trim ()))

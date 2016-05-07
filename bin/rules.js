@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -10,7 +10,13 @@ var RulesModule = {
 
     var Rules = function Rules(startSymbol, terminals) {
 
-      var rules = [new Rule(startSymbol + "'", startSymbol + ' $')];
+      var rules = [new Rule(startSymbol + "'", [startSymbol, '$'])];
+
+      this.toString = function () {
+        return rules.map(function (rule) {
+          return rule.toString();
+        }).join('::');
+      };
 
       this.addRule = function (left, right) {
         rules.push(new Rule(left, right));

@@ -5,8 +5,12 @@ let RuleModule = {
 
     let Rule = function(left, right) {
 
+      this.toString = function() {
+        return left+' => '+right;
+      };
+
       this.simplify = function(terminals) {
-        let tokens = right.split(' ').map(symbol => { return {
+        let tokens = right.map(symbol => { return {
           symbol: symbol,
           type: terminals.find(token => token === symbol) ? 'TERMINAL' : 'NONTERMINAL'
         }});

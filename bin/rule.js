@@ -10,8 +10,12 @@ var RuleModule = {
 
     var Rule = function Rule(left, right) {
 
+      this.toString = function () {
+        return left + ' => ' + right;
+      };
+
       this.simplify = function (terminals) {
-        var tokens = right.split(' ').map(function (symbol) {
+        var tokens = right.map(function (symbol) {
           return {
             symbol: symbol,
             type: terminals.find(function (token) {

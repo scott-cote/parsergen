@@ -41,8 +41,13 @@ let Generator = {
     let terminals = [...new Set(symbols.concat('$'))];
     let generatorRules = new GeneratorRules(rules[0].left);
     rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
-    //console.log(JSON.stringify(generatorRules));
-    generatorRules.debugPrint();
+
+    let simpleRules = generatorRules.createSimpleRules(terminals);
+    let states = new States(simpleRules);
+
+    let statesRender = states.render();
+    return render(simpleRules.render(), statesRender);
+    
     /*
     let symbols = rules
       .map(rule => rule.right.map(sym => sym.trim ()))

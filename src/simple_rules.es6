@@ -13,6 +13,10 @@ let SimpleRulesModule = {
 
       let nonterminals;
 
+      this.toString = function() {
+        return rules.map(rule => rule.toString()).join();
+      };
+
       this.addRule = function(left, right) {
         rules.push(new SimpleRule(rules.length, left, right));
       };
