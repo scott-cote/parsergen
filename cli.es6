@@ -24,5 +24,4 @@ stream
   .pipe(parser.default())
   .pipe(compiler())
   .pipe(generator())
-  .pipe(render())
   .pipe(fs.createWriteStream('./parser.js'));

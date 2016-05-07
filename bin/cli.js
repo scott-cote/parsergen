@@ -49,4 +49,4 @@ var render = function render() {
   });
 };
 
-stream.pipe((0, _scanner2.default)()).pipe(_parser2.default.default()).pipe((0, _compiler2.default)()).pipe((0, _index2.default)()).pipe(render()).pipe(_fs2.default.createWriteStream('./parser.js'));
+stream.pipe((0, _scanner2.default)()).pipe(_parser2.default.default()).pipe((0, _compiler2.default)()).pipe((0, _index2.default)()).pipe(_fs2.default.createWriteStream('./parser.js'));

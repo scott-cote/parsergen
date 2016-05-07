@@ -1,1 +1,111 @@
-"\n\nvar through2 = require('through2');\n\nvar parser = function parser() {\n\n  var rules, parseTable, input, stack, curNodes;\n\n  var nodes = [];\n\n  var nodeStack = [];\n\n  var LeafNode = function(type, contents) {\n    this.id = nodes.length;\n    this.type = type;\n    this.contents = contents;\n    this.children = [];\n  };\n\n  var TrunkNode = function(type, children) {\n    this.id = nodes.length;\n    this.type = type;\n    this.children = children.map(function(child) { return child.id });\n  };\n\n  var shift = function(newState) {\n    return function(token, type) {\n      var node = new LeafNode(type, token);\n      nodes.push(node);\n      nodeStack.push(node);\n      stack.push(parseTable[newState]);\n      return true;\n    };\n  };\n\n  var reduce = function(ruleIndex) {\n    return function(token, type) {\n      var rule = rules[ruleIndex-1];\n      curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);\n      stack.splice(-rule.rightCount, rule.rightCount)\n      input.push({ content: '', type: rule.left });\n    };\n  };\n\n  var goto = function(newState) {\n    return function(token, type) {\n      var node = new TrunkNode(type, curNodes);\n      nodes.push(node);\n      nodeStack.push(node);\n      stack.push(parseTable[newState]);\n      return true;\n    };\n  };\n\n  var accept = function() {\n    return function(token, type) {\n      curNodes = nodeStack.splice(-1, 1);\n      var node = new TrunkNode(type, curNodes);\n      nodes.push(node);\n      return true;\n    };\n  }\n\n  rules = [\n    {\"left\":\"RULES\",\"rightCount\":2},\n{\"left\":\"RULES\",\"rightCount\":1},\n{\"left\":\"RULE\",\"rightCount\":4},\n{\"left\":\"LEFT\",\"rightCount\":1},\n{\"left\":\"RIGHT\",\"rightCount\":2},\n{\"left\":\"RIGHT\",\"rightCount\":1}\n  ];\n\n  parseTable = [\n    { \"RULES\": goto(2),\"RULE\": goto(3),\"LEFT\": goto(4),\"TOKEN_IDENTIFIER\": shift(1) },\n{ \"TOKEN_ROCKET\": reduce(4) },\n{ \"RULE\": goto(5),\"LEFT\": goto(4),\"$\": accept(),\"TOKEN_IDENTIFIER\": shift(1) },\n{ \"$\": reduce(2),\"TOKEN_IDENTIFIER\": reduce(2) },\n{ \"TOKEN_ROCKET\": shift(6) },\n{ \"$\": reduce(1),\"TOKEN_IDENTIFIER\": reduce(1) },\n{ \"RIGHT\": goto(8),\"TOKEN_IDENTIFIER\": shift(7) },\n{ \"TOKEN_SEMICOLON\": reduce(6),\"TOKEN_IDENTIFIER\": reduce(6) },\n{ \"TOKEN_SEMICOLON\": shift(9),\"TOKEN_IDENTIFIER\": shift(10) },\n{ \"$\": reduce(3),\"TOKEN_IDENTIFIER\": reduce(3) },\n{ \"TOKEN_SEMICOLON\": reduce(5),\"TOKEN_IDENTIFIER\": reduce(5) }\n  ];\n\n  stack = [parseTable[0]];\n\n  var processToken = function(token) {\n    input = [token];\n    while (input.length) {\n      var symbol = input[input.length-1];\n      var top = stack[stack.length-1];\n      if (top[symbol.type](symbol.content, symbol.type)) {\n        input.pop();\n      }\n    }\n  };\n\n  return through2.obj(function(chunk, encoding, callback) {\n    processToken(chunk);\n    callback();\n  }, function(callback) {\n    processToken({ content: '', type: '$' });\n    this.push(nodes);\n    callback();\n  });\n};\n\nexports.default = parser;\n\n"
+
+
+var through2 = require('through2');
+
+var parser = function parser() {
+
+  var rules, parseTable, input, stack, curNodes;
+
+  var nodes = [];
+
+  var nodeStack = [];
+
+  var LeafNode = function(type, contents) {
+    this.id = nodes.length;
+    this.type = type;
+    this.contents = contents;
+    this.children = [];
+  };
+
+  var TrunkNode = function(type, children) {
+    this.id = nodes.length;
+    this.type = type;
+    this.children = children.map(function(child) { return child.id });
+  };
+
+  var shift = function(newState) {
+    return function(token, type) {
+      var node = new LeafNode(type, token);
+      nodes.push(node);
+      nodeStack.push(node);
+      stack.push(parseTable[newState]);
+      return true;
+    };
+  };
+
+  var reduce = function(ruleIndex) {
+    return function(token, type) {
+      var rule = rules[ruleIndex-1];
+      curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);
+      stack.splice(-rule.rightCount, rule.rightCount)
+      input.push({ content: '', type: rule.left });
+    };
+  };
+
+  var goto = function(newState) {
+    return function(token, type) {
+      var node = new TrunkNode(type, curNodes);
+      nodes.push(node);
+      nodeStack.push(node);
+      stack.push(parseTable[newState]);
+      return true;
+    };
+  };
+
+  var accept = function() {
+    return function(token, type) {
+      curNodes = nodeStack.splice(-1, 1);
+      var node = new TrunkNode(type, curNodes);
+      nodes.push(node);
+      return true;
+    };
+  }
+
+  rules = [
+    {"left":"RULES","rightCount":2},
+{"left":"RULES","rightCount":1},
+{"left":"RULE","rightCount":4},
+{"left":"LEFT","rightCount":1},
+{"left":"RIGHT","rightCount":2},
+{"left":"RIGHT","rightCount":1}
+  ];
+
+  parseTable = [
+    { "RULES": goto(2),"RULE": goto(3),"LEFT": goto(4),"TOKEN_IDENTIFIER": shift(1) },
+{ "TOKEN_ROCKET": reduce(4) },
+{ "RULE": goto(5),"LEFT": goto(4),"$": accept(),"TOKEN_IDENTIFIER": shift(1) },
+{ "$": reduce(2),"TOKEN_IDENTIFIER": reduce(2) },
+{ "TOKEN_ROCKET": shift(6) },
+{ "$": reduce(1),"TOKEN_IDENTIFIER": reduce(1) },
+{ "RIGHT": goto(8),"TOKEN_IDENTIFIER": shift(7) },
+{ "TOKEN_SEMICOLON": reduce(6),"TOKEN_IDENTIFIER": reduce(6) },
+{ "TOKEN_SEMICOLON": shift(9),"TOKEN_IDENTIFIER": shift(10) },
+{ "$": reduce(3),"TOKEN_IDENTIFIER": reduce(3) },
+{ "TOKEN_SEMICOLON": reduce(5),"TOKEN_IDENTIFIER": reduce(5) }
+  ];
+
+  stack = [parseTable[0]];
+
+  var processToken = function(token) {
+    input = [token];
+    while (input.length) {
+      var symbol = input[input.length-1];
+      var top = stack[stack.length-1];
+      if (top[symbol.type](symbol.content, symbol.type)) {
+        input.pop();
+      }
+    }
+  };
+
+  return through2.obj(function(chunk, encoding, callback) {
+    processToken(chunk);
+    callback();
+  }, function(callback) {
+    processToken({ content: '', type: '$' });
+    this.push(nodes);
+    callback();
+  });
+};
+
+exports.default = parser;
+
