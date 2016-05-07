@@ -79,9 +79,7 @@ var Generator = {
       return rule.left;
     }))));
     var symbols = rules.map(function (rule) {
-      return rule.right.map(function (sym) {
-        return sym.trim();
-      });
+      return rule.right;
     }).reduce(function (value, syms) {
       return value.concat(syms);
     }, []).filter(function (symbol) {
@@ -89,19 +87,26 @@ var Generator = {
         return nonterminal === symbol;
       });
     });
-
     var terminals = [].concat(_toConsumableArray(new Set(symbols.concat('$'))));
     var generatorRules = new GeneratorRules(rules[0].left);
     rules.forEach(function (rule) {
       return generatorRules.addRule(rule.left, rule.right);
     });
-
-    var simpleRules = generatorRules.createSimpleRules(terminals);
-    var states = new States(simpleRules);
-
-    var statesRender = states.render();
-
-    return (0, _render2.default)(simpleRules.render(), statesRender);
+    //console.log(JSON.stringify(generatorRules));
+    generatorRules.debugPrint();
+    /*
+    let symbols = rules
+      .map(rule => rule.right.map(sym => sym.trim ()))
+      .reduce((value, syms) => value.concat(syms), [])
+      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
+     let terminals = [...new Set(symbols.concat('$'))];
+    let generatorRules = new GeneratorRules(rules[0].left);
+    rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
+     let simpleRules = generatorRules.createSimpleRules(terminals);
+    let states = new States(simpleRules);
+     let statesRender = states.render();
+     return render(simpleRules.render(), statesRender);
+    */
   }
 };
 

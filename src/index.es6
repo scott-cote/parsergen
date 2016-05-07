@@ -35,6 +35,16 @@ let Generator = {
   createParser: function(rules) {
     let nonterminals = [...new Set(rules.map(rule => rule.left))];
     let symbols = rules
+      .map(rule => rule.right)
+      .reduce((value, syms) => value.concat(syms), [])
+      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
+    let terminals = [...new Set(symbols.concat('$'))];
+    let generatorRules = new GeneratorRules(rules[0].left);
+    rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
+    //console.log(JSON.stringify(generatorRules));
+    generatorRules.debugPrint();
+    /*
+    let symbols = rules
       .map(rule => rule.right.map(sym => sym.trim ()))
       .reduce((value, syms) => value.concat(syms), [])
       .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
@@ -49,6 +59,7 @@ let Generator = {
     let statesRender = states.render();
 
     return render(simpleRules.render(), statesRender);
+    */
   }
 };
 
