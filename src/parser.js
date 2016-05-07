@@ -1,5 +1,6 @@
 
 
+var through2 = require('through2');
 
 var parser = function parser() {
 
@@ -95,7 +96,6 @@ var parser = function parser() {
       }
     }
   };
-var through2 = require('through2');
 
   return through2.obj(function(chunk, encoding, callback) {
     processToken(chunk);
@@ -108,3 +108,4 @@ var through2 = require('through2');
 };
 
 exports.default = parser;
+
