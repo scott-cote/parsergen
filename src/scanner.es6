@@ -1,5 +1,5 @@
-var Tokenizer = require('tokenizer');
-var through2 = require('through2');
+import Tokenizer from 'tokenizer';
+import thru from 'through2';
 
 let createTokenizer = function() {
 
@@ -14,12 +14,11 @@ let createTokenizer = function() {
   return tokenizer;
 };
 
-var scanner = function() {
-  return through2.obj(function(chunk, encoding, callback) {
-    var self = this;
-    var tokenizer = createTokenizer();
-    tokenizer.on('token', function(token) { self.push(token) });
-    tokenizer.on('finish', function() { callback() });
+let scanner = function() {
+  return thru.obj(function(chunk, encoding, done) {
+    let tokenizer = createTokenizer();
+    tokenizer.on('token', token => this.push(token));
+    tokenizer.on('finish', done);
     tokenizer.end(chunk);
   });
 };

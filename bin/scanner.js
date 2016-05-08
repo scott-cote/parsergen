@@ -3,12 +3,20 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var Tokenizer = require('tokenizer');
-var through2 = require('through2');
+
+var _tokenizer = require('tokenizer');
+
+var _tokenizer2 = _interopRequireDefault(_tokenizer);
+
+var _through = require('through2');
+
+var _through2 = _interopRequireDefault(_through);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var createTokenizer = function createTokenizer() {
 
-  var tokenizer = new Tokenizer();
+  var tokenizer = new _tokenizer2.default();
 
   tokenizer.addRule(/^(\s)+$/, 'TOKEN_WHITESPACE');
   tokenizer.addRule(/^\w+$/, 'TOKEN_IDENTIFIER');
@@ -20,15 +28,14 @@ var createTokenizer = function createTokenizer() {
 };
 
 var scanner = function scanner() {
-  return through2.obj(function (chunk, encoding, callback) {
-    var self = this;
+  return _through2.default.obj(function (chunk, encoding, done) {
+    var _this = this;
+
     var tokenizer = createTokenizer();
     tokenizer.on('token', function (token) {
-      self.push(token);
+      return _this.push(token);
     });
-    tokenizer.on('finish', function () {
-      callback();
-    });
+    tokenizer.on('finish', done);
     tokenizer.end(chunk);
   });
 };
