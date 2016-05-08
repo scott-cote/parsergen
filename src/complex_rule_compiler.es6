@@ -1,4 +1,4 @@
-var through2 = require('through2');
+import thru from 'through2';
 
 let compiler = function() {
 
@@ -45,9 +45,9 @@ let compiler = function() {
     return compileRules(root);
   };
 
-  return through2.obj(function(chunk, encoding, callback) {
-      this.push(compile(chunk));
-      callback();
+  return thru.obj(function(chunk, encoding, done) {
+    this.push(compile(chunk));
+    done();
   })
 };
 

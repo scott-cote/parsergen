@@ -3,7 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var through2 = require('through2');
+
+var _through = require('through2');
+
+var _through2 = _interopRequireDefault(_through);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var compiler = function compiler() {
 
@@ -54,9 +59,9 @@ var compiler = function compiler() {
     return compileRules(root);
   };
 
-  return through2.obj(function (chunk, encoding, callback) {
+  return _through2.default.obj(function (chunk, encoding, done) {
     this.push(compile(chunk));
-    callback();
+    done();
   });
 };
 
