@@ -76,7 +76,7 @@ var SimpleRulesModule = {
       this.render = function () {
         return rules.slice(1).map(function (rule) {
           return rule.render();
-        }).join(',\n');
+        }).join(',\n    ');
       };
 
       this.getFirstFor = function (symbol) {

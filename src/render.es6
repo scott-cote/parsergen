@@ -1,7 +1,7 @@
 export default function(rules, states) {
   return `
 
-var through2 = require('through2');
+import thru from 'through2';
 
 var parser = function parser() {
 
@@ -83,7 +83,7 @@ var parser = function parser() {
     }
   };
 
-  return through2.obj(function(chunk, encoding, callback) {
+  return thru.obj(function(chunk, encoding, callback) {
     processToken(chunk);
     callback();
   }, function(callback) {
