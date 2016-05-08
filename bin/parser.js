@@ -12,7 +12,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var parser = function parser() {
 
-  var rules, parseTable, input, stack, curNodes;
+  var rules = void 0,
+      parseTable = void 0,
+      input = void 0,
+      stack = void 0,
+      curNodes = void 0;
 
   var nodes = [];
 
