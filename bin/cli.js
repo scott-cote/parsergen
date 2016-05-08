@@ -26,6 +26,10 @@ var _complex_rule_compiler = require('./complex_rule_compiler.js');
 
 var _complex_rule_compiler2 = _interopRequireDefault(_complex_rule_compiler);
 
+var _simple_rule_compiler = require('./simple_rule_compiler.js');
+
+var _simple_rule_compiler2 = _interopRequireDefault(_simple_rule_compiler);
+
 var _index = require('./index.js');
 
 var _index2 = _interopRequireDefault(_index);
@@ -49,9 +53,8 @@ var noop = function noop() {
   });
 };
 
-var simple_rule_compiler = noop;
 var rule_table_generator = noop;
 var state_table_generator = noop;
 var renderer = noop;
 
-stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _complex_rule_compiler2.default)()).pipe(simple_rule_compiler()).pipe(rule_table_generator()).pipe(state_table_generator()).pipe((0, _index2.default)()).pipe(renderer()).pipe(_fs2.default.createWriteStream('./parser.es6'));
+stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _complex_rule_compiler2.default)()).pipe((0, _simple_rule_compiler2.default)()).pipe(rule_table_generator()).pipe(state_table_generator()).pipe((0, _index2.default)()).pipe(renderer()).pipe(_fs2.default.createWriteStream('./parser.es6'));
