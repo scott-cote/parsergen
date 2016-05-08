@@ -2,22 +2,22 @@ import thru from 'through2';
 
 let compiler = function() {
 
-  let compile = function(nodes) {
+  let compile = function(ast) {
 
     let getRulesRoot = function() {
-      let root = nodes[nodes.length-1];
-      return nodes[root.children[0]];
+      let root = ast[ast.length-1];
+      return ast[root.children[0]];
     };
 
     let compileLeft = function(current) {
-      let ident = nodes[current.children[0]];
+      let ident = ast[current.children[0]];
       return ident.contents;
     };
 
     let compileRight = function(current) {
       if (current.type === 'RIGHT') {
         return current.children
-          .map(id => compileRight(nodes[id]))
+          .map(id => compileRight(ast[id]))
           .reduce((value, elements) => value.concat(elements), []);
       } else {
         return current.contents;
@@ -25,15 +25,15 @@ let compiler = function() {
     };
 
     let compileRule = function(current) {
-      let left = nodes[current.children[0]];
-      let right = nodes[current.children[2]];
+      let left = ast[current.children[0]];
+      let right = ast[current.children[2]];
       return { left: compileLeft(left), right: compileRight(right) };
     };
 
     let compileRules = function(current) {
       if (current.type === 'RULES') {
         return current.children
-          .map(id => compileRules(nodes[id]))
+          .map(id => compileRules(ast[id]))
           .reduce((value, rules) => value.concat(rules), []);
       } else {
         return compileRule(current);
@@ -42,11 +42,13 @@ let compiler = function() {
 
     let root = getRulesRoot();
 
-    return compileRules(root);
+    let code = { rules: compileRules(root) };
+
+    return code;
   };
 
-  return thru.obj(function(chunk, encoding, done) {
-    this.push(compile(chunk));
+  return thru.obj(function(ast, encoding, done) {
+    this.push(compile(ast));
     done();
   })
 };

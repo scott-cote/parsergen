@@ -12,13 +12,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var generator = function generator() {
 
-  var generate = function generate(rules) {
-    var code = { rules: rules };
+  var generate = function generate(code) {
     return code;
   };
 
-  return _through2.default.obj(function (chunk, encoding, done) {
-    this.push(generate(chunk));
+  return _through2.default.obj(function (code, encoding, done) {
+    this.push(generate(code));
     done();
   });
 };

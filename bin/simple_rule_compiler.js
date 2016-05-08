@@ -12,8 +12,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var compiler = function compiler() {
   // NOOP for now
-  return _through2.default.obj(function (chunk, encoding, done) {
-    this.push(chunk);
+  return _through2.default.obj(function (code, encoding, done) {
+    this.push(code);
     done();
   });
 };
