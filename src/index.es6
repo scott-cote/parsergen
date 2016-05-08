@@ -32,7 +32,8 @@ let parseRules = function(input) {
 */
 
 let Generator = {
-  createParser: function(rules) {
+  createParser: function(code) {
+    let rules = code.rules;
     let nonterminals = [...new Set(rules.map(rule => rule.left))];
     let symbols = rules
       .map(rule => rule.right)
@@ -47,7 +48,7 @@ let Generator = {
 
     let statesRender = states.render();
     return render(simpleRules.render(), statesRender);
-    
+
     /*
     let symbols = rules
       .map(rule => rule.right.map(sym => sym.trim ()))

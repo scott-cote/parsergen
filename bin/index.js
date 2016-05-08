@@ -74,7 +74,8 @@ let parseRules = function(input) {
 */
 
 var Generator = {
-  createParser: function createParser(rules) {
+  createParser: function createParser(code) {
+    var rules = code.rules;
     var nonterminals = [].concat(_toConsumableArray(new Set(rules.map(function (rule) {
       return rule.left;
     }))));

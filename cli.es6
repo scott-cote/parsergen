@@ -5,6 +5,7 @@ import scanner from './scanner.js';
 import parser from './parser.js'
 import complex_rule_compiler from './complex_rule_compiler.js';
 import simple_rule_compiler from './simple_rule_compiler.js';
+import rule_table_generator from './rule_table_generator.js';
 import generator from './index.js';
 import through2 from 'through2';
 
@@ -20,7 +21,6 @@ var noop = function() {
   });
 };
 
-var rule_table_generator = noop;
 var state_table_generator = noop;
 var renderer = noop;
 
