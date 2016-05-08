@@ -92,13 +92,13 @@ var parser = function parser() {
     }
   };
 
-  return _through2.default.obj(function (chunk, encoding, callback) {
+  return _through2.default.obj(function (chunk, encoding, done) {
     processToken(chunk);
-    callback();
-  }, function (callback) {
+    done();
+  }, function (done) {
     processToken({ content: '', type: '$' });
     this.push(nodes);
-    callback();
+    done();
   });
 };
 

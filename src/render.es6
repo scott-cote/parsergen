@@ -1,6 +1,5 @@
 export default function(rules, states) {
   return `
-
 import thru from 'through2';
 
 let parser = function parser() {
@@ -21,7 +20,7 @@ let parser = function parser() {
   let TrunkNode = function(type, children) {
     this.id = nodes.length;
     this.type = type;
-    this.children = children.map(function(child) { return child.id });
+    this.children = children.map(child => child.id);
   };
 
   let shift = function(newState) {
@@ -83,13 +82,13 @@ let parser = function parser() {
     }
   };
 
-  return thru.obj(function(chunk, encoding, callback) {
+  return thru.obj(function(chunk, encoding, done) {
     processToken(chunk);
-    callback();
-  }, function(callback) {
+    done();
+  }, function(done) {
     processToken({ content: '', type: '$' });
     this.push(nodes);
-    callback();
+    done();
   });
 };
 
