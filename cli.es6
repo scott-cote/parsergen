@@ -12,16 +12,27 @@ let stream = createMergeStream();
 minimist(process.argv.slice(2))._.forEach(filename =>
   stream.add(fs.createReadStream(filename)));
 
-var render = function() {
+var noop = function() {
   return through2.obj(function(chunk, encoding, callback) {
-      this.push(JSON.stringify(chunk));
+      this.push(chunk);
       callback();
   });
 };
 
+var complex_rule_compiler = noop;
+var simple_rule_compiler = noop;
+var rule_table_generator = noop;
+var state_table_generator = noop;
+var renderer = noop;
+
 stream
   .pipe(scanner())
   .pipe(parser())
+  .pipe(complex_rule_compiler())
+  .pipe(simple_rule_compiler())
   .pipe(compiler())
+  .pipe(rule_table_generator())
+  .pipe(state_table_generator())
   .pipe(generator())
+  .pipe(renderer())
   .pipe(fs.createWriteStream('./parser.es6'));

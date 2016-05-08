@@ -42,11 +42,17 @@ var stream = (0, _mergeStream2.default)();
   return stream.add(_fs2.default.createReadStream(filename));
 });
 
-var render = function render() {
+var noop = function noop() {
   return _through2.default.obj(function (chunk, encoding, callback) {
-    this.push(JSON.stringify(chunk));
+    this.push(chunk);
     callback();
   });
 };
 
-stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _compiler2.default)()).pipe((0, _index2.default)()).pipe(_fs2.default.createWriteStream('./parser.es6'));
+var complex_rule_compiler = noop;
+var simple_rule_compiler = noop;
+var rule_table_generator = noop;
+var state_table_generator = noop;
+var renderer = noop;
+
+stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe(complex_rule_compiler()).pipe(simple_rule_compiler()).pipe((0, _compiler2.default)()).pipe(rule_table_generator()).pipe(state_table_generator()).pipe((0, _index2.default)()).pipe(renderer()).pipe(_fs2.default.createWriteStream('./parser.es6'));
