@@ -10,8 +10,6 @@ var RulesModule = {
 
     var Rules = function Rules(startSymbol, terminals) {
 
-      // let rules = [new Rule(startSymbol+"'", [startSymbol,'$'])];
-
       var rules = [{ left: startSymbol + "'", right: [startSymbol, '$'] }];
 
       this.toString = function () {

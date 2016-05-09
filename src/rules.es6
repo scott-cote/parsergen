@@ -5,8 +5,6 @@ let RulesModule = {
 
     let Rules = function(startSymbol, terminals) {
 
-      // let rules = [new Rule(startSymbol+"'", [startSymbol,'$'])];
-
       let rules = [{ left: startSymbol+"'", right: [startSymbol,'$']}];
 
       this.toString = function() {
