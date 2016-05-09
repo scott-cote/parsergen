@@ -19,15 +19,14 @@ let States = StatesModule.createClass(State);
 
 let Generator = {
   createParser: function(code) {
-    let rules = code.rules;
-    let nonterminals = [...new Set(rules.map(rule => rule.left))];
-    let symbols = rules
+    let nonterminals = [...new Set(code.rules.map(rule => rule.left))];
+    let symbols = code.rules
       .map(rule => rule.right)
       .reduce((value, syms) => value.concat(syms), [])
       .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
     let terminals = [...new Set(symbols.concat('$'))];
-    let generatorRules = new GeneratorRules(rules[0].left);
-    rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
+    let generatorRules = new GeneratorRules(code.rules[0].left);
+    code.rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
 
     let simpleRules = generatorRules.createSimpleRules(terminals);
     let states = new States(simpleRules);
