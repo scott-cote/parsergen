@@ -56,19 +56,6 @@ var State = _state2.default.createClass();
 var GeneratorRules = _rules2.default.createClass(Rule, SimpleRules);
 var States = _states2.default.createClass(State);
 
-/*
-let parseRules = function(input) {
-  let rules = input.split(';')
-    .map(rule => rule.trim())
-    .filter(rule => !!rule)
-    .map(rule => {
-      let [left, right] = rule.split('->').map(part => part.trim());
-      return { left, right };
-    });
-  return rules;
-};
-*/
-
 var Generator = {
   createParser: function createParser(code) {
     var rules = code.rules;
@@ -95,36 +82,8 @@ var Generator = {
 
     var statesRender = states.render();
     return { rules: simpleRules.render(), states: statesRender };
-
-    // return render(simpleRules.render(), statesRender);
-
-    /*
-    let symbols = rules
-      .map(rule => rule.right.map(sym => sym.trim ()))
-      .reduce((value, syms) => value.concat(syms), [])
-      .filter(symbol => !nonterminals.find(nonterminal => nonterminal === symbol));
-     let terminals = [...new Set(symbols.concat('$'))];
-    let generatorRules = new GeneratorRules(rules[0].left);
-    rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
-     let simpleRules = generatorRules.createSimpleRules(terminals);
-    let states = new States(simpleRules);
-     let statesRender = states.render();
-     return render(simpleRules.render(), statesRender);
-    */
   }
 };
-
-/*
-let generator = function(options = {}) {
-  return through((chunk, enc, done) => {
-
-    let rules = parseRules(chunk.toString());
-    let parser = Generator.createParser(rules);
-
-    return done(null, parser);
-  });
-};
-*/
 
 var generator = function generator() {
   return _through2.default.obj(function (chunk, enc, done) {
