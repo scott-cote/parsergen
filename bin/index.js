@@ -16,10 +16,6 @@ var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _rule = require('./rule.js');
-
-var _rule2 = _interopRequireDefault(_rule);
-
 var _rules = require('./rules.js');
 
 var _rules2 = _interopRequireDefault(_rules);
@@ -50,10 +46,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var Term = _term2.default.createClass();
 var SimpleRule = _simple_rule2.default.createClass(Term);
-var Rule = _rule2.default.createClass(SimpleRule);
 var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
 var State = _state2.default.createClass();
-var GeneratorRules = _rules2.default.createClass(Rule, SimpleRules);
+var GeneratorRules = _rules2.default.createClass(SimpleRule, SimpleRules);
 var States = _states2.default.createClass(State);
 
 var Generator = {
