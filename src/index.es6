@@ -8,7 +8,6 @@ import SimpleRulesModule from './simple_rules.js';
 import StateModule from './state.js';
 import StatesModule from './states.js';
 import TermModule from './term.js';
-import render from './render.js';
 
 let Term = TermModule.createClass();
 let SimpleRule = SimpleRuleModule.createClass(Term);
@@ -47,7 +46,9 @@ let Generator = {
     let states = new States(simpleRules);
 
     let statesRender = states.render();
-    return render(simpleRules.render(), statesRender);
+    return { rules: simpleRules.render(), states: statesRender };
+
+    // return render(simpleRules.render(), statesRender);
 
     /*
     let symbols = rules
