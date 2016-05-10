@@ -56,7 +56,7 @@ var compiler = function compiler() {
 
     var root = getRulesRoot();
 
-    var code = { rules: compileRules(root) };
+    var code = { complexRules: compileRules(root) };
 
     return code;
   };

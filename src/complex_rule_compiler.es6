@@ -42,7 +42,7 @@ let compiler = function() {
 
     let root = getRulesRoot();
 
-    let code = { rules: compileRules(root) };
+    let code = { complexRules: compileRules(root) };
 
     return code;
   };

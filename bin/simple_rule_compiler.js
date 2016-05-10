@@ -11,8 +11,8 @@ var _through2 = _interopRequireDefault(_through);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var compiler = function compiler() {
-  // NOOP for now
   return _through2.default.obj(function (code, encoding, done) {
+    code.rules = code.complexRules.slice();
     this.push(code);
     done();
   });
