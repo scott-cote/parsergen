@@ -27,9 +27,7 @@ var RulesModule = {
           var tokens = rule.right.map(function (symbol) {
             return {
               symbol: symbol,
-              type: terminals.find(function (token) {
-                return token === symbol;
-              }) ? 'TERMINAL' : 'NONTERMINAL'
+              type: terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
             };
           });
           return [new SimpleRule(0, rule.left, tokens)];

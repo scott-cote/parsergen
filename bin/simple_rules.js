@@ -43,7 +43,7 @@ var SimpleRulesModule = {
       };
 
       this.getNonterminals = function () {
-        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set(terminals.concat(rules.map(function (rule) {
+        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(terminals)).concat(rules.map(function (rule) {
           return rule.getLeft();
         })))));
         return nonterminals;
@@ -82,9 +82,7 @@ var SimpleRulesModule = {
       this.getFirstFor = function (symbol) {
         var self = this;
         if (!first[symbol]) {
-          if (terminals.find(function (terminal) {
-            return symbol === terminal;
-          })) {
+          if (terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [].concat(_toConsumableArray(new Set(rules.filter(function (rule) {

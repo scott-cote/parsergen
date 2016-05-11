@@ -34,7 +34,7 @@ let SimpleRulesModule = {
       };
 
       this.getNonterminals = function() {
-        nonterminals = nonterminals || [...new Set(terminals.concat(rules.map(rule => rule.getLeft())))];
+        nonterminals = nonterminals || [...new Set([...terminals].concat(rules.map(rule => rule.getLeft())))];
         return nonterminals;
       };
 
@@ -62,7 +62,7 @@ let SimpleRulesModule = {
       this.getFirstFor = function(symbol) {
         let self = this;
         if (!first[symbol]) {
-          if (terminals.find(terminal => symbol === terminal)) {
+          if (terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [...new Set(rules

@@ -42,8 +42,6 @@ var _term2 = _interopRequireDefault(_term);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 var Term = _term2.default.createClass();
 var SimpleRule = _simple_rule2.default.createClass(Term);
 var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
@@ -70,7 +68,7 @@ var Generator = {
       return generatorRules.addRule(rule.left, rule.right);
     });
 
-    var simpleRules = generatorRules.createSimpleRules([].concat(_toConsumableArray(terminals)));
+    var simpleRules = generatorRules.createSimpleRules(terminals);
     var states = new States(simpleRules);
 
     var statesRender = states.render();

@@ -19,7 +19,7 @@ let RulesModule = {
         let simplify = function(rule, terminals) {
           let tokens = rule.right.map(symbol => { return {
             symbol: symbol,
-            type: terminals.find(token => token === symbol) ? 'TERMINAL' : 'NONTERMINAL'
+            type: terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
           }});
           return [new SimpleRule(0, rule.left, tokens)];
         };

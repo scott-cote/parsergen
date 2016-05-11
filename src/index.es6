@@ -26,7 +26,7 @@ let Generator = {
     let generatorRules = new GeneratorRules(code.rules[0].left);
     code.rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
 
-    let simpleRules = generatorRules.createSimpleRules([...terminals]);
+    let simpleRules = generatorRules.createSimpleRules(terminals);
     let states = new States(simpleRules);
 
     let statesRender = states.render();
