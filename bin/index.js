@@ -53,25 +53,24 @@ var States = _states2.default.createClass(State);
 
 var Generator = {
   createParser: function createParser(code) {
-    var nonterminals = [].concat(_toConsumableArray(new Set(code.rules.map(function (rule) {
+    var nonterminals = new Set(code.rules.map(function (rule) {
       return rule.left;
-    }))));
-    var symbols = code.rules.map(function (rule) {
+    }));
+    var terminals = new Set(code.rules.map(function (rule) {
       return rule.right;
     }).reduce(function (value, syms) {
       return value.concat(syms);
     }, []).filter(function (symbol) {
-      return !nonterminals.find(function (nonterminal) {
-        return nonterminal === symbol;
-      });
-    });
-    var terminals = [].concat(_toConsumableArray(new Set(symbols.concat('$'))));
+      return !nonterminals.has(symbol);
+    }));
+    terminals.add('$');
+
     var generatorRules = new GeneratorRules(code.rules[0].left);
     code.rules.forEach(function (rule) {
       return generatorRules.addRule(rule.left, rule.right);
     });
 
-    var simpleRules = generatorRules.createSimpleRules(terminals);
+    var simpleRules = generatorRules.createSimpleRules([].concat(_toConsumableArray(terminals)));
     var states = new States(simpleRules);
 
     var statesRender = states.render();
