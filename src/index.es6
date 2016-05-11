@@ -30,7 +30,9 @@ let Generator = {
     let states = new States(simpleRules);
 
     let statesRender = states.render();
-    return { rules: simpleRules.render(), states: statesRender };
+    
+    code.states = states;
+    return code; // { rules: simpleRules.render(), states: statesRender };
   }
 };
 

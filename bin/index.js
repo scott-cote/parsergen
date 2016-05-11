@@ -75,7 +75,9 @@ var Generator = {
     var states = new States(simpleRules);
 
     var statesRender = states.render();
-    return { rules: simpleRules.render(), states: statesRender };
+
+    code.states = states;
+    return code; // { rules: simpleRules.render(), states: statesRender };
   }
 };
 

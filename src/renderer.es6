@@ -3,6 +3,11 @@ import thru from 'through2';
 let renderer = function() {
 
   let render = function(code) {
+
+    let renderRuleTable = function() {
+      return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n    ');
+    };
+
     return `
 import thru from 'through2';
 
@@ -66,11 +71,11 @@ let parser = function parser() {
   }
 
   rules = [
-    ${code.rules}
+    ${renderRuleTable()}
   ];
 
   parseTable = [
-    ${code.states}
+    ${code.states.render()}
   ];
 
   stack = [parseTable[0]];
