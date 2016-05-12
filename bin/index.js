@@ -16,10 +16,6 @@ var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _rules = require('./rules.js');
-
-var _rules2 = _interopRequireDefault(_rules);
-
 var _simple_rule = require('./simple_rule.js');
 
 var _simple_rule2 = _interopRequireDefault(_simple_rule);
@@ -43,21 +39,34 @@ var _term2 = _interopRequireDefault(_term);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Term = _term2.default.createClass();
+//import RulesModule from './rules.js';
+
 var SimpleRule = _simple_rule2.default.createClass(Term);
 var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
 var State = _state2.default.createClass();
-var GeneratorRules = _rules2.default.createClass(SimpleRule, SimpleRules);
+//let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
 var States = _states2.default.createClass(State);
 
 var Generator = {
   createParser: function createParser(code) {
 
-    var generatorRules = new GeneratorRules(code.rules[0].left);
+    //let generatorRules = new GeneratorRules(code.rules[0].left);
+    //code.rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
+
+    //let simpleRules = generatorRules.createSimpleRules(code.terminals);
+
+    var simpleRules = new SimpleRules(code.terminals);
+    simpleRules.addRule(code.rules[0].left + "'", [{ symbol: code.rules[0].left, type: 'NONTERMINAL' }, { symbol: '$', type: 'TERMINAL' }]);
     code.rules.forEach(function (rule) {
-      return generatorRules.addRule(rule.left, rule.right);
+      var right = rule.right.map(function (symbol) {
+        return {
+          symbol: symbol,
+          type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
+        };
+      });
+      simpleRules.addRule(rule.left, right);
     });
 
-    var simpleRules = generatorRules.createSimpleRules(code.terminals);
     var states = new States(simpleRules);
 
     var statesRender = states.render();
