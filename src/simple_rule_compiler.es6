@@ -2,8 +2,18 @@ import thru from 'through2';
 
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {
-    code.rules = code.complexRules.slice();
-    this.push(code);
+
+    let compile = function(code) {
+      code.nonterminals = new Set(code.complexRules.map(rule => rule.left));
+      code.terminals = new Set(code.complexRules.map(rule => rule.right)
+        .reduce((value, syms) => value.concat(syms), [])
+        .filter(symbol => !code.nonterminals.has(symbol)));
+      code.terminals.add('$');
+      code.rules = code.complexRules.map(rule => rule);
+      return code;
+    };
+
+    this.push(compile(code));
     done();
   });
 };
