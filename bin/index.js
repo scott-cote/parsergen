@@ -16,10 +16,6 @@ var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _simple_rule = require('./simple_rule.js');
-
-var _simple_rule2 = _interopRequireDefault(_simple_rule);
-
 var _simple_rules = require('./simple_rules.js');
 
 var _simple_rules2 = _interopRequireDefault(_simple_rules);
@@ -38,11 +34,13 @@ var _term2 = _interopRequireDefault(_term);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Term = _term2.default.createClass();
 //import RulesModule from './rules.js';
+//import SimpleRuleModule from './simple_rule.js';
 
-var SimpleRule = _simple_rule2.default.createClass(Term);
-var SimpleRules = _simple_rules2.default.createClass(SimpleRule);
+
+var Term = _term2.default.createClass();
+//let SimpleRule = SimpleRuleModule.createClass(Term);
+var SimpleRules = _simple_rules2.default.createClass(Term);
 var State = _state2.default.createClass();
 //let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
 var States = _states2.default.createClass(State);

@@ -8,7 +8,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var SimpleRulesModule = {
 
-  createClass: function createClass(SimpleRule) {
+  createClass: function createClass(Term) {
 
     var SimpleRules = function SimpleRules(terminals) {
 
@@ -27,15 +27,18 @@ var SimpleRulesModule = {
       };
 
       this.addRule = function (left, right) {
-        rules.push(new SimpleRule(rules.length, left, right));
+        rules.push({ id: rules.length, left: left, right: right });
+        //rules.push(new SimpleRule(rules.length, left, right));
       };
 
       this.createStartTerm = function () {
-        return rules[0].createTerm();
+        var rule = rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
       };
 
       this.getRootTerm = function () {
-        return rules[0].createTerm();
+        var rule = rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
       };
 
       this.getTerminals = function () {
@@ -44,7 +47,7 @@ var SimpleRulesModule = {
 
       this.getNonterminals = function () {
         nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(terminals)).concat(rules.map(function (rule) {
-          return rule.getLeft();
+          return rule.left;
         })))));
         return nonterminals;
       };
@@ -55,15 +58,15 @@ var SimpleRulesModule = {
 
       this.createTermsFor = function (symbol) {
         return rules.filter(function (rule) {
-          return rule.leftMatches(symbol);
+          return rule.left === symbol;
         }).map(function (rule) {
-          return rule.createTerm();
+          return new Term(rule.id, rule.left, [], rule.right);
         });
       };
 
       this.getNontermMap = function () {
         return rules.slice(1).map(function (rule) {
-          return rule.getLeft();
+          return rule.left;
         });
       };
 
@@ -86,9 +89,9 @@ var SimpleRulesModule = {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [].concat(_toConsumableArray(new Set(rules.filter(function (rule) {
-              return symbol === rule.getLeft() && symbol !== rule.getFirstRight().symbol;
+              return symbol === rule.left && symbol !== rule.right[0].symbol;
             }).reduce(function (value, rule) {
-              return value.concat(self.getFirstFor(rule.getFirstRight().symbol));
+              return value.concat(self.getFirstFor(rule.right[0].symbol));
             }, []))));
           }
         }
@@ -99,13 +102,13 @@ var SimpleRulesModule = {
         var self = this;
         if (!follow[nonterminal]) {
           var allFollow = rules.reduce(function (outterValue, rule) {
-            outterValue = outterValue.concat(rule.getRight().reduce(function (value, token, index, array) {
+            outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
               if (nonterminal === token.symbol) {
                 if (index < array.length - 1) {
                   var newVal = self.getFirstFor(array[index + 1].symbol);
                   return value.concat(newVal);
                 } else {
-                  var _newVal = self.getFollowFor(rule.getLeft());
+                  var _newVal = self.getFollowFor(rule.left);
                   return value.concat(_newVal);
                 }
               }

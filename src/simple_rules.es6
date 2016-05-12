@@ -1,7 +1,7 @@
 
 let SimpleRulesModule = {
 
-  createClass: function(SimpleRule) {
+  createClass: function(Term) {
 
     let SimpleRules = function(terminals) {
 
@@ -18,15 +18,18 @@ let SimpleRulesModule = {
       };
 
       this.addRule = function(left, right) {
-        rules.push(new SimpleRule(rules.length, left, right));
+        rules.push({ id: rules.length, left, right })
+        //rules.push(new SimpleRule(rules.length, left, right));
       };
 
       this.createStartTerm = function() {
-        return rules[0].createTerm();
+        let rule = rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
       };
 
       this.getRootTerm = function() {
-        return rules[0].createTerm();
+        let rule = rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
       };
 
       this.getTerminals = function() {
@@ -34,7 +37,7 @@ let SimpleRulesModule = {
       };
 
       this.getNonterminals = function() {
-        nonterminals = nonterminals || [...new Set([...terminals].concat(rules.map(rule => rule.getLeft())))];
+        nonterminals = nonterminals || [...new Set([...terminals].concat(rules.map(rule => rule.left)))];
         return nonterminals;
       };
 
@@ -43,12 +46,12 @@ let SimpleRulesModule = {
       };
 
       this.createTermsFor = function(symbol) {
-        return rules.filter(rule => rule.leftMatches(symbol))
-          .map(rule => rule.createTerm());
+        return rules.filter(rule => rule.left === symbol)
+          .map(rule => new Term(rule.id, rule.left, [], rule.right));
       };
 
       this.getNontermMap = function() {
-        return rules.slice(1).map(rule => rule.getLeft());
+        return rules.slice(1).map(rule => rule.left);
       };
 
       this.getPopMap = function() {
@@ -66,9 +69,9 @@ let SimpleRulesModule = {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [...new Set(rules
-              .filter(rule => symbol === rule.getLeft() && symbol !== rule.getFirstRight().symbol)
+              .filter(rule => symbol === rule.left && symbol !== rule.right[0].symbol)
               .reduce((value, rule) => {
-                return value.concat(self.getFirstFor(rule.getFirstRight().symbol));
+                return value.concat(self.getFirstFor(rule.right[0].symbol));
               }, []))];
           }
         }
@@ -79,13 +82,13 @@ let SimpleRulesModule = {
         let self = this;
         if (!follow[nonterminal]) {
           let allFollow = rules.reduce((outterValue, rule) => {
-            outterValue = outterValue.concat(rule.getRight().reduce((value, token, index, array) => {
+            outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
               if (nonterminal === token.symbol) {
                 if (index < array.length-1) {
                   let newVal = self.getFirstFor(array[index+1].symbol);
                   return value.concat(newVal);
                 } else {
-                  let newVal = self.getFollowFor(rule.getLeft());
+                  let newVal = self.getFollowFor(rule.left);
                   return value.concat(newVal);
                 }
               }
