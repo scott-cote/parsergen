@@ -44,12 +44,10 @@ let SimpleRulesModule = {
         return terminals;
       };
 
-      /*
       this.getNonterminals = function() {
         nonterminals = nonterminals || [...new Set([...terminals].concat(rules.map(rule => rule.left)))];
         return nonterminals;
       };
-      */
 
       this.getSymbols = function() {
         return this.getNonterminals().concat(terminals);
