@@ -10,24 +10,31 @@ var _through2 = _interopRequireDefault(_through);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var compiler = function compiler() {
   return _through2.default.obj(function (code, encoding, done) {
 
     var compile = function compile(code) {
+
       code.nonterminals = new Set(code.complexRules.map(function (rule) {
         return rule.left;
       }));
+
       code.terminals = new Set(code.complexRules.map(function (rule) {
         return rule.right;
-      }).reduce(function (value, syms) {
-        return value.concat(syms);
-      }, []).filter(function (symbol) {
+      }).reduce(function (value, symbols) {
+        return value.concat(symbols);
+      }, ['$']).filter(function (symbol) {
         return !code.nonterminals.has(symbol);
       }));
-      code.terminals.add('$');
+
+      code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
+
       code.rules = code.complexRules.map(function (rule) {
         return rule;
       });
+
       return code;
     };
 
