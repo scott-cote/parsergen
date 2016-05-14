@@ -20,21 +20,27 @@ var SimpleRulesModule = {
 
       var nonterminals = void 0;
 
-      this.toString = function () {
-        return rules.map(function (rule) {
-          return rule.toString();
-        }).join();
+      this.getRules = function () {
+        return rules;
       };
+
+      /*
+      this.toString = function() {
+        return rules.map(rule => rule.toString()).join();
+      };
+      */
 
       this.addRule = function (left, right) {
         rules.push({ id: rules.length, left: left, right: right });
         //rules.push(new SimpleRule(rules.length, left, right));
       };
 
-      this.createStartTerm = function () {
-        var rule = rules[0];
+      /*
+      this.createStartTerm = function() {
+        let rule = rules[0];
         return new Term(rule.id, rule.left, [], rule.right);
       };
+      */
 
       this.getRootTerm = function () {
         var rule = rules[0];
