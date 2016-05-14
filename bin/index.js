@@ -53,7 +53,7 @@ var Generator = {
 
     //let simpleRules = generatorRules.createSimpleRules(code.terminals);
 
-    var simpleRules = new SimpleRules(code.terminals);
+    var simpleRules = new SimpleRules(code);
     simpleRules.addRule(code.rules[0].left + "'", [{ symbol: code.rules[0].left, type: 'NONTERMINAL' }, { symbol: '$', type: 'TERMINAL' }]);
     code.rules.forEach(function (rule) {
       var right = rule.right.map(function (symbol) {

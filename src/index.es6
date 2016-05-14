@@ -23,7 +23,7 @@ let Generator = {
 
     //let simpleRules = generatorRules.createSimpleRules(code.terminals);
 
-    let simpleRules = new SimpleRules(code.terminals);
+    let simpleRules = new SimpleRules(code);
     simpleRules.addRule(code.rules[0].left+"'", [
       { symbol: code.rules[0].left, type: 'NONTERMINAL' },
       { symbol: '$', type: 'TERMINAL' }

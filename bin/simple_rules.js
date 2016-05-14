@@ -10,7 +10,7 @@ var SimpleRulesModule = {
 
   createClass: function createClass(Term) {
 
-    var SimpleRules = function SimpleRules(terminals) {
+    var SimpleRules = function SimpleRules(code) {
 
       var rules = [];
 
@@ -48,18 +48,18 @@ var SimpleRulesModule = {
       };
 
       this.getTerminals = function () {
-        return terminals;
+        return code.terminals;
       };
 
       this.getNonterminals = function () {
-        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(terminals)).concat(rules.map(function (rule) {
+        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(rules.map(function (rule) {
           return rule.left;
         })))));
         return nonterminals;
       };
 
       this.getSymbols = function () {
-        return this.getNonterminals().concat(terminals);
+        return this.getNonterminals().concat(code.terminals);
       };
 
       this.createTermsFor = function (symbol) {
@@ -91,7 +91,7 @@ var SimpleRulesModule = {
       this.getFirstFor = function (symbol) {
         var self = this;
         if (!first[symbol]) {
-          if (terminals.has(symbol)) {
+          if (code.terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [].concat(_toConsumableArray(new Set(rules.filter(function (rule) {

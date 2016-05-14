@@ -3,7 +3,7 @@ let SimpleRulesModule = {
 
   createClass: function(Term) {
 
-    let SimpleRules = function(terminals) {
+    let SimpleRules = function(code) {
 
       let rules = [];
 
@@ -41,16 +41,16 @@ let SimpleRulesModule = {
       };
 
       this.getTerminals = function() {
-        return terminals;
+        return code.terminals;
       };
 
       this.getNonterminals = function() {
-        nonterminals = nonterminals || [...new Set([...terminals].concat(rules.map(rule => rule.left)))];
+        nonterminals = nonterminals || [...new Set([...code.terminals].concat(rules.map(rule => rule.left)))];
         return nonterminals;
       };
 
       this.getSymbols = function() {
-        return this.getNonterminals().concat(terminals);
+        return this.getNonterminals().concat(code.terminals);
       };
 
       this.createTermsFor = function(symbol) {
@@ -73,7 +73,7 @@ let SimpleRulesModule = {
       this.getFirstFor = function(symbol) {
         let self = this;
         if (!first[symbol]) {
-          if (terminals.has(symbol)) {
+          if (code.terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
             first[symbol] = [...new Set(rules
