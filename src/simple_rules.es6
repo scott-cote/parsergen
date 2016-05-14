@@ -40,10 +40,6 @@ let SimpleRulesModule = {
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
-      this.getTerminals = function() {
-        return code.terminals;
-      };
-
       this.getNonterminals = function() {
         nonterminals = nonterminals || [...new Set([...code.terminals].concat(rules.map(rule => rule.left)))];
         //console.log('nonterminals')

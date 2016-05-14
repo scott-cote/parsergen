@@ -47,10 +47,6 @@ var SimpleRulesModule = {
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
-      this.getTerminals = function () {
-        return code.terminals;
-      };
-
       this.getNonterminals = function () {
         nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(rules.map(function (rule) {
           return rule.left;
