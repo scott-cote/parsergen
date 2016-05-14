@@ -46,11 +46,18 @@ let SimpleRulesModule = {
 
       this.getNonterminals = function() {
         nonterminals = nonterminals || [...new Set([...code.terminals].concat(rules.map(rule => rule.left)))];
+        //console.log('nonterminals')
+        //console.log(JSON.stringify(nonterminals))
+        //console.log(JSON.stringify(code.nonterminals.keys()))
         return nonterminals;
       };
 
       this.getSymbols = function() {
-        return this.getNonterminals().concat(code.terminals);
+        let symbols = this.getNonterminals().concat(code.terminals);
+        //console.log('symbols')
+        //console.log(JSON.stringify(symbols))
+        //console.log(JSON.stringify(code.symbols.keys()))
+        return symbols;
       };
 
       this.createTermsFor = function(symbol) {
