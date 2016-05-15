@@ -50,7 +50,7 @@ var Generator = {
 
     var simpleRules = new SimpleRules(code);
 
-    code.newRules.forEach(function (rule) {
+    code.rules.forEach(function (rule) {
       var right = rule.right.map(function (symbol) {
         return {
           symbol: symbol,

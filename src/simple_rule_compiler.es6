@@ -5,17 +5,17 @@ let compiler = function() {
 
     let compile = function(code) {
 
-      code.newRules = [{
+      code.rules = [{
         left: code.complexRules[0].left+"'",
         right: [code.complexRules[0].left, '$']
       }].concat(code.complexRules);
 
       code.nonterminals = new Set(
-        code.newRules.map(rule => rule.left)
+        code.rules.map(rule => rule.left)
       );
 
       code.terminals = new Set(
-        code.newRules.map(rule => rule.right)
+        code.rules.map(rule => rule.right)
           .reduce((value, symbols) => value.concat(symbols), [])
           .filter(symbol => !code.nonterminals.has(symbol))
       );

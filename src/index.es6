@@ -20,7 +20,7 @@ let Generator = {
 
     let simpleRules = new SimpleRules(code);
 
-    code.newRules.forEach(rule => {
+    code.rules.forEach(rule => {
       let right = rule.right.map(symbol => { return {
         symbol: symbol,
         type: code  .terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'

@@ -17,16 +17,16 @@ var compiler = function compiler() {
 
     var compile = function compile(code) {
 
-      code.newRules = [{
+      code.rules = [{
         left: code.complexRules[0].left + "'",
         right: [code.complexRules[0].left, '$']
       }].concat(code.complexRules);
 
-      code.nonterminals = new Set(code.newRules.map(function (rule) {
+      code.nonterminals = new Set(code.rules.map(function (rule) {
         return rule.left;
       }));
 
-      code.terminals = new Set(code.newRules.map(function (rule) {
+      code.terminals = new Set(code.rules.map(function (rule) {
         return rule.right;
       }).reduce(function (value, symbols) {
         return value.concat(symbols);
