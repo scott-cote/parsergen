@@ -11,28 +11,6 @@ let SimpleRulesModule = {
 
       let nonterminals;
 
-      this.getRules = function() {
-        return code.rules;
-      };
-
-      /*
-      this.toString = function() {
-        return rules.map(rule => rule.toString()).join();
-      };
-      */
-
-      this.addRule = function(left, right) {
-        code.rules.push({ id: code.rules.length, left, right })
-        //rules.push(new SimpleRule(rules.length, left, right));
-      };
-
-      /*
-      this.createStartTerm = function() {
-        let rule = rules[0];
-        return new Term(rule.id, rule.left, [], rule.right);
-      };
-      */
-
       this.getRootTerm = function() {
         let rule = code.rules[0];
         return new Term(rule.id, rule.left, [], rule.right);
