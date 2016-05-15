@@ -35,6 +35,11 @@ var compiler = function compiler() {
         return rule;
       });
 
+      code.rules.push({
+        left: code.complexRules[0].left + "'",
+        right: [code.complexRules[0].left, '$']
+      });
+
       return code;
     };
 

@@ -66,7 +66,8 @@ let parser = function parser() {
     {"left":"RULE","rightCount":4},
     {"left":"LEFT","rightCount":1},
     {"left":"RIGHT","rightCount":2},
-    {"left":"RIGHT","rightCount":1}
+    {"left":"RIGHT","rightCount":1},
+    {"left":"RULES'","rightCount":2}
   ];
 
   parseTable = [
