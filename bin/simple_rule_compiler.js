@@ -17,6 +17,15 @@ var compiler = function compiler() {
 
     var compile = function compile(code) {
 
+      code.rules = code.complexRules.map(function (rule) {
+        return rule;
+      });
+
+      code.rules.push({
+        left: code.complexRules[0].left + "'",
+        right: [code.complexRules[0].left, '$']
+      });
+
       code.nonterminals = new Set(code.complexRules.map(function (rule) {
         return rule.left;
       }));
@@ -30,15 +39,6 @@ var compiler = function compiler() {
       }));
 
       code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
-
-      code.rules = code.complexRules.map(function (rule) {
-        return rule;
-      });
-
-      code.rules.push({
-        left: code.complexRules[0].left + "'",
-        right: [code.complexRules[0].left, '$']
-      });
 
       return code;
     };

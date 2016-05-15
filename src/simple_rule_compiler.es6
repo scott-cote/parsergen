@@ -5,6 +5,13 @@ let compiler = function() {
 
     let compile = function(code) {
 
+      code.rules = code.complexRules.map(rule => rule);
+
+      code.rules.push({
+        left: code.complexRules[0].left+"'",
+        right: [code.complexRules[0].left, '$']
+      });
+
       code.nonterminals = new Set(
         code.complexRules.map(rule => rule.left)
       );
@@ -16,13 +23,6 @@ let compiler = function() {
       );
 
       code.symbols = new Set([...code.nonterminals, ...code.terminals]);
-
-      code.rules = code.complexRules.map(rule => rule);
-
-      code.rules.push({
-        left: code.complexRules[0].left+"'",
-        right: [code.complexRules[0].left, '$']
-      });
 
       return code;
     };
