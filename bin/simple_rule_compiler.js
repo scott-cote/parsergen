@@ -26,15 +26,15 @@ var compiler = function compiler() {
         right: [code.complexRules[0].left, '$']
       });
 
-      code.nonterminals = new Set(code.complexRules.map(function (rule) {
+      code.nonterminals = new Set(code.rules.map(function (rule) {
         return rule.left;
       }));
 
-      code.terminals = new Set(code.complexRules.map(function (rule) {
+      code.terminals = new Set(code.rules.map(function (rule) {
         return rule.right;
       }).reduce(function (value, symbols) {
         return value.concat(symbols);
-      }, ['$']).filter(function (symbol) {
+      }, []).filter(function (symbol) {
         return !code.nonterminals.has(symbol);
       }));
 
