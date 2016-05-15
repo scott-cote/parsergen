@@ -31,18 +31,6 @@ var SimpleRulesModule = {
         });
       };
 
-      this.getNontermMap = function () {
-        return code.rules.slice(1).map(function (rule) {
-          return rule.left;
-        });
-      };
-
-      this.getPopMap = function () {
-        return code.rules.slice(1).map(function (rule) {
-          return rule.getRightCount();
-        });
-      };
-
       this.getFirstFor = function (symbol) {
         var self = this;
         if (!first[symbol]) {

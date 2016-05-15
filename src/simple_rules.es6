@@ -21,14 +21,6 @@ let SimpleRulesModule = {
           .map(rule => new Term(rule.id, rule.left, [], rule.right));
       };
 
-      this.getNontermMap = function() {
-        return code.rules.slice(1).map(rule => rule.left);
-      };
-
-      this.getPopMap = function() {
-        return code.rules.slice(1).map(rule => rule.getRightCount());
-      };
-
       this.getFirstFor = function(symbol) {
         let self = this;
         if (!first[symbol]) {
