@@ -48,14 +48,9 @@ var States = _states2.default.createClass(State);
 var Generator = {
   createParser: function createParser(code) {
 
-    //let generatorRules = new GeneratorRules(code.rules[0].left);
-    //code.rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
-
-    //let simpleRules = generatorRules.createSimpleRules(code.terminals);
-
     var simpleRules = new SimpleRules(code);
-    simpleRules.addRule(code.rules[0].left + "'", [{ symbol: code.rules[0].left, type: 'NONTERMINAL' }, { symbol: '$', type: 'TERMINAL' }]);
-    code.rules.forEach(function (rule) {
+
+    code.newRules.forEach(function (rule) {
       var right = rule.right.map(function (symbol) {
         return {
           symbol: symbol,

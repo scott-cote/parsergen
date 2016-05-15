@@ -18,17 +18,9 @@ let States = StatesModule.createClass(State);
 let Generator = {
   createParser: function(code) {
 
-    //let generatorRules = new GeneratorRules(code.rules[0].left);
-    //code.rules.forEach(rule => generatorRules.addRule(rule.left, rule.right));
-
-    //let simpleRules = generatorRules.createSimpleRules(code.terminals);
-
     let simpleRules = new SimpleRules(code);
-    simpleRules.addRule(code.rules[0].left+"'", [
-      { symbol: code.rules[0].left, type: 'NONTERMINAL' },
-      { symbol: '$', type: 'TERMINAL' }
-    ]);
-    code.rules.forEach(rule => {
+
+    code.newRules.forEach(rule => {
       let right = rule.right.map(symbol => { return {
         symbol: symbol,
         type: code  .terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'

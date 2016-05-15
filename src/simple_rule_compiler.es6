@@ -5,11 +5,6 @@ let compiler = function() {
 
     let compile = function(code) {
 
-      code.rules = code.complexRules.concat({
-        left: code.complexRules[0].left+"'",
-        right: [code.complexRules[0].left, '$']
-      });
-
       code.newRules = [{
         left: code.complexRules[0].left+"'",
         right: [code.complexRules[0].left, '$']
