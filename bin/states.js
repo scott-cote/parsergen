@@ -8,7 +8,7 @@ var StatesModule = {
 
   createClass: function createClass(State) {
 
-    var States = function States(simpleRules) {
+    var States = function States(simpleRules, code) {
 
       var states = [];
 
@@ -39,7 +39,7 @@ var StatesModule = {
       states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       var index = 0;while (index < states.length) {
-        simpleRules.getSymbols().forEach(function (symbol) {
+        code.symbols.forEach(function (symbol) {
           if (symbol === '$') return;
           var rootTerms = states[index].getRootTermsFor(symbol);
           if (rootTerms.length) {

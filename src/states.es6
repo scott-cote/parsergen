@@ -3,7 +3,7 @@ let StatesModule = {
 
   createClass: function(State) {
 
-    let States = function(simpleRules) {
+    let States = function(simpleRules, code) {
 
       let states = [];
 
@@ -32,7 +32,7 @@ let StatesModule = {
       states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
 
       let index = 0; while (index < states.length) {
-        simpleRules.getSymbols().forEach(symbol => {
+        code.symbols.forEach(symbol => {
           if (symbol === '$') return;
           let rootTerms = states[index].getRootTermsFor(symbol);
           if (rootTerms.length) {

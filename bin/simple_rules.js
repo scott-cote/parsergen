@@ -23,20 +23,6 @@ var SimpleRulesModule = {
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
-      this.getSymbols = function () {
-        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(code.rules.map(function (rule) {
-          return rule.left;
-        })))));
-        var symbols = nonterminals.concat(code.terminals);
-        //console.log('symbols')
-        //console.log(JSON.stringify(symbols))
-        //console.log(JSON.stringify(code.symbols.keys()))
-        //return symbols.sort();
-        //return [...code.symbols];
-
-        return code.symbols;
-      };
-
       this.createTermsFor = function (symbol) {
         return code.rules.filter(function (rule) {
           return rule.left === symbol;

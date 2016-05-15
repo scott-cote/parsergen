@@ -19,7 +19,7 @@ let Generator = {
   createParser: function(code) {
 
     let simpleRules = new SimpleRules(code);
-    let states = new States(simpleRules);
+    let states = new States(simpleRules, code);
     let statesRender = states.render();
     code.states = states;
     return code; // { rules: simpleRules.render(), states: statesRender };
