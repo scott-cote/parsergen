@@ -17,11 +17,7 @@ var compiler = function compiler() {
 
     var compile = function compile(code) {
 
-      code.rules = code.complexRules.map(function (rule) {
-        return rule;
-      });
-
-      code.rules.push({
+      code.rules = code.complexRules.concat({
         left: code.complexRules[0].left + "'",
         right: [code.complexRules[0].left, '$']
       });
