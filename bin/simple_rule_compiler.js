@@ -36,6 +36,18 @@ var compiler = function compiler() {
 
       code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
 
+      code.rules = code.rules.map(function (rule) {
+        return {
+          left: rule.left,
+          right: rule.right.map(function (symbol) {
+            return {
+              symbol: symbol,
+              type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
+            };
+          })
+        };
+      });
+
       return code;
     };
 

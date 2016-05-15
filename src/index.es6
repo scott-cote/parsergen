@@ -21,11 +21,7 @@ let Generator = {
     let simpleRules = new SimpleRules(code);
 
     code.rules.forEach(rule => {
-      let right = rule.right.map(symbol => { return {
-        symbol: symbol,
-        type: code  .terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
-      }});
-      simpleRules.addRule(rule.left, right);
+      simpleRules.addRule(rule.left, rule.right);
     });
 
     let states = new States(simpleRules);

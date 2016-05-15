@@ -51,13 +51,7 @@ var Generator = {
     var simpleRules = new SimpleRules(code);
 
     code.rules.forEach(function (rule) {
-      var right = rule.right.map(function (symbol) {
-        return {
-          symbol: symbol,
-          type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
-        };
-      });
-      simpleRules.addRule(rule.left, right);
+      simpleRules.addRule(rule.left, rule.right);
     });
 
     var states = new States(simpleRules);

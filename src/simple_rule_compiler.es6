@@ -22,6 +22,14 @@ let compiler = function() {
 
       code.symbols = new Set([...code.nonterminals, ...code.terminals]);
 
+      code.rules = code.rules.map(rule => { return {
+        left: rule.left,
+        right: rule.right.map(symbol => { return {
+          symbol: symbol,
+          type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
+        }})
+      }});
+
       return code;
     };
 
