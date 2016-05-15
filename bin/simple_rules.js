@@ -31,7 +31,7 @@ var SimpleRulesModule = {
         //console.log('symbols')
         //console.log(JSON.stringify(symbols))
         //console.log(JSON.stringify(code.symbols.keys()))
-        return symbols;
+        return symbols.sort();
         //return [...code.symbols];
       };
 
