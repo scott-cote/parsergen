@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -41,12 +41,6 @@ var SimpleRulesModule = {
         return code.rules.slice(1).map(function (rule) {
           return rule.getRightCount();
         });
-      };
-
-      this.render = function () {
-        return code.rules.slice(1).map(function (rule) {
-          return rule.render();
-        }).join(',\n    ');
       };
 
       this.getFirstFor = function (symbol) {
