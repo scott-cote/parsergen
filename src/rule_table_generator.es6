@@ -3,7 +3,7 @@ import thru from 'through2';
 let generator = function() {
 
   let generate = function(code) {
-    code.ruleTable = code.rules.map(rule => { return  { left: rule.left, rightCount: rule.right.length }});
+    code.ruleTable = code.newRules.map(rule => { return  { left: rule.left, rightCount: rule.right.length }});
     return code;
   };
 

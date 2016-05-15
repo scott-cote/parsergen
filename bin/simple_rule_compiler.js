@@ -22,11 +22,16 @@ var compiler = function compiler() {
         right: [code.complexRules[0].left, '$']
       });
 
-      code.nonterminals = new Set(code.rules.map(function (rule) {
+      code.newRules = [{
+        left: code.complexRules[0].left + "'",
+        right: [code.complexRules[0].left, '$']
+      }].concat(code.complexRules);
+
+      code.nonterminals = new Set(code.newRules.map(function (rule) {
         return rule.left;
       }));
 
-      code.terminals = new Set(code.rules.map(function (rule) {
+      code.terminals = new Set(code.newRules.map(function (rule) {
         return rule.right;
       }).reduce(function (value, symbols) {
         return value.concat(symbols);

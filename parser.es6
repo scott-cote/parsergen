@@ -34,7 +34,7 @@ let parser = function parser() {
 
   let reduce = function(ruleIndex) {
     return function(token, type) {
-      let rule = rules[ruleIndex-1];
+      let rule = rules[ruleIndex];
       curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);
       stack.splice(-rule.rightCount, rule.rightCount)
       input.push({ content: '', type: rule.left });
@@ -61,13 +61,13 @@ let parser = function parser() {
   }
 
   rules = [
+    {"left":"RULES'","rightCount":2},
     {"left":"RULES","rightCount":2},
     {"left":"RULES","rightCount":1},
     {"left":"RULE","rightCount":4},
     {"left":"LEFT","rightCount":1},
     {"left":"RIGHT","rightCount":2},
-    {"left":"RIGHT","rightCount":1},
-    {"left":"RULES'","rightCount":2}
+    {"left":"RIGHT","rightCount":1}
   ];
 
   parseTable = [

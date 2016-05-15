@@ -13,7 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var generator = function generator() {
 
   var generate = function generate(code) {
-    code.ruleTable = code.rules.map(function (rule) {
+    code.ruleTable = code.newRules.map(function (rule) {
       return { left: rule.left, rightCount: rule.right.length };
     });
     return code;

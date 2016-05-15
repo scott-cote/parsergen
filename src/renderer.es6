@@ -44,7 +44,7 @@ let parser = function parser() {
 
   let reduce = function(ruleIndex) {
     return function(token, type) {
-      let rule = rules[ruleIndex-1];
+      let rule = rules[ruleIndex];
       curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);
       stack.splice(-rule.rightCount, rule.rightCount)
       input.push({ content: '', type: rule.left });
