@@ -24,7 +24,8 @@ let compiler = function() {
 
       code.rules = code.rules.map(rule => { return {
         left: rule.left,
-        right: rule.right.map(symbol => { return {
+        right: rule.right.map((symbol, index) => { return {
+          id: index,
           symbol: symbol,
           type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
         }})

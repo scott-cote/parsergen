@@ -39,8 +39,9 @@ var compiler = function compiler() {
       code.rules = code.rules.map(function (rule) {
         return {
           left: rule.left,
-          right: rule.right.map(function (symbol) {
+          right: rule.right.map(function (symbol, index) {
             return {
+              id: index,
               symbol: symbol,
               type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
             };
