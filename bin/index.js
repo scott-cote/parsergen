@@ -49,15 +49,8 @@ var Generator = {
   createParser: function createParser(code) {
 
     var simpleRules = new SimpleRules(code);
-
-    code.rules.forEach(function (rule) {
-      simpleRules.addRule(rule.left, rule.right);
-    });
-
     var states = new States(simpleRules);
-
     var statesRender = states.render();
-
     code.states = states;
     return code; // { rules: simpleRules.render(), states: statesRender };
   }

@@ -22,10 +22,10 @@ let compiler = function() {
 
       code.symbols = new Set([...code.nonterminals, ...code.terminals]);
 
-      code.rules = code.rules.map(rule => { return {
+      code.rules = code.rules.map((rule, index) => { return {
+        id: index,
         left: rule.left,
-        right: rule.right.map((symbol, index) => { return {
-          id: index,
+        right: rule.right.map(symbol => { return {
           symbol: symbol,
           type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
         }})

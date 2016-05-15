@@ -36,12 +36,12 @@ var compiler = function compiler() {
 
       code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
 
-      code.rules = code.rules.map(function (rule) {
+      code.rules = code.rules.map(function (rule, index) {
         return {
+          id: index,
           left: rule.left,
-          right: rule.right.map(function (symbol, index) {
+          right: rule.right.map(function (symbol) {
             return {
-              id: index,
               symbol: symbol,
               type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
             };

@@ -19,15 +19,8 @@ let Generator = {
   createParser: function(code) {
 
     let simpleRules = new SimpleRules(code);
-
-    code.rules.forEach(rule => {
-      simpleRules.addRule(rule.left, rule.right);
-    });
-
     let states = new States(simpleRules);
-
     let statesRender = states.render();
-
     code.states = states;
     return code; // { rules: simpleRules.render(), states: statesRender };
   }

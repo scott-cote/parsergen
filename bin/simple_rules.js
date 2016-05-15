@@ -12,8 +12,6 @@ var SimpleRulesModule = {
 
     var SimpleRules = function SimpleRules(code) {
 
-      var rules = [];
-
       var first = {};
 
       var follow = {};
@@ -21,7 +19,7 @@ var SimpleRulesModule = {
       var nonterminals = void 0;
 
       this.getRules = function () {
-        return rules;
+        return code.rules;
       };
 
       /*
@@ -31,7 +29,7 @@ var SimpleRulesModule = {
       */
 
       this.addRule = function (left, right) {
-        rules.push({ id: rules.length, left: left, right: right });
+        code.rules.push({ id: code.rules.length, left: left, right: right });
         //rules.push(new SimpleRule(rules.length, left, right));
       };
 
@@ -43,12 +41,12 @@ var SimpleRulesModule = {
       */
 
       this.getRootTerm = function () {
-        var rule = rules[0];
+        var rule = code.rules[0];
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
       this.getSymbols = function () {
-        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(rules.map(function (rule) {
+        nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(code.rules.map(function (rule) {
           return rule.left;
         })))));
         var symbols = nonterminals.concat(code.terminals);
@@ -60,7 +58,7 @@ var SimpleRulesModule = {
       };
 
       this.createTermsFor = function (symbol) {
-        return rules.filter(function (rule) {
+        return code.rules.filter(function (rule) {
           return rule.left === symbol;
         }).map(function (rule) {
           return new Term(rule.id, rule.left, [], rule.right);
@@ -68,19 +66,19 @@ var SimpleRulesModule = {
       };
 
       this.getNontermMap = function () {
-        return rules.slice(1).map(function (rule) {
+        return code.rules.slice(1).map(function (rule) {
           return rule.left;
         });
       };
 
       this.getPopMap = function () {
-        return rules.slice(1).map(function (rule) {
+        return code.rules.slice(1).map(function (rule) {
           return rule.getRightCount();
         });
       };
 
       this.render = function () {
-        return rules.slice(1).map(function (rule) {
+        return code.rules.slice(1).map(function (rule) {
           return rule.render();
         }).join(',\n    ');
       };
@@ -91,7 +89,7 @@ var SimpleRulesModule = {
           if (code.terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
-            first[symbol] = [].concat(_toConsumableArray(new Set(rules.filter(function (rule) {
+            first[symbol] = [].concat(_toConsumableArray(new Set(code.rules.filter(function (rule) {
               return symbol === rule.left && symbol !== rule.right[0].symbol;
             }).reduce(function (value, rule) {
               return value.concat(self.getFirstFor(rule.right[0].symbol));
@@ -104,7 +102,7 @@ var SimpleRulesModule = {
       this.getFollowFor = function (nonterminal) {
         var self = this;
         if (!follow[nonterminal]) {
-          var allFollow = rules.reduce(function (outterValue, rule) {
+          var allFollow = code.rules.reduce(function (outterValue, rule) {
             outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
               if (nonterminal === token.symbol) {
                 if (index < array.length - 1) {
