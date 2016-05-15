@@ -47,12 +47,9 @@ var States = _states2.default.createClass(State);
 
 var Generator = {
   createParser: function createParser(code) {
-
     var simpleRules = new SimpleRules(code);
-    var states = new States(simpleRules, code);
-    var statesRender = states.render();
-    code.states = states;
-    return code; // { rules: simpleRules.render(), states: statesRender };
+    code.states = new States(simpleRules, code);
+    return code;
   }
 };
 
