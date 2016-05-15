@@ -40,16 +40,9 @@ let SimpleRulesModule = {
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
-      this.getNonterminals = function() {
-        nonterminals = nonterminals || [...new Set([...code.terminals].concat(rules.map(rule => rule.left)))];
-        //console.log('nonterminals')
-        //console.log(JSON.stringify(nonterminals))
-        //console.log(JSON.stringify(code.nonterminals.keys()))
-        return nonterminals;
-      };
-
       this.getSymbols = function() {
-        let symbols = this.getNonterminals().concat(code.terminals);
+        nonterminals = nonterminals || [...new Set([...code.terminals].concat(rules.map(rule => rule.left)))];
+        let symbols = nonterminals.concat(code.terminals);
         //console.log('symbols')
         //console.log(JSON.stringify(symbols))
         //console.log(JSON.stringify(code.symbols.keys()))

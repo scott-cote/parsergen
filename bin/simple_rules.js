@@ -47,18 +47,11 @@ var SimpleRulesModule = {
         return new Term(rule.id, rule.left, [], rule.right);
       };
 
-      this.getNonterminals = function () {
+      this.getSymbols = function () {
         nonterminals = nonterminals || [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(code.terminals)).concat(rules.map(function (rule) {
           return rule.left;
         })))));
-        //console.log('nonterminals')
-        //console.log(JSON.stringify(nonterminals))
-        //console.log(JSON.stringify(code.nonterminals.keys()))
-        return nonterminals;
-      };
-
-      this.getSymbols = function () {
-        var symbols = this.getNonterminals().concat(code.terminals);
+        var symbols = nonterminals.concat(code.terminals);
         //console.log('symbols')
         //console.log(JSON.stringify(symbols))
         //console.log(JSON.stringify(code.symbols.keys()))
