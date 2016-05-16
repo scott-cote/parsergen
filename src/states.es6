@@ -1,9 +1,9 @@
 
 let StatesModule = {
 
-  createClass: function(State) {
+  createClass: function(State, Term) {
 
-    let States = function(simpleRules, code) {
+    let States = function(code) {
 
       let states = [];
 
@@ -29,7 +29,12 @@ let StatesModule = {
         return states.map(state => state.render()).join(',\n    ')  ;
       };
 
-      states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
+      this.getRootTerm = function() {
+        let rule = code.rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
+      };
+
+      states.push(new State(0, code, this.getRootTerm()));
 
       let index = 0; while (index < states.length) {
         code.symbols.forEach(symbol => {
@@ -40,7 +45,7 @@ let StatesModule = {
             let state = rootTermsState[id] || states.length;
             if (state === states.length) {
               rootTermsState[id] = state;
-              states.push(new State(states.length, simpleRules, rootTerms));
+              states.push(new State(states.length, code, rootTerms));
             }
             states[index].setGotoFor(symbol, state);
           }

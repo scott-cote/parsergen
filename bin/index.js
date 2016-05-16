@@ -16,10 +16,6 @@ var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _simple_rules = require('./simple_rules.js');
-
-var _simple_rules2 = _interopRequireDefault(_simple_rules);
-
 var _state = require('./state.js');
 
 var _state2 = _interopRequireDefault(_state);
@@ -34,21 +30,20 @@ var _term2 = _interopRequireDefault(_term);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//import RulesModule from './rules.js';
-//import SimpleRuleModule from './simple_rule.js';
-
-
 var Term = _term2.default.createClass();
 //let SimpleRule = SimpleRuleModule.createClass(Term);
-var SimpleRules = _simple_rules2.default.createClass(Term);
-var State = _state2.default.createClass();
+//let SimpleRules = SimpleRulesModule.createClass(Term);
+
+//import RulesModule from './rules.js';
+//import SimpleRuleModule from './simple_rule.js';
+//import SimpleRulesModule from './simple_rules.js';
+var State = _state2.default.createClass(Term);
 //let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-var States = _states2.default.createClass(State);
+var States = _states2.default.createClass(State, Term);
 
 var Generator = {
   createParser: function createParser(code) {
-    var simpleRules = new SimpleRules(code);
-    code.states = new States(simpleRules, code);
+    code.states = new States(code);
     return code;
   }
 };

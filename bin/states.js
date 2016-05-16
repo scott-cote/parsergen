@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var StatesModule = {
 
-  createClass: function createClass(State) {
+  createClass: function createClass(State, Term) {
 
-    var States = function States(simpleRules, code) {
+    var States = function States(code) {
 
       var states = [];
 
@@ -36,7 +36,12 @@ var StatesModule = {
         }).join(',\n    ');
       };
 
-      states.push(new State(0, simpleRules, simpleRules.getRootTerm()));
+      this.getRootTerm = function () {
+        var rule = code.rules[0];
+        return new Term(rule.id, rule.left, [], rule.right);
+      };
+
+      states.push(new State(0, code, this.getRootTerm()));
 
       var index = 0;while (index < states.length) {
         code.symbols.forEach(function (symbol) {
@@ -49,7 +54,7 @@ var StatesModule = {
             var state = rootTermsState[id] || states.length;
             if (state === states.length) {
               rootTermsState[id] = state;
-              states.push(new State(states.length, simpleRules, rootTerms));
+              states.push(new State(states.length, code, rootTerms));
             }
             states[index].setGotoFor(symbol, state);
           }
