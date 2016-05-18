@@ -36,6 +36,52 @@ let StateModule = {
           return follow[nonterminal];
         };
 
+        this.generateFirstTable = function() {
+
+          let getFirstSetFor;
+
+          let getFirstForRule = function(rule) {
+            return rule.right.reduce((cntx, element) => {
+              if (!cntx.done) {
+                let first = getFirstSetFor(element.symbol);
+                if (!first.canBeEmpty) {
+                  cntx.done = true;
+                  cntx.canBeEmpty = false;
+                }
+                cntx.symbols = cntx.symbols.concat(first);
+              }
+              return cntx;
+            }, { done: false, canBeEmpty: true, symbols: [] });
+          };
+
+          let generateFirstSetFor = function(symbol) {
+            let result = { canBeEmpty: false, symbols: [] };
+            if (code.terminals.has(symbol)) {
+              result.symbols.push(symbol);
+            } else {
+              code.rules.filter(rule => rule.left === symbol).forEach(rule => {
+                if (rule.right.length === 0) {
+                  result.canBeEmpty = true;
+                } else {
+                  let first = getFirstForRule(rule);
+                  if (first.canBeEmpty) result.canBeEmpty = true;
+                  result.symbols = result.symbols.concat(first.symbols);
+                }
+              });
+            }
+            return this.firstTable[symbol] = result;
+          };
+
+          getFirstSetFor = function(symbol) {
+            return this.firstTable[symbol] || generateFirstSetFor(symbol);
+          };
+
+          this.firstTable = {};
+          code.symbols.forEach(symbol => {
+            this.firstTable[symbol] = getFirstSetFor(symbol);
+          });
+        };
+
         let first = {};
 
         this.getFirstFor = function(symbol) {

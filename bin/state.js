@@ -43,6 +43,55 @@ var StateModule = {
         return follow[nonterminal];
       };
 
+      this.generateFirstTable = function () {
+        var _this = this;
+
+        var getFirstSetFor = void 0;
+
+        var getFirstForRule = function getFirstForRule(rule) {
+          return rule.right.reduce(function (cntx, element) {
+            if (!cntx.done) {
+              var _first = getFirstSetFor(element.symbol);
+              if (!_first.canBeEmpty) {
+                cntx.done = true;
+                cntx.canBeEmpty = false;
+              }
+              cntx.symbols = cntx.symbols.concat(_first);
+            }
+            return cntx;
+          }, { done: false, canBeEmpty: true, symbols: [] });
+        };
+
+        var generateFirstSetFor = function generateFirstSetFor(symbol) {
+          var result = { canBeEmpty: false, symbols: [] };
+          if (code.terminals.has(symbol)) {
+            result.symbols.push(symbol);
+          } else {
+            code.rules.filter(function (rule) {
+              return rule.left === symbol;
+            }).forEach(function (rule) {
+              if (rule.right.length === 0) {
+                result.canBeEmpty = true;
+              } else {
+                var _first2 = getFirstForRule(rule);
+                if (_first2.canBeEmpty) result.canBeEmpty = true;
+                result.symbols = result.symbols.concat(_first2.symbols);
+              }
+            });
+          }
+          return this.firstTable[symbol] = result;
+        };
+
+        getFirstSetFor = function getFirstSetFor(symbol) {
+          return this.firstTable[symbol] || generateFirstSetFor(symbol);
+        };
+
+        this.firstTable = {};
+        code.symbols.forEach(function (symbol) {
+          _this.firstTable[symbol] = getFirstSetFor(symbol);
+        });
+      };
+
       var first = {};
 
       this.getFirstFor = function (symbol) {
@@ -132,7 +181,7 @@ var StateModule = {
       };
 
       this.createRow = function () {
-        var _this = this;
+        var _this2 = this;
 
         var row = {};
         terms.filter(function (term) {
@@ -154,7 +203,7 @@ var StateModule = {
           return !term.getRightSymbol();
         }).forEach(function (term) {
           //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-          var follow = _this.getFollowFor(term.getLeft());
+          var follow = _this2.getFollowFor(term.getLeft());
           follow.forEach(function (symbol) {
             row[symbol] = 'reduce(' + term.getRule() + ')';
           });
