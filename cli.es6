@@ -6,7 +6,7 @@ import parser from './parser.js'
 import complex_rule_compiler from './complex_rule_compiler.js';
 import simple_rule_compiler from './simple_rule_compiler.js';
 import rule_table_compiler from './rule_table_compiler.js';
-import state_table_generator from './state_table_generator.js';
+import state_table_compiler from './state_table_compiler.js';
 import renderer from './renderer.js';
 import generator from './index.js';
 import through2 from 'through2';
@@ -22,7 +22,7 @@ stream
   .pipe(complex_rule_compiler())
   .pipe(simple_rule_compiler())
   .pipe(rule_table_compiler())
-  .pipe(state_table_generator())
+  .pipe(state_table_compiler())
   .pipe(generator())
   .pipe(renderer())
   .pipe(fs.createWriteStream('./parser.es6'));

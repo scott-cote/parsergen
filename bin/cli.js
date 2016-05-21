@@ -34,9 +34,9 @@ var _rule_table_compiler = require('./rule_table_compiler.js');
 
 var _rule_table_compiler2 = _interopRequireDefault(_rule_table_compiler);
 
-var _state_table_generator = require('./state_table_generator.js');
+var _state_table_compiler = require('./state_table_compiler.js');
 
-var _state_table_generator2 = _interopRequireDefault(_state_table_generator);
+var _state_table_compiler2 = _interopRequireDefault(_state_table_compiler);
 
 var _renderer = require('./renderer.js');
 
@@ -58,4 +58,4 @@ var stream = (0, _mergeStream2.default)();
   return stream.add(_fs2.default.createReadStream(filename));
 });
 
-stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _complex_rule_compiler2.default)()).pipe((0, _simple_rule_compiler2.default)()).pipe((0, _rule_table_compiler2.default)()).pipe((0, _state_table_generator2.default)()).pipe((0, _index2.default)()).pipe((0, _renderer2.default)()).pipe(_fs2.default.createWriteStream('./parser.es6'));
+stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _complex_rule_compiler2.default)()).pipe((0, _simple_rule_compiler2.default)()).pipe((0, _rule_table_compiler2.default)()).pipe((0, _state_table_compiler2.default)()).pipe((0, _index2.default)()).pipe((0, _renderer2.default)()).pipe(_fs2.default.createWriteStream('./parser.es6'));
