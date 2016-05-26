@@ -4,9 +4,7 @@ let compiler = function() {
 
   let compile = function(code) {
 
-    console.log(JSON.stringify(code.symbols))
-
-    code.firstTable = code.symbols.reduce((firstTable, symbol) => {
+    code.firstTable = Array.prototype.reduce.call(code.symbols.keys(), (firstTable, symbol) => {
 
       let getRulesFor = function(symbol) {
         return code.rules.filter(rule => rule.left === symbol);
@@ -54,8 +52,8 @@ let compiler = function() {
   };
 
   return thru.obj(function(code, encoding, done) {
-    //this.push(compile(code));
-    this.push(code);
+    this.push(compile(code));
+    //this.push(code);
     done();
   });
 };

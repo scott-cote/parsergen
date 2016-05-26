@@ -14,9 +14,7 @@ var compiler = function compiler() {
 
   var compile = function compile(code) {
 
-    console.log(JSON.stringify(code.symbols));
-
-    code.firstTable = code.symbols.reduce(function (firstTable, symbol) {
+    code.firstTable = Array.prototype.reduce.call(code.symbols.keys(), function (firstTable, symbol) {
 
       var getRulesFor = function getRulesFor(symbol) {
         return code.rules.filter(function (rule) {
@@ -66,8 +64,8 @@ var compiler = function compiler() {
   };
 
   return _through2.default.obj(function (code, encoding, done) {
-    //this.push(compile(code));
-    this.push(code);
+    this.push(compile(code));
+    //this.push(code);
     done();
   });
 };
