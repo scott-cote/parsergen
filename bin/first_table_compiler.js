@@ -37,19 +37,23 @@ var compiler = function compiler() {
         }, true);
 
         if (ready) {
-          code.testFirstTable[symbol] = rules.reduce(function (first, rule) {
+          code.testFirstTable[symbol] = rules.reduce(function (cntx, rule) {
             var index = rule.right.findIndex(function (element) {
               return !element.canBeEmpty;
             });
-            var elements = void 0;
+            var symbols = void 0;
             if (index === -1) {
               cntx.canBeEmpty = true;
-              // elements = rule.right.slice();
-            } else {}
-              // elements = rule.right.slice();
-
-              // cntx.symbols = cntx.symbols.concat();
-            return first;
+              symbols = rule.right.map(function (element) {
+                return element.symbol;
+              });
+            } else {
+              symbols = rule.right.slice(0, index + 1).map(function (element) {
+                return element.symbol;
+              });
+            }
+            cntx.symbols = cntx.symbols.concat(symbols);
+            return cntx;
           }, { canBeEmpty: false, symbols: [] });
         } else {
           cntx.symbols.push(symbol);

@@ -25,19 +25,19 @@ let compiler = function() {
         }, true);
 
         if (ready) {
-          code.testFirstTable[symbol] = rules.reduce((first, rule) => {
+          code.testFirstTable[symbol] = rules.reduce((cntx, rule) => {
             let index = rule.right.findIndex(element => {
               return !element.canBeEmpty;
             });
-            let elements;
+            let symbols;
             if (index === -1) {
               cntx.canBeEmpty = true;
-              // elements = rule.right.slice();
+              symbols = rule.right.map(element => element.symbol);
             } else {
-              // elements = rule.right.slice();
+              symbols = rule.right.slice(0, index+1).map(element => element.symbol);
             }
-            // cntx.symbols = cntx.symbols.concat();
-            return first;
+            cntx.symbols = cntx.symbols.concat(symbols);
+            return cntx;
           }, { canBeEmpty: false, symbols: [] });
         } else {
           cntx.symbols.push(symbol);
