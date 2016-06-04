@@ -4,8 +4,9 @@ let compiler = function() {
 
   let compile = function(code) {
 
-    code.firstTable = Array.prototype.reduce.call(code.symbols.keys(), (firstTable, symbol) => {
+    var reduction = Array.prototype.reduce.call(code.symbols.keys(), (cntx, symbol) => {
 
+      /*
       let getRulesFor = function(symbol) {
         return code.rules.filter(rule => rule.left === symbol);
       };
@@ -45,8 +46,16 @@ let compiler = function() {
       };
 
       cntx[symbol] = getFirstSetFor(symbol);
-      return firstTable;
-    }, {});
+      */
+
+      cntx.firstTable[symbol] = symbol;
+      return cntx;
+
+    }, { firstTable: {} });
+
+    code.firstTable = reduction.firstTable;
+
+    console.log(JSON.stringify(reduction.firstTable));
 
     return code;
   };

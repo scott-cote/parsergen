@@ -14,18 +14,16 @@ var compiler = function compiler() {
 
   var compile = function compile(code) {
 
-    code.firstTable = Array.prototype.reduce.call(code.symbols.keys(), function (firstTable, symbol) {
+    var reduction = Array.prototype.reduce.call(code.symbols.keys(), function (cntx, symbol) {
 
-      var getRulesFor = function getRulesFor(symbol) {
-        return code.rules.filter(function (rule) {
-          return rule.left === symbol;
-        });
+      /*
+      let getRulesFor = function(symbol) {
+        return code.rules.filter(rule => rule.left === symbol);
       };
-
-      var getFirstForRule = function getFirstForRule(rule) {
-        return rule.right.reduce(function (cntx, element) {
+       let getFirstForRule = function(rule) {
+        return rule.right.reduce((cntx, element) => {
           if (!cntx.done) {
-            var first = getFirstSetFor(element.symbol);
+            let first = getFirstSetFor(element.symbol);
             if (!first.canBeEmpty) {
               cntx.done = true;
               cntx.canBeEmpty = false;
@@ -35,30 +33,33 @@ var compiler = function compiler() {
           return cntx;
         }, { done: false, canBeEmpty: true, symbols: [] });
       };
-
-      var getFirstSetFor = function getFirstSetFor(symbol) {
-        var result = { canBeEmpty: false, symbols: [] };
-
-        if (code.terminals.has(symbol)) {
+       let getFirstSetFor = function(symbol) {
+        let result = { canBeEmpty: false, symbols: [] };
+         if (code.terminals.has(symbol)) {
           result.symbols.push(symbol);
         } else {
-          getRulesFor(symbol).forEach(function (rule) {
+          getRulesFor(symbol).forEach(rule => {
             if (rule.right.length === 0) {
               result.canBeEmpty = true;
             } else {
-              var first = getFirstForRule(rule);
+              let first = getFirstForRule(rule);
               if (first.canBeEmpty) result.canBeEmpty = true;
               result.symbols = result.symbols.concat(first.symbols);
             }
           });
         }
-
-        return firstTable[symbol] = result;
+         return firstTable[symbol] = result;
       };
+       cntx[symbol] = getFirstSetFor(symbol);
+      */
 
-      cntx[symbol] = getFirstSetFor(symbol);
-      return firstTable;
-    }, {});
+      cntx.firstTable[symbol] = symbol;
+      return cntx;
+    }, { firstTable: {} });
+
+    code.firstTable = reduction.firstTable;
+
+    console.log(JSON.stringify(reduction.firstTable));
 
     return code;
   };
