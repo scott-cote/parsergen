@@ -54,6 +54,8 @@ var compiler = function compiler() {
             }
             cntx.symbols = cntx.symbols.concat(symbols.filter(function (current) {
               return current != symbol;
+            }).map(function (current) {
+              return code.testFirstTable[current].symbols;
             }));
             return cntx;
           }, { canBeEmpty: false, symbols: [] });

@@ -95,21 +95,23 @@ var StateModule = {
       var first = {};
 
       this.getFirstFor = function (symbol) {
-        var self = this;
+        /*
+        let self = this;
         if (!first[symbol]) {
           if (code.terminals.has(symbol)) {
             first[symbol] = [symbol];
           } else {
-            first[symbol] = [].concat(_toConsumableArray(new Set(code.rules.filter(function (rule) {
-              return symbol === rule.left && symbol !== rule.right[0].symbol;
-            }).reduce(function (value, rule) {
-              return value.concat(self.getFirstFor(rule.right[0].symbol));
-            }, []))));
+            first[symbol] = [...new Set(code.rules
+              .filter(rule => symbol === rule.left && symbol !== rule.right[0].symbol)
+              .reduce((value, rule) => {
+                return value.concat(self.getFirstFor(rule.right[0].symbol));
+              }, []))];
           }
         }
-
-        console.log(symbol + ' - ' + first[symbol] + ' ' + code.testFirstTable[symbol].symbols);
+         console.log(symbol+' - '+first[symbol]+' '+code.testFirstTable[symbol].symbols);
         return first[symbol];
+        */
+        return code.testFirstTable[symbol].symbols;
       };
 
       var createTermsFor = function createTermsFor(symbol) {

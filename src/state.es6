@@ -85,6 +85,7 @@ let StateModule = {
         let first = {};
 
         this.getFirstFor = function(symbol) {
+          /*
           let self = this;
           if (!first[symbol]) {
             if (code.terminals.has(symbol)) {
@@ -100,6 +101,8 @@ let StateModule = {
 
           console.log(symbol+' - '+first[symbol]+' '+code.testFirstTable[symbol].symbols);
           return first[symbol];
+          */
+          return code.testFirstTable[symbol].symbols;
         };
 
         let createTermsFor = function(symbol) {
