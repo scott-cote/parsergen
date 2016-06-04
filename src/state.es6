@@ -97,6 +97,8 @@ let StateModule = {
                 }, []))];
             }
           }
+
+          console.log(symbol+' - '+first[symbol]+' '+code.testFirstTable[symbol].symbols);
           return first[symbol];
         };
 

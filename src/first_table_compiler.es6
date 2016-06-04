@@ -47,8 +47,6 @@ let compiler = function() {
       }, { symbols: [], table: code.testFirstTable }).symbols;
     }
 
-    console.log(JSON.stringify(code.testFirstTable));
-
     return code;
   };
 
