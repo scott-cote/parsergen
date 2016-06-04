@@ -2,11 +2,12 @@ import thru from 'through2';
 
 let compiler = function() {
 
-  let getRulesFor = function(symbol) {
+  let getRulesFor = function(symbol, rules) {
     return code.rules.filter(rule => rule.left === symbol);
   };
 
-  let getFirstForRule = function(rule) {
+  let getFirstForRule = function(rule, table) {
+    /*
     return rule.right.reduce((cntx, element) => {
       if (!cntx.done) {
         let first = getFirstSetFor(element.symbol);
@@ -18,6 +19,8 @@ let compiler = function() {
       }
       return cntx;
     }, { done: false, canBeEmpty: true, symbols: [] });
+    */
+    return;
   };
 
   let getFirstSetFor = function(symbol, table, terminals) {
@@ -27,16 +30,18 @@ let compiler = function() {
       result.symbols.push(symbol);
     } else {
       result = getRulesFor(symbol).reduce((cntx, rule) => {
-        if (rule.right.length === 0) {
+        if (!cntx) {
+          return cntx;
+        } else if (rule.right.length === 0) {
           cntx.canBeEmpty = true;
+          return cntx;
         } else {
-          /*
-          let first = getFirstForRule(rule);
+          let first = getFirstForRule(rule, table);
+          if (!first) reutrn;
           if (first.canBeEmpty) cntx.canBeEmpty = true;
           cntx.symbols = cntx.symbols.concat(first.symbols);
-          */
+          return cntx;
         }
-        return cntx;
       }, result);
     }
 
@@ -45,6 +50,48 @@ let compiler = function() {
 
   let compile = function(code) {
 
+    code.testFirstTable = Array.from(code.terminals.keys()).reduce((table, symbol) => {
+      table[symbol] = { canBeEmpty: false, symbols: [symbol] };
+      return table;
+    }, {});
+
+    let symbols = Array.from(code.nonterminals.keys()).reverse();
+
+    while (symbols.length) {
+      symbols = symbols.reduce((cntx, symbol) => {
+        let rules =  code.rules.filter(rule => rule.left === symbol);
+
+        let ready = rules.reduce((ready, rule) => {
+          if (!ready) return false;
+          return rule.right.reduce((ready, element) => {
+            if (!ready) return false;
+            if (element.symbol === symbol) return true;
+            return !!code.testFirstTable[element.symbol];
+          }, true);
+        }, true);
+
+        if (ready) {
+          code.testFirstTable[symbol] = rules.reduce((first, rule) => {
+            let index = rule.right.findIndex(element => {
+              return !element.canBeEmpty;
+            });
+            if (index === -1) {
+              cntx.canBeEmpty = true;
+            } else {
+              console.log(index);
+              // ...
+            }
+            return first;
+          }, { canBeEmpty: false, symbols: [] });
+        } else {
+          cntx.symbols.push(symbol);
+        }
+
+        return cntx;
+      }, { symbols: [], table: code.testFirstTable }).symbols;
+    }
+
+    /*
     let symbols = Array.from(code.symbols.keys());
 
     let table = {};
@@ -60,6 +107,7 @@ let compiler = function() {
         return cntx;
       }, { symbols: [], table: table }).symbols;
     }
+    */
 
     /*
     code.testFirstTable = Array.from(code.symbols.keys()).reduce((table, symbol) => {
