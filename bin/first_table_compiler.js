@@ -12,54 +12,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var compiler = function compiler() {
 
-  var getRulesFor = function getRulesFor(symbol, rules) {
-    return code.rules.filter(function (rule) {
-      return rule.left === symbol;
-    });
-  };
-
-  var getFirstForRule = function getFirstForRule(rule, table) {
-    /*
-    return rule.right.reduce((cntx, element) => {
-      if (!cntx.done) {
-        let first = getFirstSetFor(element.symbol);
-        if (!first.canBeEmpty) {
-          cntx.done = true;
-          cntx.canBeEmpty = false;
-        }
-        cntx.symbols = cntx.symbols.concat(first);
-      }
-      return cntx;
-    }, { done: false, canBeEmpty: true, symbols: [] });
-    */
-    return;
-  };
-
-  var getFirstSetFor = function getFirstSetFor(symbol, table, terminals) {
-    var result = { canBeEmpty: false, symbols: [] };
-
-    if (terminals.has(symbol)) {
-      result.symbols.push(symbol);
-    } else {
-      result = getRulesFor(symbol).reduce(function (cntx, rule) {
-        if (!cntx) {
-          return cntx;
-        } else if (rule.right.length === 0) {
-          cntx.canBeEmpty = true;
-          return cntx;
-        } else {
-          var first = getFirstForRule(rule, table);
-          if (!first) reutrn;
-          if (first.canBeEmpty) cntx.canBeEmpty = true;
-          cntx.symbols = cntx.symbols.concat(first.symbols);
-          return cntx;
-        }
-      }, result);
-    }
-
-    return result;
-  };
-
   var compile = function compile(code) {
 
     code.testFirstTable = Array.from(code.terminals.keys()).reduce(function (table, symbol) {
@@ -89,12 +41,14 @@ var compiler = function compiler() {
             var index = rule.right.findIndex(function (element) {
               return !element.canBeEmpty;
             });
+            var elements = void 0;
             if (index === -1) {
               cntx.canBeEmpty = true;
-            } else {
-              console.log(index);
-              // ...
-            }
+              // elements = rule.right.slice();
+            } else {}
+              // elements = rule.right.slice();
+
+              // cntx.symbols = cntx.symbols.concat();
             return first;
           }, { canBeEmpty: false, symbols: [] });
         } else {
@@ -105,29 +59,6 @@ var compiler = function compiler() {
       }, { symbols: [], table: code.testFirstTable }).symbols;
     }
 
-    /*
-    let symbols = Array.from(code.symbols.keys());
-     let table = {};
-     while (symbols.length) {
-      symbols = symbols.reduce((cntx, symbol) => {
-        let firstSet = getFirstSetFor(symbol, table, code.terminals);
-        if (firstSet) {
-          cntx.table[symbol] = firstSet;
-        }  else {
-          cntx.symbols.push(symbol);
-        }
-        return cntx;
-      }, { symbols: [], table: table }).symbols;
-    }
-    */
-
-    /*
-    code.testFirstTable = Array.from(code.symbols.keys()).reduce((table, symbol) => {
-      table[symbol] = getFirstSetFor(symbol, code.terminals);
-      return table;
-    }, {});
-    */
-
     console.log(JSON.stringify(code.testFirstTable));
 
     return code;
@@ -135,7 +66,6 @@ var compiler = function compiler() {
 
   return _through2.default.obj(function (code, encoding, done) {
     this.push(compile(code));
-    //this.push(code);
     done();
   });
 };
