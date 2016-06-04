@@ -52,7 +52,9 @@ var compiler = function compiler() {
                 return element.symbol;
               });
             }
-            cntx.symbols = cntx.symbols.concat(symbols);
+            cntx.symbols = cntx.symbols.concat(symbols.filter(function (current) {
+              return current != symbol;
+            }));
             return cntx;
           }, { canBeEmpty: false, symbols: [] });
         } else {

@@ -36,7 +36,7 @@ let compiler = function() {
             } else {
               symbols = rule.right.slice(0, index+1).map(element => element.symbol);
             }
-            cntx.symbols = cntx.symbols.concat(symbols);
+            cntx.symbols = cntx.symbols.concat(symbols.filter(current => current != symbol));
             return cntx;
           }, { canBeEmpty: false, symbols: [] });
         } else {
