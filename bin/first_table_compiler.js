@@ -14,16 +14,18 @@ var compiler = function compiler() {
 
   var compile = function compile(code) {
 
-    var reduction = Array.prototype.reduce.call(code.symbols.keys(), function (cntx, symbol) {
+    var reduction = Array.from(code.symbols.keys()).reduce(function (cntx, symbol) {
 
-      /*
-      let getRulesFor = function(symbol) {
-        return code.rules.filter(rule => rule.left === symbol);
+      var getRulesFor = function getRulesFor(symbol) {
+        return code.rules.filter(function (rule) {
+          return rule.left === symbol;
+        });
       };
-       let getFirstForRule = function(rule) {
-        return rule.right.reduce((cntx, element) => {
+
+      var getFirstForRule = function getFirstForRule(rule) {
+        return rule.right.reduce(function (cntx, element) {
           if (!cntx.done) {
-            let first = getFirstSetFor(element.symbol);
+            var first = getFirstSetFor(element.symbol);
             if (!first.canBeEmpty) {
               cntx.done = true;
               cntx.canBeEmpty = false;
@@ -33,27 +35,31 @@ var compiler = function compiler() {
           return cntx;
         }, { done: false, canBeEmpty: true, symbols: [] });
       };
-       let getFirstSetFor = function(symbol) {
-        let result = { canBeEmpty: false, symbols: [] };
-         if (code.terminals.has(symbol)) {
+
+      var getFirstSetFor = function getFirstSetFor(symbol) {
+        var result = { canBeEmpty: false, symbols: [] };
+
+        if (code.terminals.has(symbol)) {
           result.symbols.push(symbol);
         } else {
-          getRulesFor(symbol).forEach(rule => {
-            if (rule.right.length === 0) {
-              result.canBeEmpty = true;
-            } else {
-              let first = getFirstForRule(rule);
-              if (first.canBeEmpty) result.canBeEmpty = true;
-              result.symbols = result.symbols.concat(first.symbols);
-            }
-          });
-        }
-         return firstTable[symbol] = result;
-      };
-       cntx[symbol] = getFirstSetFor(symbol);
-      */
 
-      cntx.firstTable[symbol] = symbol;
+          getRulesFor(symbol).reduce(function (cntx, rule) {
+            if (rule.right.length === 0) {
+              cntx.canBeEmpty = true;
+            } else {
+              var first = getFirstForRule(rule);
+              if (first.canBeEmpty) cntx.canBeEmpty = true;
+              cntx.symbols = cntx.symbols.concat(first.symbols);
+            }
+            return cntx;
+          }, result);
+        }
+
+        return result;
+      };
+
+      // cntx.firstTable[symbol] = getFirstSetFor(symbol);
+
       return cntx;
     }, { firstTable: {} });
 

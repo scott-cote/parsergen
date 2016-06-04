@@ -4,9 +4,8 @@ let compiler = function() {
 
   let compile = function(code) {
 
-    var reduction = Array.prototype.reduce.call(code.symbols.keys(), (cntx, symbol) => {
+    var reduction = Array.from(code.symbols.keys()).reduce((cntx, symbol) => {
 
-      /*
       let getRulesFor = function(symbol) {
         return code.rules.filter(rule => rule.left === symbol);
       };
@@ -31,24 +30,24 @@ let compiler = function() {
         if (code.terminals.has(symbol)) {
           result.symbols.push(symbol);
         } else {
-          getRulesFor(symbol).forEach(rule => {
+
+          getRulesFor(symbol).reduce((cntx, rule) => {
             if (rule.right.length === 0) {
-              result.canBeEmpty = true;
+              cntx.canBeEmpty = true;
             } else {
               let first = getFirstForRule(rule);
-              if (first.canBeEmpty) result.canBeEmpty = true;
-              result.symbols = result.symbols.concat(first.symbols);
+              if (first.canBeEmpty) cntx.canBeEmpty = true;
+              cntx.symbols = cntx.symbols.concat(first.symbols);
             }
-          });
+            return cntx;
+          }, result);
         }
 
-        return firstTable[symbol] = result;
+        return result;
       };
 
-      cntx[symbol] = getFirstSetFor(symbol);
-      */
+      // cntx.firstTable[symbol] = getFirstSetFor(symbol);
 
-      cntx.firstTable[symbol] = symbol;
       return cntx;
 
     }, { firstTable: {} });
