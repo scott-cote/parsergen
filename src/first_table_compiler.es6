@@ -1,29 +1,29 @@
 import thru from 'through2';
 
-let compile = function(code) {
+let generateFirstTable = function(options) {
 
-  code.firstTable = Array.from(code.terminals.keys()).reduce((table, symbol) => {
+  let firstTable = Array.from(options.terminals.keys()).reduce((table, symbol) => {
     table[symbol] = { canBeEmpty: false, symbols: [symbol] };
     return table;
   }, {});
 
-  let symbols = Array.from(code.nonterminals.keys()).reverse();
+  let symbols = Array.from(options.nonterminals.keys()).reverse();
 
   while (symbols.length) {
     symbols = symbols.reduce((cntx, symbol) => {
-      let rules =  code.rules.filter(rule => rule.left === symbol);
+      let rules =  options.rules.filter(rule => rule.left === symbol);
 
       let ready = rules.reduce((ready, rule) => {
         if (!ready) return false;
         return rule.right.reduce((ready, element) => {
           if (!ready) return false;
           if (element.symbol === symbol) return true;
-          return !!code.firstTable[element.symbol];
+          return !!firstTable[element.symbol];
         }, true);
       }, true);
 
       if (ready) {
-        code.firstTable[symbol] = rules.reduce((cntx, rule) => {
+        firstTable[symbol] = rules.reduce((cntx, rule) => {
           let index = rule.right.findIndex(element => {
             return !element.canBeEmpty;
           });
@@ -35,7 +35,7 @@ let compile = function(code) {
             symbols = rule.right.slice(0, index+1).map(element => element.symbol);
           }
           cntx.symbols = cntx.symbols.concat(
-            symbols.filter(current => current != symbol).map(current => code.firstTable[current].symbols)
+            symbols.filter(current => current != symbol).map(current => firstTable[current].symbols)
           );
           return cntx;
         }, { canBeEmpty: false, symbols: [] });
@@ -44,21 +44,22 @@ let compile = function(code) {
       }
 
       return cntx;
-    }, { symbols: [], table: code.firstTable }).symbols;
+    }, { symbols: [], table: firstTable }).symbols;
   }
 
-  return code;
+  return firstTable;
 };
 
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {
-    this.push(compile(code));
+    code.firstTable = generateFirstTable(code);
+    this.push(code);
     done();
   });
 };
 
 compiler.testAPI = {
-  compile
+  generateFirstTable
 };
 
 export default compiler;
