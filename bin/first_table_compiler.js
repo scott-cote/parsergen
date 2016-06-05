@@ -14,7 +14,7 @@ var compiler = function compiler() {
 
   var compile = function compile(code) {
 
-    code.testFirstTable = Array.from(code.terminals.keys()).reduce(function (table, symbol) {
+    code.firstTable = Array.from(code.terminals.keys()).reduce(function (table, symbol) {
       table[symbol] = { canBeEmpty: false, symbols: [symbol] };
       return table;
     }, {});
@@ -32,12 +32,12 @@ var compiler = function compiler() {
           return rule.right.reduce(function (ready, element) {
             if (!ready) return false;
             if (element.symbol === symbol) return true;
-            return !!code.testFirstTable[element.symbol];
+            return !!code.firstTable[element.symbol];
           }, true);
         }, true);
 
         if (ready) {
-          code.testFirstTable[symbol] = rules.reduce(function (cntx, rule) {
+          code.firstTable[symbol] = rules.reduce(function (cntx, rule) {
             var index = rule.right.findIndex(function (element) {
               return !element.canBeEmpty;
             });
@@ -55,7 +55,7 @@ var compiler = function compiler() {
             cntx.symbols = cntx.symbols.concat(symbols.filter(function (current) {
               return current != symbol;
             }).map(function (current) {
-              return code.testFirstTable[current].symbols;
+              return code.firstTable[current].symbols;
             }));
             return cntx;
           }, { canBeEmpty: false, symbols: [] });
@@ -64,7 +64,7 @@ var compiler = function compiler() {
         }
 
         return cntx;
-      }, { symbols: [], table: code.testFirstTable }).symbols;
+      }, { symbols: [], table: code.firstTable }).symbols;
     }
 
     return code;

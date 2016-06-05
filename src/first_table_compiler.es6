@@ -4,7 +4,7 @@ let compiler = function() {
 
   let compile = function(code) {
 
-    code.testFirstTable = Array.from(code.terminals.keys()).reduce((table, symbol) => {
+    code.firstTable = Array.from(code.terminals.keys()).reduce((table, symbol) => {
       table[symbol] = { canBeEmpty: false, symbols: [symbol] };
       return table;
     }, {});
@@ -20,12 +20,12 @@ let compiler = function() {
           return rule.right.reduce((ready, element) => {
             if (!ready) return false;
             if (element.symbol === symbol) return true;
-            return !!code.testFirstTable[element.symbol];
+            return !!code.firstTable[element.symbol];
           }, true);
         }, true);
 
         if (ready) {
-          code.testFirstTable[symbol] = rules.reduce((cntx, rule) => {
+          code.firstTable[symbol] = rules.reduce((cntx, rule) => {
             let index = rule.right.findIndex(element => {
               return !element.canBeEmpty;
             });
@@ -37,7 +37,7 @@ let compiler = function() {
               symbols = rule.right.slice(0, index+1).map(element => element.symbol);
             }
             cntx.symbols = cntx.symbols.concat(
-              symbols.filter(current => current != symbol).map(current => code.testFirstTable[current].symbols)
+              symbols.filter(current => current != symbol).map(current => code.firstTable[current].symbols)
             );
             return cntx;
           }, { canBeEmpty: false, symbols: [] });
@@ -46,7 +46,7 @@ let compiler = function() {
         }
 
         return cntx;
-      }, { symbols: [], table: code.testFirstTable }).symbols;
+      }, { symbols: [], table: code.firstTable }).symbols;
     }
 
     return code;
