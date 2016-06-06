@@ -13,21 +13,26 @@ let getDependencies = function(rule) {
     .map(element => element.symbol));
 };
 
+let augmentRule = function(rule) {
+  return { orgRule: rule, dependencies: getDependencies(rule) };
+};
+
 let compareAugmentedRules = function(ruleA, ruleB) {
   if (ruleA.dependencies.has(ruleB.orgRule.left)) {
-    return -1;
+    return 1;
   }
   if (ruleB.dependencies.has(ruleA.orgRule.left)) {
-    return 1;
+    return -1;
   }
   return 0;
 };
 
 let getSortedRules = function(rules) {
-  return rules
-    .map(rule => { return { orgRule: rule, dependencies: getDependencies(rule) }})
-    .sort(compareAugmentedRules)
-    .map(rule => rule.orgRule);
+  return rules.map(augmentRule).reduce((augmentedRules, rule) => {
+    augmentedRules.unshift(rule);
+    augmentedRules.sort(compareAugmentedRules);
+    return augmentedRules;
+  }, []).map(rule => rule.orgRule);
 };
 
 /*
@@ -100,7 +105,10 @@ let compiler = function() {
 
 compiler.testAPI = {
   generateTerminalEntries,
-  getDependencies
+  getDependencies,
+  augmentRule,
+  compareAugmentedRules,
+  getSortedRules
 };
 
 export default compiler;

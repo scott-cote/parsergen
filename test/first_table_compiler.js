@@ -67,5 +67,49 @@ describe('firstTableCompiler', function () {
     });
   });
 
-  describe('compareAugmentedRules', function () {});
+  describe('augmentRule', function () {
+
+    it('should agment the rule', function () {
+      var rule = { left: 'A', right: [{ symbol: 'C' }, { symbol: 'D' }, { symbol: 'E' }] };
+      var augmentedRule = _first_table_compiler2.default.testAPI.augmentRule(rule);
+      assert.deepEqual({ orgRule: rule, dependencies: new Set(['C', 'D', 'E']) }, augmentedRule);
+    });
+  });
+
+  describe('compareAugmentedRules', function () {
+
+    it('should return 1 when ruleA depends on ruleB', function () {
+      var ruleA = _first_table_compiler2.default.testAPI.augmentRule({ left: 'A', right: [{ symbol: 'C' }, { symbol: 'D' }, { symbol: 'E' }, { symbol: 'B' }] });
+      var ruleB = _first_table_compiler2.default.testAPI.augmentRule({ left: 'B', right: [{ symbol: 'E' }, { symbol: 'F' }, { symbol: 'G' }] });
+      var value = _first_table_compiler2.default.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(1, value);
+    });
+
+    it('should return 0 when neither rule depends on the other', function () {
+      var ruleA = _first_table_compiler2.default.testAPI.augmentRule({ left: 'A', right: [{ symbol: 'C' }, { symbol: 'D' }, { symbol: 'E' }] });
+      var ruleB = _first_table_compiler2.default.testAPI.augmentRule({ left: 'B', right: [{ symbol: 'E' }, { symbol: 'F' }, { symbol: 'G' }] });
+      var value = _first_table_compiler2.default.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(0, value);
+    });
+
+    it('should return -1 when ruleB depends on ruleA', function () {
+      var ruleA = _first_table_compiler2.default.testAPI.augmentRule({ left: 'A', right: [{ symbol: 'C' }, { symbol: 'D' }, { symbol: 'E' }] });
+      var ruleB = _first_table_compiler2.default.testAPI.augmentRule({ left: 'B', right: [{ symbol: 'E' }, { symbol: 'F' }, { symbol: 'G' }, { symbol: 'A' }] });
+      var value = _first_table_compiler2.default.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(-1, value);
+    });
+  });
+
+  describe('getSortedRules', function () {
+
+    it('should get the sorted rules', function () {
+      var ruleA = { left: 'A', right: [{ symbol: 'D' }, { symbol: 'E' }, { symbol: 'B' }] };
+      var ruleB = { left: 'B', right: [{ symbol: 'D' }, { symbol: 'E' }, { symbol: 'C' }] };
+      var ruleC = { left: 'C', right: [{ symbol: 'D' }, { symbol: 'E' }] };
+      var rules = _first_table_compiler2.default.testAPI.getSortedRules([ruleA, ruleB, ruleC]);
+      assert.deepEqual(['C', 'B', 'A'], rules.map(function (rule) {
+        return rule.left;
+      }));
+    });
+  });
 });

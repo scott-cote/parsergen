@@ -25,20 +25,26 @@ var getDependencies = function getDependencies(rule) {
   }));
 };
 
+var augmentRule = function augmentRule(rule) {
+  return { orgRule: rule, dependencies: getDependencies(rule) };
+};
+
 var compareAugmentedRules = function compareAugmentedRules(ruleA, ruleB) {
   if (ruleA.dependencies.has(ruleB.orgRule.left)) {
-    return -1;
+    return 1;
   }
   if (ruleB.dependencies.has(ruleA.orgRule.left)) {
-    return 1;
+    return -1;
   }
   return 0;
 };
 
 var getSortedRules = function getSortedRules(rules) {
-  return rules.map(function (rule) {
-    return { orgRule: rule, dependencies: getDependencies(rule) };
-  }).sort(compareAugmentedRules).map(function (rule) {
+  return rules.map(augmentRule).reduce(function (augmentedRules, rule) {
+    augmentedRules.unshift(rule);
+    augmentedRules.sort(compareAugmentedRules);
+    return augmentedRules;
+  }, []).map(function (rule) {
     return rule.orgRule;
   });
 };
@@ -113,7 +119,10 @@ var compiler = function compiler() {
 
 compiler.testAPI = {
   generateTerminalEntries: generateTerminalEntries,
-  getDependencies: getDependencies
+  getDependencies: getDependencies,
+  augmentRule: augmentRule,
+  compareAugmentedRules: compareAugmentedRules,
+  getSortedRules: getSortedRules
 };
 
 exports.default = compiler;

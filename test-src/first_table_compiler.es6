@@ -71,7 +71,91 @@ describe('firstTableCompiler', () => {
 
   });
 
+  describe('augmentRule', () => {
+
+    it('should agment the rule', () => {
+      let rule = { left: 'A', right: [
+        { symbol: 'C' },
+        { symbol: 'D' },
+        { symbol: 'E' }
+      ]};
+      let augmentedRule = firstTableCompiler.testAPI.augmentRule(rule);
+      assert.deepEqual({ orgRule: rule, dependencies: new Set(['C','D','E']) }, augmentedRule);
+    });
+
+  });
+
   describe('compareAugmentedRules', () => {
+
+    it('should return 1 when ruleA depends on ruleB', () => {
+      let ruleA = firstTableCompiler.testAPI.augmentRule({ left: 'A', right: [
+        { symbol: 'C' },
+        { symbol: 'D' },
+        { symbol: 'E' },
+        { symbol: 'B' }
+      ]});
+      let ruleB = firstTableCompiler.testAPI.augmentRule({ left: 'B', right: [
+        { symbol: 'E' },
+        { symbol: 'F' },
+        { symbol: 'G' }
+      ]});
+      let value = firstTableCompiler.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(1, value);
+    });
+
+    it('should return 0 when neither rule depends on the other', () => {
+      let ruleA = firstTableCompiler.testAPI.augmentRule({ left: 'A', right: [
+        { symbol: 'C' },
+        { symbol: 'D' },
+        { symbol: 'E' }
+      ]});
+      let ruleB = firstTableCompiler.testAPI.augmentRule({ left: 'B', right: [
+        { symbol: 'E' },
+        { symbol: 'F' },
+        { symbol: 'G' }
+      ]});
+      let value = firstTableCompiler.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(0, value);
+    });
+
+    it('should return -1 when ruleB depends on ruleA', () => {
+      let ruleA = firstTableCompiler.testAPI.augmentRule({ left: 'A', right: [
+        { symbol: 'C' },
+        { symbol: 'D' },
+        { symbol: 'E' }
+      ]});
+      let ruleB = firstTableCompiler.testAPI.augmentRule({ left: 'B', right: [
+        { symbol: 'E' },
+        { symbol: 'F' },
+        { symbol: 'G' },
+        { symbol: 'A' }
+      ]});
+      let value = firstTableCompiler.testAPI.compareAugmentedRules(ruleA, ruleB);
+      assert.equal(-1, value);
+    });
+
+  });
+
+  describe('getSortedRules', () => {
+
+    it('should get the sorted rules', () => {
+      let ruleA = { left: 'A', right: [
+        { symbol: 'D' },
+        { symbol: 'E' },
+        { symbol: 'B' }
+      ]};
+      let ruleB = { left: 'B', right: [
+        { symbol: 'D' },
+        { symbol: 'E' },
+        { symbol: 'C' }
+      ]};
+      let ruleC = { left: 'C', right: [
+        { symbol: 'D' },
+        { symbol: 'E' }
+      ]};
+      let rules = firstTableCompiler.testAPI.getSortedRules([ruleA, ruleB, ruleC]);
+      assert.deepEqual(['C','B','A'], rules.map(rule => rule.left));
+    });
 
   });
 
