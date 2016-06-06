@@ -5,6 +5,13 @@ var insert = require('gulp-insert');
 var chmod = require('gulp-chmod');
 var merge = require('merge-stream');
 
+gulp.task('tests', function() {
+  var src = gulp.src('test-src/*.es6')
+    .pipe(babel())
+    .pipe(rename(function (path) { path.extname = ".js"; }))
+    .pipe(gulp.dest('test'));
+});
+
 gulp.task('scripts', function() {
   var src = gulp.src('src/*.es6')
     .pipe(babel())
@@ -19,4 +26,4 @@ gulp.task('scripts', function() {
   return merge(src, cli);
 });
 
-gulp.task('default', ['scripts']);
+gulp.task('default', ['tests', 'scripts']);
