@@ -30,8 +30,7 @@ let compareAugmentedRules = function(ruleA, ruleB) {
 let getSortedRules = function(rules) {
   return rules.map(augmentRule).reduce((augmentedRules, rule) => {
     augmentedRules.unshift(rule);
-    augmentedRules.sort(compareAugmentedRules);
-    return augmentedRules;
+    return augmentedRules.sort(compareAugmentedRules);
   }, []).map(rule => rule.orgRule);
 };
 
