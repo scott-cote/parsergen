@@ -103,11 +103,13 @@ describe('firstTableCompiler', function () {
   describe('getSortedRules', function () {
 
     it('should get the sorted rules', function () {
-      var ruleA = { left: 'A', right: [{ symbol: 'D' }, { symbol: 'E' }, { symbol: 'B' }] };
-      var ruleB = { left: 'B', right: [{ symbol: 'D' }, { symbol: 'E' }, { symbol: 'C' }] };
-      var ruleC = { left: 'C', right: [{ symbol: 'D' }, { symbol: 'E' }] };
-      var rules = _first_table_compiler2.default.testAPI.getSortedRules([ruleA, ruleB, ruleC]);
-      assert.deepEqual(['C', 'B', 'A'], rules.map(function (rule) {
+      var ruleA = { left: 'A', right: [{ symbol: 'E' }, { symbol: 'F' }, { symbol: 'B' }] };
+      var ruleB = { left: 'B', right: [{ symbol: 'E' }, { symbol: 'F' }, { symbol: 'C' }] };
+      var ruleC = { left: 'C', right: [{ symbol: 'E' }, { symbol: 'F' }] };
+      var ruleD1 = { left: 'D', right: [{ symbol: 'E' }] };
+      var ruleD2 = { left: 'D', right: [{ symbol: 'E' }, { symbol: 'A' }] };
+      var rules = _first_table_compiler2.default.testAPI.getSortedRules([ruleA, ruleB, ruleC, ruleD1, ruleD2]);
+      assert.deepEqual(['C', 'B', 'A', 'D', 'D'], rules.map(function (rule) {
         return rule.left;
       }));
     });

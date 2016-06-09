@@ -140,21 +140,28 @@ describe('firstTableCompiler', () => {
 
     it('should get the sorted rules', () => {
       let ruleA = { left: 'A', right: [
-        { symbol: 'D' },
         { symbol: 'E' },
+        { symbol: 'F' },
         { symbol: 'B' }
       ]};
       let ruleB = { left: 'B', right: [
-        { symbol: 'D' },
         { symbol: 'E' },
+        { symbol: 'F' },
         { symbol: 'C' }
       ]};
       let ruleC = { left: 'C', right: [
-        { symbol: 'D' },
+        { symbol: 'E' },
+        { symbol: 'F' }
+      ]};
+      let ruleD1 = { left: 'D', right: [
         { symbol: 'E' }
       ]};
-      let rules = firstTableCompiler.testAPI.getSortedRules([ruleA, ruleB, ruleC]);
-      assert.deepEqual(['C','B','A'], rules.map(rule => rule.left));
+      let ruleD2 = { left: 'D', right: [
+        { symbol: 'E' },
+        { symbol: 'A' }
+      ]};
+      let rules = firstTableCompiler.testAPI.getSortedRules([ruleA, ruleB, ruleC, ruleD1, ruleD2]);
+      assert.deepEqual(['C','B','A','D','D'], rules.map(rule => rule.left));
     });
 
   });

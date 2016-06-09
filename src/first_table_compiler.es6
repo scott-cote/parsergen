@@ -2,7 +2,7 @@ import thru from 'through2';
 
 let generateTerminalEntries = function(terminals) {
   return Array.from(terminals.keys()).reduce((table, symbol) => {
-    table[symbol] = { canBeEmpty: false, symbols: [symbol] };
+    table[symbol] = { canBeEmpty: false, symbols: new Set([symbol]) };
     return table;
   }, {});
 };
@@ -35,21 +35,13 @@ let getSortedRules = function(rules) {
 };
 
 /*
-let checkDependencies = function(symbol, terminalTable, nonterminalTable, rules) {
-  return rules.filter(rule => rule.left === symbol).reduce((ready, rule) => {
-    if (!ready) return false;
-    return rule.right.reduce((ready, element) => {
-      if (!ready) return false;
-      if (element.symbol === symbol) return true;
-      return !!(terminalTable[element.symbol]||nonterminalTable[element.symbol]);
-    }, true);
-  }, true);
-};
-
 let canRuleBeEmpty = function(rule) {
-  return -1 === rule.right.findIndex(element => { return !element.canBeEmpty; });
+  // this is wrong ... canBeEmpty is part of the table
+  return -1 === rule.right.findIndex(element => { return !element.canBeEmpty });
 };
+*/
 
+/*
 let generateNonterminalSymbols = function(symbol, rule, terminalTable, nonterminalTable) {
   return rule.right.reduce((cntx, element) => {
     if (cntx.done || element.symbol === symbol) return cntx;
@@ -68,37 +60,52 @@ let generateNonterminalEntry = function(terminalTable, nonterminalTable, rules) 
   }, { canBeEmpty: false, symbols: [] });
 };
 
+*/
+
+/*
 let generateNonterminalEntries = function(terminalTable, options) {
+  return getSortedRules(options.rules).reduce((nonterminalTable, rule) => {
+    let record = nonterminalTable[rule.left] || { canBeEmpty: false, symbols: new Set() };
+    record.canBeEmpty = record.canBeEmpty || rule.left.length === 0;
+    record.symbols = new Set([...record.symbols, ...getFirstForRule(rule, nonterminalTable)]);
+    nonterminalTable[rule.left] = record;
+  }, {});
+};
+*/
 
-  let nonterminalTable = {};
-  let symbols = Array.from(options.nonterminals.keys()).reverse();
+let generateFirstFor = function(symbol, rules) {
+  return Promise.resolve();
+};
 
-  while (symbols.length) {
-    symbols = symbols.reduce((nextPass, symbol) => {
-      if (checkDependencies(symbol, terminalTable, nonterminalTable, options.rules)) {
-        nonterminalTable[symbol] = generateNonterminalEntry(symbol,
-          terminalTable, nonterminalTable, options.rules);
-      } else {
-        nextPass.push(symbol);
-      }
-      return nextPass;
-    }, []);
-  }
-
-  return nonterminalTable;
+let generateNonterminalEntries = function(terminalTable, options) {
+  let ruleIndex = options.rules.reduce((ruleIndex, rule) => {
+    let rules = ruleIndex[rule.left] || [];
+    rules.push(rule);
+    ruleIndex[rule.left] = rules;
+    return ruleIndex;
+  }, {});
+  let result = Promise.resolve();
+  Object.keys(ruleIndex).forEach(symbol => {
+    result = result.then(() => generateFirstFor(symbol, ruleIndex[symbol]));
+  });
+  return result;
 };
 
 let generateFirstTable = function(options) {
   let terminalTable = generateTerminalEntries(options.terminals);
-  let nonterminalTable = generateNonterminalEntries(terminalTable, options);
-  return Object.assign({}, terminalTable, nonterminalTable);
+  return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
+    return Object.assign({}, terminalTable, nonterminalTable);
+  });
 };
-*/
+
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {
-    //code.firstTable = generateFirstTable(code);
-    this.push(code);
-    done();
+    generateFirstTable(code).then(firstTable => {
+      console.log(JSON.stringify(firstTable))
+      code.firstTable = firstTable;
+      this.push(code);
+      done();
+    });
   });
 };
 

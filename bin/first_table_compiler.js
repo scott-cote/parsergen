@@ -12,7 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var generateTerminalEntries = function generateTerminalEntries(terminals) {
   return Array.from(terminals.keys()).reduce(function (table, symbol) {
-    table[symbol] = { canBeEmpty: false, symbols: [symbol] };
+    table[symbol] = { canBeEmpty: false, symbols: new Set([symbol]) };
     return table;
   }, {});
 };
@@ -49,21 +49,13 @@ var getSortedRules = function getSortedRules(rules) {
 };
 
 /*
-let checkDependencies = function(symbol, terminalTable, nonterminalTable, rules) {
-  return rules.filter(rule => rule.left === symbol).reduce((ready, rule) => {
-    if (!ready) return false;
-    return rule.right.reduce((ready, element) => {
-      if (!ready) return false;
-      if (element.symbol === symbol) return true;
-      return !!(terminalTable[element.symbol]||nonterminalTable[element.symbol]);
-    }, true);
-  }, true);
-};
-
 let canRuleBeEmpty = function(rule) {
-  return -1 === rule.right.findIndex(element => { return !element.canBeEmpty; });
+  // this is wrong ... canBeEmpty is part of the table
+  return -1 === rule.right.findIndex(element => { return !element.canBeEmpty });
 };
+*/
 
+/*
 let generateNonterminalSymbols = function(symbol, rule, terminalTable, nonterminalTable) {
   return rule.right.reduce((cntx, element) => {
     if (cntx.done || element.symbol === symbol) return cntx;
@@ -82,37 +74,56 @@ let generateNonterminalEntry = function(terminalTable, nonterminalTable, rules) 
   }, { canBeEmpty: false, symbols: [] });
 };
 
+*/
+
+/*
 let generateNonterminalEntries = function(terminalTable, options) {
-
-  let nonterminalTable = {};
-  let symbols = Array.from(options.nonterminals.keys()).reverse();
-
-  while (symbols.length) {
-    symbols = symbols.reduce((nextPass, symbol) => {
-      if (checkDependencies(symbol, terminalTable, nonterminalTable, options.rules)) {
-        nonterminalTable[symbol] = generateNonterminalEntry(symbol,
-          terminalTable, nonterminalTable, options.rules);
-      } else {
-        nextPass.push(symbol);
-      }
-      return nextPass;
-    }, []);
-  }
-
-  return nonterminalTable;
-};
-
-let generateFirstTable = function(options) {
-  let terminalTable = generateTerminalEntries(options.terminals);
-  let nonterminalTable = generateNonterminalEntries(terminalTable, options);
-  return Object.assign({}, terminalTable, nonterminalTable);
+  return getSortedRules(options.rules).reduce((nonterminalTable, rule) => {
+    let record = nonterminalTable[rule.left] || { canBeEmpty: false, symbols: new Set() };
+    record.canBeEmpty = record.canBeEmpty || rule.left.length === 0;
+    record.symbols = new Set([...record.symbols, ...getFirstForRule(rule, nonterminalTable)]);
+    nonterminalTable[rule.left] = record;
+  }, {});
 };
 */
+
+var generateFirstFor = function generateFirstFor(symbol, rules) {
+  return Promise.resolve();
+};
+
+var generateNonterminalEntries = function generateNonterminalEntries(terminalTable, options) {
+  var ruleIndex = options.rules.reduce(function (ruleIndex, rule) {
+    var rules = ruleIndex[rule.left] || [];
+    rules.push(rule);
+    ruleIndex[rule.left] = rules;
+    return ruleIndex;
+  }, {});
+  var result = Promise.resolve();
+  Object.keys(ruleIndex).forEach(function (symbol) {
+    result = result.then(function () {
+      return generateFirstFor(symbol, ruleIndex[symbol]);
+    });
+  });
+  return result;
+};
+
+var generateFirstTable = function generateFirstTable(options) {
+  var terminalTable = generateTerminalEntries(options.terminals);
+  return generateNonterminalEntries(terminalTable, options).then(function (nonterminalTable) {
+    return Object.assign({}, terminalTable, nonterminalTable);
+  });
+};
+
 var compiler = function compiler() {
   return _through2.default.obj(function (code, encoding, done) {
-    //code.firstTable = generateFirstTable(code);
-    this.push(code);
-    done();
+    var _this = this;
+
+    generateFirstTable(code).then(function (firstTable) {
+      console.log(JSON.stringify(firstTable));
+      code.firstTable = firstTable;
+      _this.push(code);
+      done();
+    });
   });
 };
 
