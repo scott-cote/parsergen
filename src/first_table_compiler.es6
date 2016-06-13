@@ -1,4 +1,5 @@
 import thru from 'through2';
+import asyncReduce from 'async-reduce';
 
 let generateTerminalEntries = function(terminals) {
   return Array.from(terminals.keys()).reduce((table, symbol) => {
@@ -73,8 +74,30 @@ let generateNonterminalEntries = function(terminalTable, options) {
 };
 */
 
-let generateFirstFor = function(symbol, rules) {
-  return Promise.resolve();
+let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleIndex) {
+
+  let reduceRule = function(cntx, rule, done) {
+    cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
+    let collectResults = (err, result) => err ? done(err) : done(null, result);
+    let reduceElement = function(cntx, element, done) {
+      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex)
+        .then(first => {
+          cntx.symbols = new Set(...cntx.symbols, ...first.symbols);
+          done(null, cntx);
+        }).catch(done);
+    };
+    asyncReduce(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
+    done(null, cntx);
+  };
+
+  return new Promise((resolve, reject) => {
+    let result = terminalTable[symbol] || nonterminalTable[symbol];
+    if (result) return resolve(result);
+    let collectResults = (err, result) => err ? reject(err) : resolve(result);
+    asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: new Set() },
+      reduceRule, collectResults
+    );
+  });
 };
 
 let generateNonterminalEntries = function(terminalTable, options) {
@@ -86,7 +109,7 @@ let generateNonterminalEntries = function(terminalTable, options) {
   }, {});
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
-    result = result.then(() => generateFirstFor(symbol, ruleIndex[symbol]));
+    result = result.then(() => generateFirstFor(symbol, terminalTable, ruleIndex[symbol]));
   });
   return result;
 };
@@ -110,11 +133,7 @@ let compiler = function() {
 };
 
 compiler.testAPI = {
-  generateTerminalEntries,
-  getDependencies,
-  augmentRule,
-  compareAugmentedRules,
-  getSortedRules
+  generateFirstFor
 };
 
 export default compiler;

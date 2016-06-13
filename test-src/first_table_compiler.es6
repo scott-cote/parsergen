@@ -6,6 +6,91 @@ import firstTableCompiler from '../bin/first_table_compiler.js';
 
 describe('firstTableCompiler', () => {
 
+  describe('generateFirstFor', () => {
+
+    /*
+
+    Rules for First Sets
+
+    1. If X is a terminal then first(x) is just X
+    2. If there is a production X -> empty set, then add empty set to first(X)
+    3. If there is a production X -> Y1 Y2 .. Yk then add first(Y1 Y2 .. Yk) to first(X)
+    3a. if Y1 dosen't contain empty set then first(Y1 Y2 .. Yk) equals first(Y1)
+
+    */
+
+    let terminalRecord;
+    let terminalTable;
+    let nonterminalTable;
+    let ruleIndex;
+
+    beforeEach(() => {
+      terminalTable = {
+        '1': { canBeEmpty: false, symbols: new Set(['1']) },
+        '2': { canBeEmpty: false, symbols: new Set(['2']) },
+        '3': { canBeEmpty: false, symbols: new Set(['3']) }
+      };
+      nonterminalTable = {
+        'A': { canBeEmpty: false, symbols: new Set(['B']) }
+      };
+      let rulesForA = [
+        { left: 'A', right: [{ type: 'NONTERMINAL', symbol: 'B' }] }
+      ];
+      let rulesForB = [
+        { left: 'B', right: [] }
+      ];
+      let rulesForC = [
+        { left: 'C', right: [ { type: 'NONTERMINAL', symbol: 'D'}, { type: 'TERMINAL', symbol: '3' } ] }
+      ];
+      let rulesForD = [
+        { left: 'D', right: [ { type: 'TERMINAL', symbol: '1' } ] },
+        { left: 'D', right: [ { type: 'TERMINAL', symbol: '2' } ] }
+      ];
+      ruleIndex = {
+        'A': rulesForA,
+        'B': rulesForB,
+        'C': rulesForC,
+        'D': rulesForD
+      };
+    });
+
+    it('should return cached values', done => {
+      firstTableCompiler.testAPI.generateFirstFor('A', terminalTable, nonterminalTable, ruleIndex).then(first => {
+        first.symbols = Array.from(first.symbols);
+        assert.deepEqual({ canBeEmpty: false, symbols: ['B'] }, first);
+        done();
+      }).catch(done);
+    });
+
+    it('should obey rule 1', done => {
+      firstTableCompiler.testAPI.generateFirstFor('1', terminalTable, nonterminalTable, ruleIndex).then(first => {
+        first.symbols = Array.from(first.symbols);
+        assert.deepEqual({ canBeEmpty: false, symbols: ['1'] }, first);
+        done();
+      }).catch(done);
+    });
+
+    it('should obey rule 2', done => {
+      firstTableCompiler.testAPI.generateFirstFor('B', terminalTable, nonterminalTable, ruleIndex).then(first => {
+        first.symbols = Array.from(first.symbols);
+        assert.deepEqual({ canBeEmpty: true, symbols: [] }, first);
+        done();
+      }).catch(done);
+    });
+
+    it('should obey rule 3a', done => {
+      firstTableCompiler.testAPI.generateFirstFor('C', terminalTable, nonterminalTable, ruleIndex).then(first => {
+        first.symbols = Array.from(first.symbols);
+        assert.deepEqual({ canBeEmpty: false, symbols: ['1','2'] }, first);
+        done();
+      }).catch(done);
+    });
+  });
+
+  /*
+
+  //  { canBeEmpty: false, symbols: new Set([symbol]) }
+
   describe('generateTerminalEntries', () => {
 
     it('should return and empty table when passed and empty terminals set', () => {
@@ -165,5 +250,5 @@ describe('firstTableCompiler', () => {
     });
 
   });
-
+  */
 });

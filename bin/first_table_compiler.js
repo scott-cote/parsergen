@@ -8,7 +8,13 @@ var _through = require('through2');
 
 var _through2 = _interopRequireDefault(_through);
 
+var _asyncReduce = require('async-reduce');
+
+var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var generateTerminalEntries = function generateTerminalEntries(terminals) {
   return Array.from(terminals.keys()).reduce(function (table, symbol) {
@@ -87,8 +93,31 @@ let generateNonterminalEntries = function(terminalTable, options) {
 };
 */
 
-var generateFirstFor = function generateFirstFor(symbol, rules) {
-  return Promise.resolve();
+var generateFirstFor = function generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex) {
+
+  var reduceRule = function reduceRule(cntx, rule, done) {
+    cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
+    var collectResults = function collectResults(err, result) {
+      return err ? done(err) : done(null, result);
+    };
+    var reduceElement = function reduceElement(cntx, element, done) {
+      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+        cntx.symbols = new (Function.prototype.bind.apply(Set, [null].concat(_toConsumableArray(cntx.symbols), _toConsumableArray(first.symbols))))();
+        done(null, cntx);
+      }).catch(done);
+    };
+    (0, _asyncReduce2.default)(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
+    done(null, cntx);
+  };
+
+  return new Promise(function (resolve, reject) {
+    var result = terminalTable[symbol] || nonterminalTable[symbol];
+    if (result) return resolve(result);
+    var collectResults = function collectResults(err, result) {
+      return err ? reject(err) : resolve(result);
+    };
+    (0, _asyncReduce2.default)(ruleIndex[symbol], { canBeEmpty: false, symbols: new Set() }, reduceRule, collectResults);
+  });
 };
 
 var generateNonterminalEntries = function generateNonterminalEntries(terminalTable, options) {
@@ -101,7 +130,7 @@ var generateNonterminalEntries = function generateNonterminalEntries(terminalTab
   var result = Promise.resolve();
   Object.keys(ruleIndex).forEach(function (symbol) {
     result = result.then(function () {
-      return generateFirstFor(symbol, ruleIndex[symbol]);
+      return generateFirstFor(symbol, terminalTable, ruleIndex[symbol]);
     });
   });
   return result;
@@ -128,11 +157,7 @@ var compiler = function compiler() {
 };
 
 compiler.testAPI = {
-  generateTerminalEntries: generateTerminalEntries,
-  getDependencies: getDependencies,
-  augmentRule: augmentRule,
-  compareAugmentedRules: compareAugmentedRules,
-  getSortedRules: getSortedRules
+  generateFirstFor: generateFirstFor
 };
 
 exports.default = compiler;
