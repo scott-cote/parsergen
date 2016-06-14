@@ -21,7 +21,8 @@ describe('firstTableCompiler', function () {
      1. If X is a terminal then first(x) is just X
     2. If there is a production X -> empty set, then add empty set to first(X)
     3. If there is a production X -> Y1 Y2 .. Yk then add first(Y1 Y2 .. Yk) to first(X)
-    3a. if Y1 dosen't contain empty set then first(Y1 Y2 .. Yk) equals first(Y1)
+    3a. If Y1 dosen't contain empty set then first(Y1 Y2 .. Yk) equals first(Y1)
+    3b. If Y1 does contain empty set then first(Y1 Y2 .. Yk) is everything in first(Y1) except the empty set plus first(Y2 .. Yk)
      */
 
     var terminalRecord = void 0;
@@ -42,11 +43,19 @@ describe('firstTableCompiler', function () {
       var rulesForB = [{ left: 'B', right: [] }];
       var rulesForC = [{ left: 'C', right: [{ type: 'NONTERMINAL', symbol: 'D' }, { type: 'TERMINAL', symbol: '3' }] }];
       var rulesForD = [{ left: 'D', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'D', right: [{ type: 'TERMINAL', symbol: '2' }] }];
+      var rulesForE = [{ left: 'E', right: [{ type: 'NONTERMINAL', symbol: 'F' }, { type: 'NONTERMINAL', symbol: 'G' }, { type: 'NONTERMINAL', symbol: 'H' }] }];
+      var rulesForF = [{ left: 'F', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'F', right: [{ type: 'TERMINAL', symbol: '2' }] }, { left: 'F', right: [] }];
+      var rulesForG = [{ left: 'G', right: [{ type: 'TERMINAL', symbol: '3' }] }, { left: 'G', right: [{ type: 'TERMINAL', symbol: '4' }] }];
+      var rulesForH = [{ left: 'H', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'H', right: [{ type: 'TERMINAL', symbol: '6' }] }];
       ruleIndex = {
         'A': rulesForA,
         'B': rulesForB,
         'C': rulesForC,
-        'D': rulesForD
+        'D': rulesForD,
+        'E': rulesForE,
+        'F': rulesForF,
+        'G': rulesForG,
+        'H': rulesForH
       };
     });
 
@@ -74,6 +83,13 @@ describe('firstTableCompiler', function () {
     it('should obey rule 3a', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('C', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
         assert.deepEqual({ canBeEmpty: false, symbols: ['1', '2'] }, first);
+        done();
+      }).catch(done);
+    });
+
+    it('should obey rule 3b', function (done) {
+      _first_table_compiler2.default.testAPI.generateFirstFor('E', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+        assert.deepEqual({ canBeEmpty: false, symbols: ['1', '2', '3', '4'] }, first);
         done();
       }).catch(done);
     });
