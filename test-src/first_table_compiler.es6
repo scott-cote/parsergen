@@ -17,6 +17,7 @@ describe('firstTableCompiler', () => {
     3. If there is a production X -> Y1 Y2 .. Yk then add first(Y1 Y2 .. Yk) to first(X)
     3a. If Y1 dosen't contain empty set then first(Y1 Y2 .. Yk) equals first(Y1)
     3b. If Y1 does contain empty set then first(Y1 Y2 .. Yk) is everything in first(Y1) except the empty set plus first(Y2 .. Yk)
+    3c. If first first(Y1 Y2 .. Yk) all contain empty set then add it to first(Y1 Y2 .. Yk)
 
     */
 

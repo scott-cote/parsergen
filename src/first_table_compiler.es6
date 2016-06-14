@@ -78,14 +78,19 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
 
   let reduceRule = function(cntx, rule, done) {
 
-    cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
     if (rule.right.length) {
-      generateFirstFor(rule.right[0].symbol, terminalTable, nonterminalTable, ruleIndex)
-        .then(first => {
-          cntx.symbols = cntx.symbols.concat(first.symbols);
-          done(null, cntx);
-        });
+      let reduceSymbol  = function(cntx, symbol, done) {
+        generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
+          .then(first => {
+            nonterminalTable[symbol] = first;
+            cntx.symbols = cntx.symbols.concat(first.symbols);
+            done(null, cntx);
+          });
+      };
+      //asyncReduce(rule.right.map(element => element.symbol), cntx, reduceSymbol, done);
+      asyncReduce([rule.right[0].symbol], cntx, reduceSymbol, done);
     } else {
+      cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
       done(null, cntx);
     }
 

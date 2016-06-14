@@ -95,13 +95,18 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
 
   var reduceRule = function reduceRule(cntx, rule, done) {
 
-    cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
     if (rule.right.length) {
-      generateFirstFor(rule.right[0].symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        cntx.symbols = cntx.symbols.concat(first.symbols);
-        done(null, cntx);
-      });
+      var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
+        generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+          nonterminalTable[symbol] = first;
+          cntx.symbols = cntx.symbols.concat(first.symbols);
+          done(null, cntx);
+        });
+      };
+      //asyncReduce(rule.right.map(element => element.symbol), cntx, reduceSymbol, done);
+      (0, _asyncReduce2.default)([rule.right[0].symbol], cntx, reduceSymbol, done);
     } else {
+      cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
       done(null, cntx);
     }
 
