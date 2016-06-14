@@ -99,9 +99,11 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
     if (rule.right.length) {
       generateFirstFor(rule.right[0].symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
         cntx.symbols = cntx.symbols.concat(first.symbols);
+        done(null, cntx);
       });
+    } else {
+      done(null, cntx);
     }
-    done(null, cntx);
 
     /*
     //let collectResults = (err, result) => err ? done(err) : done(null, result);
