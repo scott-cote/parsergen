@@ -3,7 +3,7 @@ import asyncReduce from 'async-reduce';
 
 let generateTerminalEntries = function(terminals) {
   return Array.from(terminals.keys()).reduce((table, symbol) => {
-    table[symbol] = { canBeEmpty: false, symbols: new Set([symbol]) };
+    table[symbol] = { canBeEmpty: false, symbols: [symbol] };
     return table;
   }, {});
 };
@@ -77,24 +77,39 @@ let generateNonterminalEntries = function(terminalTable, options) {
 let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleIndex) {
 
   let reduceRule = function(cntx, rule, done) {
+
     cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
-    let collectResults = (err, result) => err ? done(err) : done(null, result);
+    if (rule.right.length) {
+      generateFirstFor(rule.right[0].symbol, terminalTable, nonterminalTable, ruleIndex)
+        .then(first => {
+          cntx.symbols = cntx.symbols.concat(first.symbols);
+        });
+    }
+    done(null, cntx);
+
+    /*
+    //let collectResults = (err, result) => err ? done(err) : done(null, result);
+    let collectResults = (err, result) => {
+      // console.log(JSON.stringify(result));
+    };
     let reduceElement = function(cntx, element, done) {
       generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex)
         .then(first => {
-          cntx.symbols = new Set(...cntx.symbols, ...first.symbols);
+          //console.log(element.symbol+' : '+JSON.stringify(first))
+          cntx.symbols = cntx.symbols.concat(first.symbols);
           done(null, cntx);
         }).catch(done);
     };
     asyncReduce(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
     done(null, cntx);
+    */
   };
 
   return new Promise((resolve, reject) => {
     let result = terminalTable[symbol] || nonterminalTable[symbol];
     if (result) return resolve(result);
     let collectResults = (err, result) => err ? reject(err) : resolve(result);
-    asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: new Set() },
+    asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: [] },
       reduceRule, collectResults
     );
   });
@@ -124,7 +139,7 @@ let generateFirstTable = function(options) {
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {
     generateFirstTable(code).then(firstTable => {
-      console.log(JSON.stringify(firstTable))
+      //console.log(JSON.stringify(firstTable))
       code.firstTable = firstTable;
       this.push(code);
       done();

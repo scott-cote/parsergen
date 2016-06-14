@@ -14,11 +14,9 @@ var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 var generateTerminalEntries = function generateTerminalEntries(terminals) {
   return Array.from(terminals.keys()).reduce(function (table, symbol) {
-    table[symbol] = { canBeEmpty: false, symbols: new Set([symbol]) };
+    table[symbol] = { canBeEmpty: false, symbols: [symbol] };
     return table;
   }, {});
 };
@@ -96,18 +94,31 @@ let generateNonterminalEntries = function(terminalTable, options) {
 var generateFirstFor = function generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex) {
 
   var reduceRule = function reduceRule(cntx, rule, done) {
+
     cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
-    var collectResults = function collectResults(err, result) {
-      return err ? done(err) : done(null, result);
-    };
-    var reduceElement = function reduceElement(cntx, element, done) {
-      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        cntx.symbols = new (Function.prototype.bind.apply(Set, [null].concat(_toConsumableArray(cntx.symbols), _toConsumableArray(first.symbols))))();
-        done(null, cntx);
-      }).catch(done);
-    };
-    (0, _asyncReduce2.default)(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
+    if (rule.right.length) {
+      generateFirstFor(rule.right[0].symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+        cntx.symbols = cntx.symbols.concat(first.symbols);
+      });
+    }
     done(null, cntx);
+
+    /*
+    //let collectResults = (err, result) => err ? done(err) : done(null, result);
+    let collectResults = (err, result) => {
+      // console.log(JSON.stringify(result));
+    };
+    let reduceElement = function(cntx, element, done) {
+      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex)
+        .then(first => {
+          //console.log(element.symbol+' : '+JSON.stringify(first))
+          cntx.symbols = cntx.symbols.concat(first.symbols);
+          done(null, cntx);
+        }).catch(done);
+    };
+    asyncReduce(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
+    done(null, cntx);
+    */
   };
 
   return new Promise(function (resolve, reject) {
@@ -116,7 +127,7 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
     var collectResults = function collectResults(err, result) {
       return err ? reject(err) : resolve(result);
     };
-    (0, _asyncReduce2.default)(ruleIndex[symbol], { canBeEmpty: false, symbols: new Set() }, reduceRule, collectResults);
+    (0, _asyncReduce2.default)(ruleIndex[symbol], { canBeEmpty: false, symbols: [] }, reduceRule, collectResults);
   });
 };
 
@@ -148,7 +159,7 @@ var compiler = function compiler() {
     var _this = this;
 
     generateFirstTable(code).then(function (firstTable) {
-      console.log(JSON.stringify(firstTable));
+      //console.log(JSON.stringify(firstTable))
       code.firstTable = firstTable;
       _this.push(code);
       done();

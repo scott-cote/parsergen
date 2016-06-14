@@ -31,12 +31,12 @@ describe('firstTableCompiler', function () {
 
     beforeEach(function () {
       terminalTable = {
-        '1': { canBeEmpty: false, symbols: new Set(['1']) },
-        '2': { canBeEmpty: false, symbols: new Set(['2']) },
-        '3': { canBeEmpty: false, symbols: new Set(['3']) }
+        '1': { canBeEmpty: false, symbols: ['1'] },
+        '2': { canBeEmpty: false, symbols: ['2'] },
+        '3': { canBeEmpty: false, symbols: ['3'] }
       };
       nonterminalTable = {
-        'A': { canBeEmpty: false, symbols: new Set(['B']) }
+        'A': { canBeEmpty: false, symbols: ['B'] }
       };
       var rulesForA = [{ left: 'A', right: [{ type: 'NONTERMINAL', symbol: 'B' }] }];
       var rulesForB = [{ left: 'B', right: [] }];
@@ -52,7 +52,6 @@ describe('firstTableCompiler', function () {
 
     it('should return cached values', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('A', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        first.symbols = Array.from(first.symbols);
         assert.deepEqual({ canBeEmpty: false, symbols: ['B'] }, first);
         done();
       }).catch(done);
@@ -60,7 +59,6 @@ describe('firstTableCompiler', function () {
 
     it('should obey rule 1', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('1', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        first.symbols = Array.from(first.symbols);
         assert.deepEqual({ canBeEmpty: false, symbols: ['1'] }, first);
         done();
       }).catch(done);
@@ -68,7 +66,6 @@ describe('firstTableCompiler', function () {
 
     it('should obey rule 2', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('B', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        first.symbols = Array.from(first.symbols);
         assert.deepEqual({ canBeEmpty: true, symbols: [] }, first);
         done();
       }).catch(done);
@@ -76,7 +73,6 @@ describe('firstTableCompiler', function () {
 
     it('should obey rule 3a', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('C', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-        first.symbols = Array.from(first.symbols);
         assert.deepEqual({ canBeEmpty: false, symbols: ['1', '2'] }, first);
         done();
       }).catch(done);
