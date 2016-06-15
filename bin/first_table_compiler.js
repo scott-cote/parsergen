@@ -106,6 +106,7 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
         }).catch(done);
       };
       var collectResults = function collectResults(err, results) {
+        if (err) return done(err);
         cntx.symbols = cntx.symbols.concat(results.symbols);
         done(null, cntx);
       };

@@ -35,7 +35,8 @@ describe('firstTableCompiler', function () {
       terminalTable = {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
-        '3': { canBeEmpty: false, symbols: ['3'] }
+        '3': { canBeEmpty: false, symbols: ['3'] },
+        '4': { canBeEmpty: false, symbols: ['4'] }
       };
       nonterminalTable = {
         'A': { canBeEmpty: false, symbols: ['B'] }

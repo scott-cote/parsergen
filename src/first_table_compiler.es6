@@ -90,6 +90,7 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
           }).catch(done);
       };
       let collectResults = function(err, results) {
+        if (err) return done(err);
         cntx.symbols = cntx.symbols.concat(results.symbols);
         done(null, cntx);
       };
