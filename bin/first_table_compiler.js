@@ -95,46 +95,26 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
 
   var reduceRule = function reduceRule(cntx, rule, done) {
 
-    if (rule.right.length) {
-      var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
-        if (!cntx.canBeEmpty) done(null, cntx);
-        generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
-          nonterminalTable[symbol] = first;
-          cntx.symbols = cntx.symbols.concat(first.symbols);
-          if (!first.canBeEmpty) cntx.canBeEmpty = false;
-          done(null, cntx);
-        }).catch(done);
-      };
-      var collectResults = function collectResults(err, results) {
-        if (err) return done(err);
-        cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
-        cntx.symbols = cntx.symbols.concat(results.symbols);
+    var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
+      if (!cntx.canBeEmpty) done(null, cntx);
+      generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+        nonterminalTable[symbol] = first;
+        cntx.symbols = cntx.symbols.concat(first.symbols);
+        if (!first.canBeEmpty) cntx.canBeEmpty = false;
         done(null, cntx);
-      };
-      (0, _asyncReduce2.default)(rule.right.map(function (element) {
-        return element.symbol;
-      }), { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
-    } else {
-      cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
-      done(null, cntx);
-    }
+      }).catch(done);
+    };
 
-    /*
-    //let collectResults = (err, result) => err ? done(err) : done(null, result);
-    let collectResults = (err, result) => {
-      // console.log(JSON.stringify(result));
+    var collectResults = function collectResults(err, results) {
+      if (err) return done(err);
+      cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
+      cntx.symbols = cntx.symbols.concat(results.symbols);
+      done(null, cntx);
     };
-    let reduceElement = function(cntx, element, done) {
-      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex)
-        .then(first => {
-          //console.log(element.symbol+' : '+JSON.stringify(first))
-          cntx.symbols = cntx.symbols.concat(first.symbols);
-          done(null, cntx);
-        }).catch(done);
-    };
-    asyncReduce(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
-    done(null, cntx);
-    */
+
+    (0, _asyncReduce2.default)(rule.right.map(function (element) {
+      return element.symbol;
+    }), { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
   };
 
   return new Promise(function (resolve, reject) {

@@ -78,46 +78,26 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
 
   let reduceRule = function(cntx, rule, done) {
 
-    if (rule.right.length) {
-      let reduceSymbol  = function(cntx, symbol, done) {
-        if (!cntx.canBeEmpty) done(null, cntx);
-        generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
-          .then(first => {
-            nonterminalTable[symbol] = first;
-            cntx.symbols = cntx.symbols.concat(first.symbols);
-            if (!first.canBeEmpty) cntx.canBeEmpty = false;
-            done(null, cntx);
-          }).catch(done);
-      };
-      let collectResults = function(err, results) {
-        if (err) return done(err);
-        cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
-        cntx.symbols = cntx.symbols.concat(results.symbols);
-        done(null, cntx);
-      };
-      asyncReduce(rule.right.map(element => element.symbol),
-        { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
-    } else {
-      cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
-      done(null, cntx);
-    }
-
-    /*
-    //let collectResults = (err, result) => err ? done(err) : done(null, result);
-    let collectResults = (err, result) => {
-      // console.log(JSON.stringify(result));
-    };
-    let reduceElement = function(cntx, element, done) {
-      generateFirstFor(element.symbol, terminalTable, nonterminalTable, ruleIndex)
+    let reduceSymbol  = function(cntx, symbol, done) {
+      if (!cntx.canBeEmpty) done(null, cntx);
+      generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
         .then(first => {
-          //console.log(element.symbol+' : '+JSON.stringify(first))
+          nonterminalTable[symbol] = first;
           cntx.symbols = cntx.symbols.concat(first.symbols);
+          if (!first.canBeEmpty) cntx.canBeEmpty = false;
           done(null, cntx);
         }).catch(done);
     };
-    asyncReduce(rule.right, { done: false, symbols: new Set() }, reduceElement, collectResults);
-    done(null, cntx);
-    */
+
+    let collectResults = function(err, results) {
+      if (err) return done(err);
+      cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
+      cntx.symbols = cntx.symbols.concat(results.symbols);
+      done(null, cntx);
+    };
+
+    asyncReduce(rule.right.map(element => element.symbol),
+      { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
   };
 
   return new Promise((resolve, reject) => {
