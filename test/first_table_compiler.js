@@ -51,6 +51,13 @@ describe('firstTableCompiler', function () {
       var rulesForF = [{ left: 'F', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'F', right: [{ type: 'TERMINAL', symbol: '2' }] }, { left: 'F', right: [] }];
       var rulesForG = [{ left: 'G', right: [{ type: 'TERMINAL', symbol: '3' }] }, { left: 'G', right: [{ type: 'TERMINAL', symbol: '4' }] }];
       var rulesForH = [{ left: 'H', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'H', right: [{ type: 'TERMINAL', symbol: '6' }] }];
+      var rulesForI = [{ left: 'I', right: [{ type: 'NONTERMINAL', symbol: 'J' }, { type: 'NONTERMINAL', symbol: 'K' }, { type: 'NONTERMINAL', symbol: 'L' }] }, { left: 'I', right: [{ type: 'NONTERMINAL', symbol: 'M' }, { type: 'NONTERMINAL', symbol: 'N' }, { type: 'NONTERMINAL', symbol: 'O' }] }];
+      var rulesForJ = [{ left: 'J', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'J', right: [] }];
+      var rulesForK = [{ left: 'K', right: [{ type: 'TERMINAL', symbol: '2' }] }];
+      var rulesForL = [{ left: 'L', right: [{ type: 'TERMINAL', symbol: '3' }] }, { left: 'L', right: [] }];
+      var rulesForM = [{ left: 'M', right: [{ type: 'TERMINAL', symbol: '4' }] }, { left: 'M', right: [] }];
+      var rulesForN = [{ left: 'N', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'N', right: [] }];
+      var rulesForO = [{ left: 'O', right: [{ type: 'TERMINAL', symbol: '6' }] }, { left: 'O', right: [] }];
       ruleIndex = {
         'A': rulesForA,
         'B': rulesForB,
@@ -59,7 +66,14 @@ describe('firstTableCompiler', function () {
         'E': rulesForE,
         'F': rulesForF,
         'G': rulesForG,
-        'H': rulesForH
+        'H': rulesForH,
+        'I': rulesForI,
+        'J': rulesForJ,
+        'K': rulesForK,
+        'L': rulesForL,
+        'M': rulesForM,
+        'N': rulesForN,
+        'O': rulesForO
       };
     });
 
@@ -99,7 +113,10 @@ describe('firstTableCompiler', function () {
     });
 
     it('should obey rule 3c', function (done) {
-      assert(false);
+      _first_table_compiler2.default.testAPI.generateFirstFor('I', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
+        assert.deepEqual({ canBeEmpty: true, symbols: ['1', '2', '4', '5', '6'] }, first);
+        done();
+      }).catch(done);
     });
   });
 

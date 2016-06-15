@@ -71,6 +71,41 @@ describe('firstTableCompiler', () => {
         { left: 'H', right: [ { type: 'TERMINAL', symbol: '5' } ] },
         { left: 'H', right: [ { type: 'TERMINAL', symbol: '6' } ] }
       ];
+      let rulesForI = [
+        { left: 'I', right: [
+          { type: 'NONTERMINAL', symbol: 'J' },
+          { type: 'NONTERMINAL', symbol: 'K' },
+          { type: 'NONTERMINAL', symbol: 'L' }
+        ]},
+        { left: 'I', right: [
+          { type: 'NONTERMINAL', symbol: 'M' },
+          { type: 'NONTERMINAL', symbol: 'N' },
+          { type: 'NONTERMINAL', symbol: 'O' }
+        ]}
+      ];
+      let rulesForJ = [
+        { left: 'J', right: [ { type: 'TERMINAL', symbol: '1' } ] },
+        { left: 'J', right: [ ] }
+      ];
+      let rulesForK = [
+        { left: 'K', right: [ { type: 'TERMINAL', symbol: '2' } ] }
+      ];
+      let rulesForL = [
+        { left: 'L', right: [ { type: 'TERMINAL', symbol: '3' } ] },
+        { left: 'L', right: [ ] }
+      ];
+      let rulesForM = [
+        { left: 'M', right: [ { type: 'TERMINAL', symbol: '4' } ] },
+        { left: 'M', right: [ ] }
+      ];
+      let rulesForN = [
+        { left: 'N', right: [ { type: 'TERMINAL', symbol: '5' } ] },
+        { left: 'N', right: [ ] }
+      ];
+      let rulesForO = [
+        { left: 'O', right: [ { type: 'TERMINAL', symbol: '6' } ] },
+        { left: 'O', right: [ ] }
+      ];
       ruleIndex = {
         'A': rulesForA,
         'B': rulesForB,
@@ -79,7 +114,14 @@ describe('firstTableCompiler', () => {
         'E': rulesForE,
         'F': rulesForF,
         'G': rulesForG,
-        'H': rulesForH
+        'H': rulesForH,
+        'I': rulesForI,
+        'J': rulesForJ,
+        'K': rulesForK,
+        'L': rulesForL,
+        'M': rulesForM,
+        'N': rulesForN,
+        'O': rulesForO
       };
     });
 
@@ -119,7 +161,10 @@ describe('firstTableCompiler', () => {
     });
 
     it('should obey rule 3c', done => {
-      assert(false);
+      firstTableCompiler.testAPI.generateFirstFor('I', terminalTable, nonterminalTable, ruleIndex).then(first => {
+        assert.deepEqual({ canBeEmpty: true, symbols: ['1','2','4','5','6'] }, first);
+        done();
+      }).catch(done);
     });
   });
 
