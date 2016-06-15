@@ -97,6 +97,10 @@ describe('firstTableCompiler', function () {
         done();
       }).catch(done);
     });
+
+    it('should obey rule 3c', function (done) {
+      assert(false);
+    });
   });
 
   /*
