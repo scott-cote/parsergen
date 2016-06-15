@@ -80,15 +80,21 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
 
     if (rule.right.length) {
       let reduceSymbol  = function(cntx, symbol, done) {
+        if (cntx.done) done(null, cntx);
         generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
           .then(first => {
             nonterminalTable[symbol] = first;
             cntx.symbols = cntx.symbols.concat(first.symbols);
+            if (!first.canBeEmpty) cntx.done = true;
             done(null, cntx);
-          });
+          }).catch(done);
       };
-      //asyncReduce(rule.right.map(element => element.symbol), cntx, reduceSymbol, done);
-      asyncReduce([rule.right[0].symbol], cntx, reduceSymbol, done);
+      let collectResults = function(err, results) {
+        cntx.symbols = cntx.symbols.concat(results.symbols);
+        done(null, cntx);
+      };
+      asyncReduce(rule.right.map(element => element.symbol),
+        { done: false, symbols: [] }, reduceSymbol, collectResults);
     } else {
       cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
       done(null, cntx);

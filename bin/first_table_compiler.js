@@ -97,14 +97,21 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
 
     if (rule.right.length) {
       var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
+        if (cntx.done) done(null, cntx);
         generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
           nonterminalTable[symbol] = first;
           cntx.symbols = cntx.symbols.concat(first.symbols);
+          if (!first.canBeEmpty) cntx.done = true;
           done(null, cntx);
-        });
+        }).catch(done);
       };
-      //asyncReduce(rule.right.map(element => element.symbol), cntx, reduceSymbol, done);
-      (0, _asyncReduce2.default)([rule.right[0].symbol], cntx, reduceSymbol, done);
+      var collectResults = function collectResults(err, results) {
+        cntx.symbols = cntx.symbols.concat(results.symbols);
+        done(null, cntx);
+      };
+      (0, _asyncReduce2.default)(rule.right.map(function (element) {
+        return element.symbol;
+      }), { done: false, symbols: [] }, reduceSymbol, collectResults);
     } else {
       cntx.canBeEmpty = cntx.canBeEmpty || rule.right.length === 0;
       done(null, cntx);
