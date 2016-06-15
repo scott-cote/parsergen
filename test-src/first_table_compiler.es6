@@ -31,7 +31,9 @@ describe('firstTableCompiler', () => {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
         '3': { canBeEmpty: false, symbols: ['3'] },
-        '4': { canBeEmpty: false, symbols: ['4'] }
+        '4': { canBeEmpty: false, symbols: ['4'] },
+        '5': { canBeEmpty: false, symbols: ['5'] },
+        '6': { canBeEmpty: false, symbols: ['6'] }
       };
       nonterminalTable = {
         'A': { canBeEmpty: false, symbols: ['B'] }
