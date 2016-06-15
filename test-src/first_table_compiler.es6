@@ -117,6 +117,10 @@ describe('firstTableCompiler', () => {
         done();
       }).catch(done);
     });
+
+    it('should obey rule 3c', done => {
+      assert(false);
+    });
   });
 
   /*
