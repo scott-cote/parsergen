@@ -146,7 +146,11 @@ var generateNonterminalEntries = function generateNonterminalEntries(terminalTab
 var generateFirstTable = function generateFirstTable(options) {
   var terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then(function (nonterminalTable) {
-    return Object.assign({}, terminalTable, nonterminalTable);
+    var table = Object.assign({}, terminalTable, nonterminalTable);
+    table.keys().forEach(function (key) {
+      table[key].symbols = new Set(table[key].symbols);
+    });
+    return table;
   });
 };
 
@@ -155,7 +159,6 @@ var compiler = function compiler() {
     var _this = this;
 
     generateFirstTable(code).then(function (firstTable) {
-      //console.log(JSON.stringify(firstTable))
       code.firstTable = firstTable;
       _this.push(code);
       done();

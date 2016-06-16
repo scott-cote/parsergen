@@ -127,14 +127,17 @@ let generateNonterminalEntries = function(terminalTable, options) {
 let generateFirstTable = function(options) {
   let terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
-    return Object.assign({}, terminalTable, nonterminalTable);
+    let table = Object.assign({}, terminalTable, nonterminalTable);
+    table.keys().forEach(key => {
+      table[key].symbols = new Set(table[key].symbols);
+    });
+    return table;
   });
 };
 
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {
     generateFirstTable(code).then(firstTable => {
-      //console.log(JSON.stringify(firstTable))
       code.firstTable = firstTable;
       this.push(code);
       done();
