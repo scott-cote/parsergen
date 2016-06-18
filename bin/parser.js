@@ -114,13 +114,14 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(token, encoding, done) {
-      if (token) {
-        processToken(token);
-        done();
-      } else {
-        processToken({ content: '', type: '$' });
-        done(null, nodes);
-      }
+      processToken(token);
+      done();
+    }
+  }, {
+    key: '_flush',
+    value: function _flush(done) {
+      processToken({ content: '', type: '$' });
+      done(null, nodes);
     }
   }]);
 

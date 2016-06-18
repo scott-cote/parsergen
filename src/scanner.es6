@@ -21,10 +21,17 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(data, encoding, done) {
-    let tokenizer = createTokenizer();
-    tokenizer.on('token', token => this.push(token));
-    tokenizer.on('finish', done);
-    data ? tokenizer.write(data) : tokenizer.end(data);
+    if (!this.tokenizer) {
+      this.tokenizer = createTokenizer();
+      this.tokenizer.on('token', token => this.push(token));
+    }
+    this.tokenizer.write(data);
+    done();
+  }
+
+  _flush(done) {
+    this.tokenizer.on('finish', done);
+    this.tokenizer.end();
   }
 };
 

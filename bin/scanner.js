@@ -53,12 +53,20 @@ var Transformer = function (_Stream$Transform) {
     value: function _transform(data, encoding, done) {
       var _this2 = this;
 
-      var tokenizer = createTokenizer();
-      tokenizer.on('token', function (token) {
-        return _this2.push(token);
-      });
-      tokenizer.on('finish', done);
-      data ? tokenizer.write(data) : tokenizer.end(data);
+      if (!this.tokenizer) {
+        this.tokenizer = createTokenizer();
+        this.tokenizer.on('token', function (token) {
+          return _this2.push(token);
+        });
+      }
+      this.tokenizer.write(data);
+      done();
+    }
+  }, {
+    key: '_flush',
+    value: function _flush(done) {
+      this.tokenizer.on('finish', done);
+      this.tokenizer.end();
     }
   }]);
 

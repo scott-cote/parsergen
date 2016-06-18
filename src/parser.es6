@@ -101,13 +101,13 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(token, encoding, done) {
-    if (token) {
-      processToken(token);
-      done();
-    } else {
-      processToken({ content: '', type: '$' });
-      done(null, nodes);
-    }
+    processToken(token);
+    done();
+  }
+
+  _flush(done) {
+    processToken({ content: '', type: '$' });
+    done(null, nodes);
   }
 };
 
