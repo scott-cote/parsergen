@@ -98,6 +98,7 @@ let parser = function parser() {
   };
 
   return thru.obj(function(chunk, encoding, done) {
+    console.log(JSON.stringify(chunk))
     processToken(chunk);
     done();
   }, function(done) {
@@ -108,4 +109,3 @@ let parser = function parser() {
 };
 
 export default parser;
-

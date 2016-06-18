@@ -1,5 +1,5 @@
 import Tokenizer from 'tokenizer';
-import thru from 'through2';
+import Stream from 'stream';
 
 let createTokenizer = function() {
 
@@ -14,13 +14,23 @@ let createTokenizer = function() {
   return tokenizer;
 };
 
-let scanner = function() {
-  return thru.obj(function(chunk, encoding, done) {
+class Transformer extends Stream.Transform {
+
+  constructor() {
+    super({
+      readableObjectMode : true,
+      writableObjectMode: true
+    });
+  }
+
+  _transform(code, encoding, done) {
     let tokenizer = createTokenizer();
     tokenizer.on('token', token => this.push(token));
     tokenizer.on('finish', done);
-    tokenizer.end(chunk);
-  });
+    tokenizer.end(code);
+  }
 };
 
-export default scanner;
+export default function() {
+  return new Transformer();
+};

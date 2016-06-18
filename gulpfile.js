@@ -17,7 +17,7 @@ gulp.task('scripts', function() {
     .pipe(babel())
     .pipe(rename(function (path) { path.extname = ".js"; }))
     .pipe(gulp.dest('bin'));
-  var cli = gulp.src(['cli.es6','test.es6'])
+  var cli = gulp.src(['cli.es6','test.es6','errtest.es6'])
     .pipe(babel())
     .pipe(rename(function (path) { path.extname = ".js"; }))
     .pipe(insert.prepend('#!/usr/bin/env node\n\n'))
