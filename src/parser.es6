@@ -1,6 +1,4 @@
 
-import thru from 'through2';
-
 let parser = function parser() {
 
   let rules, parseTable, input, stack, curNodes;

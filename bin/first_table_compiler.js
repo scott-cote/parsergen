@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
 var _asyncReduce = require('async-reduce');
 
 var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
@@ -155,7 +151,7 @@ var generateFirstTable = function generateFirstTable(options) {
 };
 
 var compiler = function compiler() {
-  return _through2.default.obj(function (code, encoding, done) {
+  return thru.obj(function (code, encoding, done) {
     var _this = this;
 
     generateFirstTable(code).then(function (firstTable) {

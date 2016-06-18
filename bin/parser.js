@@ -1,14 +1,8 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var parser = function parser() {
 
@@ -92,7 +86,7 @@ var parser = function parser() {
     }
   };
 
-  return _through2.default.obj(function (token, encoding, done) {
+  return thru.obj(function (token, encoding, done) {
     if (token) {
       processToken(token);
       done();

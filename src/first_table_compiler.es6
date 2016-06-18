@@ -1,4 +1,3 @@
-import thru from 'through2';
 import asyncReduce from 'async-reduce';
 
 let generateTerminalEntries = function(terminals) {

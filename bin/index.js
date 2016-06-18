@@ -4,10 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -49,7 +45,7 @@ var Generator = {
 };
 
 var generator = function generator() {
-  return _through2.default.obj(function (chunk, enc, done) {
+  return through.obj(function (chunk, enc, done) {
     var parser = Generator.createParser(chunk);
     return done(null, parser);
   });

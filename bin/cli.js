@@ -54,10 +54,6 @@ var _index = require('./index.js');
 
 var _index2 = _interopRequireDefault(_index);
 
-var _through = require('through2');
-
-var _through2 = _interopRequireDefault(_through);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stream = (0, _mergeStream2.default)();

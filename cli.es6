@@ -11,7 +11,6 @@ import first_table_compiler from './first_table_compiler.js';
 import follow_table_compiler from './follow_table_compiler.js';
 import renderer from './renderer.js';
 import generator from './index.js';
-import through2 from 'through2';
 
 let stream = createMergeStream();
 

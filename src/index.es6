@@ -1,4 +1,3 @@
-import through from 'through2';
 import fs from 'fs';
 import ParserModule from './parser.js';
 //import RulesModule from './rules.js';

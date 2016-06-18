@@ -1,4 +1,3 @@
-import thru from 'through2';
 
 let compiler = function() {
 
