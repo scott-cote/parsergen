@@ -10,13 +10,13 @@ exports.default = function () {
   return new Transformer();
 };
 
-var _tokenizer = require('tokenizer');
-
-var _tokenizer2 = _interopRequireDefault(_tokenizer);
-
 var _stream = require('stream');
 
 var _stream2 = _interopRequireDefault(_stream);
+
+var _tokenizer = require('tokenizer');
+
+var _tokenizer2 = _interopRequireDefault(_tokenizer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -53,7 +53,7 @@ var Transformer = function (_Stream$Transform) {
 
   _createClass(Transformer, [{
     key: '_transform',
-    value: function _transform(code, encoding, done) {
+    value: function _transform(chunk, encoding, done) {
       var _this2 = this;
 
       var tokenizer = createTokenizer();
@@ -61,7 +61,7 @@ var Transformer = function (_Stream$Transform) {
         return _this2.push(token);
       });
       tokenizer.on('finish', done);
-      tokenizer.end(code);
+      tokenizer.end(chunk);
     }
   }]);
 

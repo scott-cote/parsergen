@@ -97,14 +97,14 @@ let parser = function parser() {
     }
   };
 
-  return thru.obj(function(chunk, encoding, done) {
-    console.log(JSON.stringify(chunk))
-    processToken(chunk);
-    done();
-  }, function(done) {
-    processToken({ content: '', type: '$' });
-    this.push(nodes);
-    done();
+  return thru.obj(function(token, encoding, done) {
+    if (token) {
+      processToken(token);
+      done();
+    } else {
+      processToken({ content: '', type: '$' });
+      done(null, nodes);
+    }
   });
 };
 

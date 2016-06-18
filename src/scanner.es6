@@ -1,5 +1,5 @@
-import Tokenizer from 'tokenizer';
 import Stream from 'stream';
+import Tokenizer from 'tokenizer';
 
 let createTokenizer = function() {
 
@@ -23,11 +23,11 @@ class Transformer extends Stream.Transform {
     });
   }
 
-  _transform(code, encoding, done) {
+  _transform(data, encoding, done) {
     let tokenizer = createTokenizer();
     tokenizer.on('token', token => this.push(token));
     tokenizer.on('finish', done);
-    tokenizer.end(code);
+    tokenizer.end(data);
   }
 };
 
