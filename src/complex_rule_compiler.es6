@@ -54,6 +54,10 @@ class Transformer extends Stream.Transform {
     this.push(code);
     done();
   }
+
+  _flush(done) {
+    done();
+  }
 };
 
 export default function() {

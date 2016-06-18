@@ -62,4 +62,8 @@ var stream = (0, _mergeStream2.default)();
   return stream.add(_fs2.default.createReadStream(filename));
 });
 
-stream.pipe((0, _scanner2.default)()).pipe((0, _parser2.default)()).pipe((0, _complex_rule_compiler2.default)()).pipe((0, _simple_rule_compiler2.default)()).pipe((0, _first_table_compiler2.default)()).pipe((0, _follow_table_compiler2.default)()).pipe((0, _rule_table_compiler2.default)()).pipe((0, _state_table_compiler2.default)()).pipe((0, _index2.default)()).pipe((0, _renderer2.default)()).pipe(_fs2.default.createWriteStream('./parser.es6'));
+var error = function error(err) {
+  throw new Error(err);
+};
+
+stream.on('error', error).pipe((0, _scanner2.default)()).on('error', error).pipe((0, _parser2.default)()).on('error', error).pipe((0, _complex_rule_compiler2.default)()).on('error', error).pipe((0, _simple_rule_compiler2.default)()).on('error', error).pipe((0, _first_table_compiler2.default)()).on('error', error).pipe((0, _follow_table_compiler2.default)()).on('error', error).pipe((0, _rule_table_compiler2.default)()).on('error', error).pipe((0, _state_table_compiler2.default)()).on('error', error).pipe((0, _index2.default)()).on('error', error).pipe((0, _renderer2.default)()).on('error', error).pipe(_fs2.default.createWriteStream('./parser.es6'));

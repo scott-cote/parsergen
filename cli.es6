@@ -17,15 +17,28 @@ let stream = createMergeStream();
 minimist(process.argv.slice(2))._.forEach(filename =>
   stream.add(fs.createReadStream(filename)));
 
+let error = err => { throw new Error(err) };
+
 stream
+  .on('error', error)
   .pipe(scanner())
+  .on('error', error)
   .pipe(parser())
+  .on('error', error)
   .pipe(complex_rule_compiler())
+  .on('error', error)
   .pipe(simple_rule_compiler())
+  .on('error', error)
   .pipe(first_table_compiler())
+  .on('error', error)
   .pipe(follow_table_compiler())
+  .on('error', error)
   .pipe(rule_table_compiler())
+  .on('error', error)
   .pipe(state_table_compiler())
+  .on('error', error)
   .pipe(generator())
+  .on('error', error)
   .pipe(renderer())
+  .on('error', error)
   .pipe(fs.createWriteStream('./parser.es6'));

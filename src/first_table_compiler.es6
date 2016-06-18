@@ -148,6 +148,7 @@ let compiler = function() {
 compiler.testAPI = {
   generateFirstFor
 };
+
 class Transformer extends Stream.Transform {
 
   constructor() {
@@ -155,9 +156,20 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    done(null, code);
+    console.log('data')
+    generateFirstTable(code).then(firstTable => {
+      code.firstTable = firstTable;
+      this.push(code);
+      done();
+    }).catch(done);
+  }
+
+  _flush(done) {
+    console.log('flush')
+    done();
   }
 };
+
 export default function() {
   return new Transformer();
 };

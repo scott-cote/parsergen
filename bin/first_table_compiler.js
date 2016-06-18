@@ -194,7 +194,20 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      done(null, code);
+      var _this3 = this;
+
+      console.log('data');
+      generateFirstTable(code).then(function (firstTable) {
+        code.firstTable = firstTable;
+        _this3.push(code);
+        done();
+      }).catch(done);
+    }
+  }, {
+    key: '_flush',
+    value: function _flush(done) {
+      console.log('flush');
+      done();
     }
   }]);
 
@@ -202,4 +215,5 @@ var Transformer = function (_Stream$Transform) {
 }(_stream2.default.Transform);
 
 ;
+
 ;

@@ -85,6 +85,11 @@ var Transformer = function (_Stream$Transform) {
       this.push(code);
       done();
     }
+  }, {
+    key: '_flush',
+    value: function _flush(done) {
+      done();
+    }
   }]);
 
   return Transformer;

@@ -24,49 +24,41 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var compiler = function compiler() {
-  return thru.obj(function (code, encoding, done) {
+var compile = function compile(code) {
 
-    var compile = function compile(code) {
+  code.rules = [{
+    left: code.complexRules[0].left + "'",
+    right: [code.complexRules[0].left, '$']
+  }].concat(code.complexRules);
 
-      code.rules = [{
-        left: code.complexRules[0].left + "'",
-        right: [code.complexRules[0].left, '$']
-      }].concat(code.complexRules);
+  code.nonterminals = new Set(code.rules.map(function (rule) {
+    return rule.left;
+  }));
 
-      code.nonterminals = new Set(code.rules.map(function (rule) {
-        return rule.left;
-      }));
+  code.terminals = new Set(code.rules.map(function (rule) {
+    return rule.right;
+  }).reduce(function (value, symbols) {
+    return value.concat(symbols);
+  }, []).filter(function (symbol) {
+    return !code.nonterminals.has(symbol);
+  }));
 
-      code.terminals = new Set(code.rules.map(function (rule) {
-        return rule.right;
-      }).reduce(function (value, symbols) {
-        return value.concat(symbols);
-      }, []).filter(function (symbol) {
-        return !code.nonterminals.has(symbol);
-      }));
+  code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
 
-      code.symbols = new Set([].concat(_toConsumableArray(code.nonterminals), _toConsumableArray(code.terminals)));
-
-      code.rules = code.rules.map(function (rule, index) {
+  code.rules = code.rules.map(function (rule, index) {
+    return {
+      id: index,
+      left: rule.left,
+      right: rule.right.map(function (symbol) {
         return {
-          id: index,
-          left: rule.left,
-          right: rule.right.map(function (symbol) {
-            return {
-              symbol: symbol,
-              type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
-            };
-          })
+          symbol: symbol,
+          type: code.terminals.has(symbol) ? 'TERMINAL' : 'NONTERMINAL'
         };
-      });
-
-      return code;
+      })
     };
-
-    this.push(compile(code));
-    done();
   });
+
+  return code;
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -81,13 +73,13 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      console.log('trans');
-      //done(null, code);
+      this.push(compile(code));
+      done();
     }
   }, {
     key: '_flush',
     value: function _flush(done) {
-      console.log('flush');
+      console.log('simple rule done');
       done();
     }
   }]);
@@ -96,4 +88,5 @@ var Transformer = function (_Stream$Transform) {
 }(_stream2.default.Transform);
 
 ;
+
 ;
