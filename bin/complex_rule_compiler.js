@@ -91,6 +91,7 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
+      console.log('complex rule comp called');
       done(null, code);
     }
   }]);

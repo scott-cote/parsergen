@@ -60,6 +60,7 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
+    console.log('complex rule comp called')
     done(null, code);
   }
 };
