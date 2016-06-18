@@ -107,7 +107,8 @@ class Transformer extends Stream.Transform {
 
   _flush(done) {
     processToken({ content: '', type: '$' });
-    done(null, nodes);
+    this.push(nodes);
+    done();
   }
 };
 

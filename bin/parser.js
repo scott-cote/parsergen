@@ -121,7 +121,8 @@ var Transformer = function (_Stream$Transform) {
     key: '_flush',
     value: function _flush(done) {
       processToken({ content: '', type: '$' });
-      done(null, nodes);
+      this.push(nodes);
+      done();
     }
   }]);
 

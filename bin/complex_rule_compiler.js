@@ -22,61 +22,51 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var compiler = function compiler() {
+var compile = function compile(ast) {
 
-  var compile = function compile(ast) {
-
-    var getRulesRoot = function getRulesRoot() {
-      var root = ast[ast.length - 1];
-      return ast[root.children[0]];
-    };
-
-    var compileLeft = function compileLeft(current) {
-      var ident = ast[current.children[0]];
-      return ident.contents;
-    };
-
-    var compileRight = function compileRight(current) {
-      if (current.type === 'RIGHT') {
-        return current.children.map(function (id) {
-          return compileRight(ast[id]);
-        }).reduce(function (value, elements) {
-          return value.concat(elements);
-        }, []);
-      } else {
-        return current.contents;
-      }
-    };
-
-    var compileRule = function compileRule(current) {
-      var left = ast[current.children[0]];
-      var right = ast[current.children[2]];
-      return { left: compileLeft(left), right: compileRight(right) };
-    };
-
-    var compileRules = function compileRules(current) {
-      if (current.type === 'RULES') {
-        return current.children.map(function (id) {
-          return compileRules(ast[id]);
-        }).reduce(function (value, rules) {
-          return value.concat(rules);
-        }, []);
-      } else {
-        return compileRule(current);
-      }
-    };
-
-    var root = getRulesRoot();
-
-    var code = { complexRules: compileRules(root) };
-
-    return code;
+  var getRulesRoot = function getRulesRoot() {
+    var root = ast[ast.length - 1];
+    return ast[root.children[0]];
   };
 
-  return thru.obj(function (ast, encoding, done) {
-    this.push(compile(ast));
-    done();
-  });
+  var compileLeft = function compileLeft(current) {
+    var ident = ast[current.children[0]];
+    return ident.contents;
+  };
+
+  var compileRight = function compileRight(current) {
+    if (current.type === 'RIGHT') {
+      return current.children.map(function (id) {
+        return compileRight(ast[id]);
+      }).reduce(function (value, elements) {
+        return value.concat(elements);
+      }, []);
+    } else {
+      return current.contents;
+    }
+  };
+
+  var compileRule = function compileRule(current) {
+    var left = ast[current.children[0]];
+    var right = ast[current.children[2]];
+    return { left: compileLeft(left), right: compileRight(right) };
+  };
+
+  var compileRules = function compileRules(current) {
+    if (current.type === 'RULES') {
+      return current.children.map(function (id) {
+        return compileRules(ast[id]);
+      }).reduce(function (value, rules) {
+        return value.concat(rules);
+      }, []);
+    } else {
+      return compileRule(current);
+    }
+  };
+
+  var root = getRulesRoot();
+
+  return compileRules(root);
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -90,9 +80,10 @@ var Transformer = function (_Stream$Transform) {
 
   _createClass(Transformer, [{
     key: '_transform',
-    value: function _transform(code, encoding, done) {
-      console.log('complex rule comp called');
-      done(null, code);
+    value: function _transform(ast, encoding, done) {
+      var code = { complexRules: compile(ast) };
+      this.push(code);
+      done();
     }
   }]);
 

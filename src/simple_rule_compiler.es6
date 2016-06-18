@@ -45,7 +45,13 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    done(null, code);
+    console.log('trans')
+    //done(null, code);
+  }
+
+  _flush(done) {
+    console.log('flush')
+    done();
   }
 };
 export default function() {

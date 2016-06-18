@@ -81,7 +81,14 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      done(null, code);
+      console.log('trans');
+      //done(null, code);
+    }
+  }, {
+    key: '_flush',
+    value: function _flush(done) {
+      console.log('flush');
+      done();
     }
   }]);
 
