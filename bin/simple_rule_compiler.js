@@ -79,7 +79,6 @@ var Transformer = function (_Stream$Transform) {
   }, {
     key: '_flush',
     value: function _flush(done) {
-      console.log('simple rule done');
       done();
     }
   }]);

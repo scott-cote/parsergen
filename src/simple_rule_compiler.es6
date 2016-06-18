@@ -44,7 +44,6 @@ class Transformer extends Stream.Transform {
   }
 
   _flush(done) {
-    console.log('simple rule done')
     done();
   }
 };

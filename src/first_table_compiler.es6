@@ -156,16 +156,15 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    console.log('data')
     generateFirstTable(code).then(firstTable => {
       code.firstTable = firstTable;
       this.push(code);
+      console.log('table done')
       done();
     }).catch(done);
   }
 
   _flush(done) {
-    console.log('flush')
     done();
   }
 };

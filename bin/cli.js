@@ -63,7 +63,8 @@ var stream = (0, _mergeStream2.default)();
 });
 
 var error = function error(err) {
-  throw new Error(err);
+  console.log(err.toString());
+  throw err;
 };
 
-stream.on('error', error).pipe((0, _scanner2.default)()).on('error', error).pipe((0, _parser2.default)()).on('error', error).pipe((0, _complex_rule_compiler2.default)()).on('error', error).pipe((0, _simple_rule_compiler2.default)()).on('error', error).pipe((0, _first_table_compiler2.default)()).on('error', error).pipe((0, _follow_table_compiler2.default)()).on('error', error).pipe((0, _rule_table_compiler2.default)()).on('error', error).pipe((0, _state_table_compiler2.default)()).on('error', error).pipe((0, _index2.default)()).on('error', error).pipe((0, _renderer2.default)()).on('error', error).pipe(_fs2.default.createWriteStream('./parser.es6'));
+stream.on('error', error).pipe((0, _scanner2.default)()).on('error', error).pipe((0, _parser2.default)()).on('error', error).pipe((0, _complex_rule_compiler2.default)()).on('error', error).pipe((0, _simple_rule_compiler2.default)()).on('error', error).pipe((0, _first_table_compiler2.default)()).on('error', error).pipe((0, _follow_table_compiler2.default)()).on('error', error).pipe((0, _rule_table_compiler2.default)()).on('error', error).pipe((0, _state_table_compiler2.default)()).on('error', error).pipe((0, _index2.default)()).on('error', error).pipe((0, _renderer2.default)()).on('error', error).pipe(_fs2.default.createWriteStream('./parser.es6')).on('error', error);

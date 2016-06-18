@@ -17,7 +17,10 @@ let stream = createMergeStream();
 minimist(process.argv.slice(2))._.forEach(filename =>
   stream.add(fs.createReadStream(filename)));
 
-let error = err => { throw new Error(err) };
+let error = err => {
+  console.log(err.toString());
+  throw err;
+};
 
 stream
   .on('error', error)
@@ -41,4 +44,5 @@ stream
   .on('error', error)
   .pipe(renderer())
   .on('error', error)
-  .pipe(fs.createWriteStream('./parser.es6'));
+  .pipe(fs.createWriteStream('./parser.es6'))
+  .on('error', error);

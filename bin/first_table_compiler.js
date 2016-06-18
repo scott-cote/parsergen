@@ -196,17 +196,16 @@ var Transformer = function (_Stream$Transform) {
     value: function _transform(code, encoding, done) {
       var _this3 = this;
 
-      console.log('data');
       generateFirstTable(code).then(function (firstTable) {
         code.firstTable = firstTable;
         _this3.push(code);
+        console.log('table done');
         done();
       }).catch(done);
     }
   }, {
     key: '_flush',
     value: function _flush(done) {
-      console.log('flush');
       done();
     }
   }]);
