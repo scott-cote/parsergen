@@ -10,6 +10,10 @@ exports.default = function () {
   return new Transformer();
 };
 
+var _stream = require('stream');
+
+var _stream2 = _interopRequireDefault(_stream);
+
 var _asyncReduce = require('async-reduce');
 
 var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
@@ -195,7 +199,7 @@ var Transformer = function (_Stream$Transform) {
   }]);
 
   return Transformer;
-}(Stream.Transform);
+}(_stream2.default.Transform);
 
 ;
 ;

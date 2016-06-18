@@ -14,6 +14,10 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _stream = require('stream');
+
+var _stream2 = _interopRequireDefault(_stream);
+
 var _parser = require('./parser.js');
 
 var _parser2 = _interopRequireDefault(_parser);
@@ -80,7 +84,7 @@ var Transformer = function (_Stream$Transform) {
   }]);
 
   return Transformer;
-}(Stream.Transform);
+}(_stream2.default.Transform);
 
 ;
 ;

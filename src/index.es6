@@ -1,4 +1,5 @@
 import fs from 'fs';
+import Stream from 'stream';
 import ParserModule from './parser.js';
 //import RulesModule from './rules.js';
 //import SimpleRuleModule from './simple_rule.js';

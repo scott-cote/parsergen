@@ -1,3 +1,4 @@
+import Stream from 'stream';
 
 let compiler = function() {
   return thru.obj(function(code, encoding, done) {

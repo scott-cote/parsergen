@@ -10,6 +10,12 @@ exports.default = function () {
   return new Transformer();
 };
 
+var _stream = require('stream');
+
+var _stream2 = _interopRequireDefault(_stream);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -80,7 +86,7 @@ var Transformer = function (_Stream$Transform) {
   }]);
 
   return Transformer;
-}(Stream.Transform);
+}(_stream2.default.Transform);
 
 ;
 ;

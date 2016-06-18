@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -9,6 +9,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.default = function () {
   return new Transformer();
 };
+
+var _stream = require('stream');
+
+var _stream2 = _interopRequireDefault(_stream);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33,14 +39,14 @@ var Transformer = function (_Stream$Transform) {
   }
 
   _createClass(Transformer, [{
-    key: "_transform",
+    key: '_transform',
     value: function _transform(code, encoding, done) {
       done(null, code);
     }
   }]);
 
   return Transformer;
-}(Stream.Transform);
+}(_stream2.default.Transform);
 
 ;
 ;
