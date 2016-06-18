@@ -45,15 +45,12 @@ var Transformer = function (_Stream$Transform) {
   function Transformer() {
     _classCallCheck(this, Transformer);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(Transformer).call(this, {
-      readableObjectMode: true,
-      writableObjectMode: true
-    }));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Transformer).call(this, { readableObjectMode: true }));
   }
 
   _createClass(Transformer, [{
     key: '_transform',
-    value: function _transform(chunk, encoding, done) {
+    value: function _transform(data, encoding, done) {
       var _this2 = this;
 
       var tokenizer = createTokenizer();
@@ -61,7 +58,7 @@ var Transformer = function (_Stream$Transform) {
         return _this2.push(token);
       });
       tokenizer.on('finish', done);
-      tokenizer.end(chunk);
+      data ? tokenizer.write(data) : tokenizer.end(data);
     }
   }]);
 

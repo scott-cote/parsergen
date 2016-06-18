@@ -17,17 +17,14 @@ let createTokenizer = function() {
 class Transformer extends Stream.Transform {
 
   constructor() {
-    super({
-      readableObjectMode : true,
-      writableObjectMode: true
-    });
+    super({ readableObjectMode : true });
   }
 
   _transform(data, encoding, done) {
     let tokenizer = createTokenizer();
     tokenizer.on('token', token => this.push(token));
     tokenizer.on('finish', done);
-    tokenizer.end(data);
+    data ? tokenizer.write(data) : tokenizer.end(data);
   }
 };
 
