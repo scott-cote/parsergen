@@ -147,5 +147,16 @@ let compiler = function() {
 compiler.testAPI = {
   generateFirstFor
 };
+class Transformer extends Stream.Transform {
 
-export default compiler;
+  constructor() {
+    super({ objectMode : true });
+  }
+
+  _transform(code, encoding, done) {
+    done(null, code);
+  }
+};
+export default function() {
+  return new Transformer();
+};

@@ -1,3 +1,4 @@
+import Stream from 'stream';
 
 let parser = function parser() {
 
@@ -106,4 +107,30 @@ let parser = function parser() {
   });
 };
 
-export default parser;
+/*
+class Transformer extends Stream.Transform {
+
+  constructor() {
+    super({ objectMode : true });
+  }
+
+  _transform(code, encoding, done) {
+    done(null, code);
+  }
+};
+*/
+
+class Transformer extends Stream.Transform {
+
+  constructor() {
+    super({ objectMode : true });
+  }
+
+  _transform(code, encoding, done) {
+    done(null, code);
+  }
+};
+
+export default function() {
+  return new Transformer();
+};
