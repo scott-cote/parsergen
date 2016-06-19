@@ -105,9 +105,14 @@ let generateNonterminalEntries = function(terminalTable, options) {
 
 var generateFirstFor = function generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex) {
 
+  console.log('generateFirstFor ' + symbol);
+
   var reduceRule = function reduceRule(cntx, rule, done) {
 
     var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
+
+      console.log('reduceSymbol ' + symbol);
+
       if (!cntx.canBeEmpty) done(null, cntx);
       generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex).then(function (first) {
         nonterminalTable[symbol] = first;
@@ -126,12 +131,17 @@ var generateFirstFor = function generateFirstFor(symbol, terminalTable, nontermi
 
     (0, _asyncReduce2.default)(rule.right.map(function (element) {
       return element.symbol;
+    }).filter(function (symbol) {
+      return symbol != rule.left;
     }), { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
   };
 
   return new Promise(function (resolve, reject) {
     var result = terminalTable[symbol] || nonterminalTable[symbol];
-    if (result) return resolve(result);
+    if (result) {
+      console.log('returning cached result for ' + symbol);
+      return resolve(result);
+    }
     var collectResults = function collectResults(err, result) {
       return err ? reject(err) : resolve(result);
     };
@@ -159,8 +169,8 @@ var generateNonterminalEntries = function generateNonterminalEntries(terminalTab
 var generateFirstTable = function generateFirstTable(options) {
   var terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then(function (nonterminalTable) {
-    //let table = Object.assign({}, terminalTable, nonterminalTable);
-    var table = Object.assign({}, terminalTable); //, nonterminalTable);
+    var table = Object.assign({}, terminalTable, nonterminalTable);
+    //let table = Object.assign({}, terminalTable); //, nonterminalTable);
     console.log(JSON.stringify(table));
     table.keys().forEach(function (key) {
       table[key].symbols = new Set(table[key].symbols);

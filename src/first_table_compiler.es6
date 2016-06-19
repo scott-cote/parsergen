@@ -76,9 +76,14 @@ let generateNonterminalEntries = function(terminalTable, options) {
 
 let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleIndex) {
 
+  console.log('generateFirstFor '+symbol)
+
   let reduceRule = function(cntx, rule, done) {
 
     let reduceSymbol  = function(cntx, symbol, done) {
+
+      console.log('reduceSymbol '+symbol);
+
       if (!cntx.canBeEmpty) done(null, cntx);
       generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
         .then(first => {
@@ -96,13 +101,16 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
       done(null, cntx);
     };
 
-    asyncReduce(rule.right.map(element => element.symbol),
+    asyncReduce(rule.right.map(element => element.symbol).filter(symbol => symbol != rule.left),
       { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
   };
 
   return new Promise((resolve, reject) => {
     let result = terminalTable[symbol] || nonterminalTable[symbol];
-    if (result) return resolve(result);
+    if (result) {
+      console.log('returning cached result for '+symbol)
+      return resolve(result);
+    }
     let collectResults = (err, result) => err ? reject(err) : resolve(result);
     asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: [] },
       reduceRule, collectResults
@@ -128,8 +136,8 @@ let generateNonterminalEntries = function(terminalTable, options) {
 let generateFirstTable = function(options) {
   let terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
-    //let table = Object.assign({}, terminalTable, nonterminalTable);
-    let table = Object.assign({}, terminalTable); //, nonterminalTable);
+    let table = Object.assign({}, terminalTable, nonterminalTable);
+    //let table = Object.assign({}, terminalTable); //, nonterminalTable);
     console.log(JSON.stringify(table));
     table.keys().forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
