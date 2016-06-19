@@ -119,7 +119,7 @@ let generateNonterminalEntries = function(terminalTable, options) {
   }, {});
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
-    result = result.then(() => generateFirstFor(symbol, terminalTable, ruleIndex[symbol]));
+    result = result.then(() => generateFirstFor(symbol, terminalTable, ruleIndex));
   });
   return result;
 };
@@ -128,6 +128,7 @@ let generateFirstTable = function(options) {
   let terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
     let table = Object.assign({}, terminalTable, nonterminalTable);
+    console.log(JSON.stringify(table));
     table.keys().forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });
