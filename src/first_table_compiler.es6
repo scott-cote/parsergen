@@ -137,8 +137,7 @@ let generateFirstTable = function(options) {
   let terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
     let table = Object.assign({}, terminalTable, nonterminalTable);
-    //let table = Object.assign({}, terminalTable); //, nonterminalTable);
-    console.log(JSON.stringify(table));
+    console.log(JSON.stringify(nonterminalTable));
     table.keys().forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });
@@ -154,10 +153,6 @@ let compiler = function() {
       done();
     });
   });
-};
-
-compiler.testAPI = {
-  generateFirstFor
 };
 
 class Transformer extends Stream.Transform {
@@ -180,6 +175,12 @@ class Transformer extends Stream.Transform {
   }
 };
 
-export default function() {
+let firstTableCompiler = function() {
   return new Transformer();
 };
+
+firstTableCompiler.testAPI = {
+  generateFirstFor
+};
+
+export default firstTableCompiler;

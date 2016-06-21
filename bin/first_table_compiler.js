@@ -6,10 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-exports.default = function () {
-  return new Transformer();
-};
-
 var _stream = require('stream');
 
 var _stream2 = _interopRequireDefault(_stream);
@@ -170,8 +166,7 @@ var generateFirstTable = function generateFirstTable(options) {
   var terminalTable = generateTerminalEntries(options.terminals);
   return generateNonterminalEntries(terminalTable, options).then(function (nonterminalTable) {
     var table = Object.assign({}, terminalTable, nonterminalTable);
-    //let table = Object.assign({}, terminalTable); //, nonterminalTable);
-    console.log(JSON.stringify(table));
+    console.log(JSON.stringify(nonterminalTable));
     table.keys().forEach(function (key) {
       table[key].symbols = new Set(table[key].symbols);
     });
@@ -189,10 +184,6 @@ var compiler = function compiler() {
       done();
     });
   });
-};
-
-compiler.testAPI = {
-  generateFirstFor: generateFirstFor
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -228,4 +219,12 @@ var Transformer = function (_Stream$Transform) {
 
 ;
 
-;
+var firstTableCompiler = function firstTableCompiler() {
+  return new Transformer();
+};
+
+firstTableCompiler.testAPI = {
+  generateFirstFor: generateFirstFor
+};
+
+exports.default = firstTableCompiler;
