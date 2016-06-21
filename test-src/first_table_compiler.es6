@@ -25,8 +25,22 @@ describe('firstTableCompiler', () => {
     let terminalTable;
     let nonterminalTable;
     let ruleIndex;
+    let simpleTerminalTable;
+    let simpleNonterminalTable;
+    let simpleRuleIndex;
 
     beforeEach(() => {
+      simpleTerminalTable = {
+        'TOKEN_IDENTIFIER': { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }
+      };
+      simpleNonterminalTable = {
+      };
+      simpleRuleIndex  = {
+        'RIGHT': [
+          { left: 'RIGHT', right: [{ type: 'NONTERMINAL', symbol: 'RIGHT' }, { type: 'TERMINAL', symbol: 'TOKEN_IDENTIFIER' }] },
+          { left: 'RIGHT', right: [{ type: 'TERMINAL', symbol: 'TOKEN_IDENTIFIER' }] }
+        ]
+      };
       terminalTable = {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
@@ -166,6 +180,15 @@ describe('firstTableCompiler', () => {
         done();
       }).catch(done);
     });
+
+    it('should work for simple grammar', done => {
+      firstTableCompiler.testAPI.generateFirstFor('RIGHT', simpleTerminalTable, simpleNonterminalTable, simpleRuleIndex).then(first => {
+        console.log(JSON.stringify(first))
+        assert.deepEqual({ canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }, first);
+        done();
+      }).catch(done);
+    });
+
   });
 
   /*

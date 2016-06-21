@@ -30,8 +30,18 @@ describe('firstTableCompiler', function () {
     var terminalTable = void 0;
     var nonterminalTable = void 0;
     var ruleIndex = void 0;
+    var simpleTerminalTable = void 0;
+    var simpleNonterminalTable = void 0;
+    var simpleRuleIndex = void 0;
 
     beforeEach(function () {
+      simpleTerminalTable = {
+        'TOKEN_IDENTIFIER': { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }
+      };
+      simpleNonterminalTable = {};
+      simpleRuleIndex = {
+        'RIGHT': [{ left: 'RIGHT', right: [{ type: 'NONTERMINAL', symbol: 'RIGHT' }, { type: 'TERMINAL', symbol: 'TOKEN_IDENTIFIER' }] }, { left: 'RIGHT', right: [{ type: 'TERMINAL', symbol: 'TOKEN_IDENTIFIER' }] }]
+      };
       terminalTable = {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
@@ -115,6 +125,14 @@ describe('firstTableCompiler', function () {
     it('should obey rule 3c', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('I', terminalTable, nonterminalTable, ruleIndex).then(function (first) {
         assert.deepEqual({ canBeEmpty: true, symbols: ['1', '2', '4', '5', '6'] }, first);
+        done();
+      }).catch(done);
+    });
+
+    it('should work for simple grammar', function (done) {
+      _first_table_compiler2.default.testAPI.generateFirstFor('RIGHT', simpleTerminalTable, simpleNonterminalTable, simpleRuleIndex).then(function (first) {
+        console.log(JSON.stringify(first));
+        assert.deepEqual({ canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }, first);
         done();
       }).catch(done);
     });
