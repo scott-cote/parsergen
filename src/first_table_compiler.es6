@@ -78,13 +78,19 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
 
   let reduceRule = function(cntx, rule, done) {
 
-    let reduceSymbol  = function(cntx, symbol, done) {
+    //console.log('reduceRule '+rule.left);
+
+    let reduceSymbol = function(cntx, symbol, done) {
+
+      //console.log('reduceSymbol '+symbol);
+
       if (!cntx.canBeEmpty) done(null, cntx);
       generateFirstFor(symbol, table, ruleIndex).then(() => {
+          //console.log('Got results for '+symbol);
           let first = table[symbol];
           cntx.symbols = cntx.symbols.concat(first.symbols);
           if (!first.canBeEmpty) cntx.canBeEmpty = false;
-          done();
+          done(null, cntx);
         }).catch(done);
     };
 
@@ -92,8 +98,7 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
       if (err) return done(err);
       cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
       cntx.symbols = cntx.symbols.concat(results.symbols);
-      table[symbol] = cntx;
-      done();
+      done(null, cntx);
     };
 
     asyncReduce(rule.right.map(element => element.symbol).filter(symbol => symbol != rule.left),
@@ -101,8 +106,16 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
   };
 
   return new Promise((resolve, reject) => {
-    if (!!table[symbol]) return resolve();
-    let collectResults = (err, result) => err ? reject(err) : resolve(result);
+    if (!!table[symbol]) {
+      //console.log('skipping, '+symbol+' already generated');
+      return resolve();
+    }
+    let collectResults = function(err, result) {
+      if (err) return reject(err);
+      table[symbol] = result;
+      //console.log(symbol+' = '+JSON.stringify(table[symbol]));
+      resolve();
+    };
     asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: [] },
       reduceRule, collectResults
     );

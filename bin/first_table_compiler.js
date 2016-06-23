@@ -103,13 +103,19 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
 
   var reduceRule = function reduceRule(cntx, rule, done) {
 
+    //console.log('reduceRule '+rule.left);
+
     var reduceSymbol = function reduceSymbol(cntx, symbol, done) {
+
+      //console.log('reduceSymbol '+symbol);
+
       if (!cntx.canBeEmpty) done(null, cntx);
       generateFirstFor(symbol, table, ruleIndex).then(function () {
+        //console.log('Got results for '+symbol);
         var first = table[symbol];
         cntx.symbols = cntx.symbols.concat(first.symbols);
         if (!first.canBeEmpty) cntx.canBeEmpty = false;
-        done();
+        done(null, cntx);
       }).catch(done);
     };
 
@@ -117,8 +123,7 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
       if (err) return done(err);
       cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
       cntx.symbols = cntx.symbols.concat(results.symbols);
-      table[symbol] = cntx;
-      done();
+      done(null, cntx);
     };
 
     (0, _asyncReduce2.default)(rule.right.map(function (element) {
@@ -129,9 +134,15 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
   };
 
   return new Promise(function (resolve, reject) {
-    if (!!table[symbol]) return resolve();
+    if (!!table[symbol]) {
+      //console.log('skipping, '+symbol+' already generated');
+      return resolve();
+    }
     var collectResults = function collectResults(err, result) {
-      return err ? reject(err) : resolve(result);
+      if (err) return reject(err);
+      table[symbol] = result;
+      //console.log(symbol+' = '+JSON.stringify(table[symbol]));
+      resolve();
     };
     (0, _asyncReduce2.default)(ruleIndex[symbol], { canBeEmpty: false, symbols: [] }, reduceRule, collectResults);
   });

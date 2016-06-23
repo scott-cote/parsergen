@@ -126,7 +126,7 @@ describe('firstTableCompiler', function () {
 
     it('should work for simple grammar', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('RIGHT', simpleTable, simpleRuleIndex).then(function () {
-        assert.deepEqual(simpleTable['RIGHT'], { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] });
+        assert.deepEqual(simpleTable['RIGHT'], { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER', 'TOKEN_IDENTIFIER'] });
         done();
       }).catch(done);
     });

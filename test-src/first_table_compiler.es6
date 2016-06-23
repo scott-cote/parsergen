@@ -177,7 +177,7 @@ describe('firstTableCompiler', () => {
 
     it('should work for simple grammar', done => {
       firstTableCompiler.testAPI.generateFirstFor('RIGHT', simpleTable, simpleRuleIndex).then(() => {
-        assert.deepEqual(simpleTable['RIGHT'], { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] });
+        assert.deepEqual(simpleTable['RIGHT'], { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER','TOKEN_IDENTIFIER'] });
         done();
       }).catch(done);
     });
