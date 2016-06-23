@@ -22,18 +22,14 @@ describe('firstTableCompiler', () => {
     */
 
     let terminalRecord;
-    let terminalTable;
-    let nonterminalTable;
+    let table;
     let ruleIndex;
-    let simpleTerminalTable;
-    let simpleNonterminalTable;
+    let simpleTable;
     let simpleRuleIndex;
 
     beforeEach(() => {
-      simpleTerminalTable = {
+      simpleTable = {
         'TOKEN_IDENTIFIER': { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }
-      };
-      simpleNonterminalTable = {
       };
       simpleRuleIndex  = {
         'RIGHT': [
@@ -41,15 +37,13 @@ describe('firstTableCompiler', () => {
           { left: 'RIGHT', right: [{ type: 'TERMINAL', symbol: 'TOKEN_IDENTIFIER' }] }
         ]
       };
-      terminalTable = {
+      table = {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
         '3': { canBeEmpty: false, symbols: ['3'] },
         '4': { canBeEmpty: false, symbols: ['4'] },
         '5': { canBeEmpty: false, symbols: ['5'] },
-        '6': { canBeEmpty: false, symbols: ['6'] }
-      };
-      nonterminalTable = {
+        '6': { canBeEmpty: false, symbols: ['6'] },
         'A': { canBeEmpty: false, symbols: ['B'] }
       };
       let rulesForA = [
@@ -140,51 +134,50 @@ describe('firstTableCompiler', () => {
     });
 
     it('should return cached values', done => {
-      firstTableCompiler.testAPI.generateFirstFor('A', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: false, symbols: ['B'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('A', table, ruleIndex).then(() => {
+        assert.deepEqual(table['A'], { canBeEmpty: false, symbols: ['B'] });
         done();
       }).catch(done);
     });
 
     it('should obey rule 1', done => {
-      firstTableCompiler.testAPI.generateFirstFor('1', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: false, symbols: ['1'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('1', table, ruleIndex).then(() => {
+        assert.deepEqual(table['1'], { canBeEmpty: false, symbols: ['1'] });
         done();
       }).catch(done);
     });
 
     it('should obey rule 2', done => {
-      firstTableCompiler.testAPI.generateFirstFor('B', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: true, symbols: [] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('B', table, ruleIndex).then(() => {
+        assert.deepEqual(table['B'], { canBeEmpty: true, symbols: [] });
         done();
       }).catch(done);
     });
 
     it('should obey rule 3a', done => {
-      firstTableCompiler.testAPI.generateFirstFor('C', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: false, symbols: ['1','2'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('C', table, ruleIndex).then(() => {
+        assert.deepEqual(table['C'], { canBeEmpty: false, symbols: ['1','2'] });
         done();
       }).catch(done);
     });
 
     it('should obey rule 3b', done => {
-      firstTableCompiler.testAPI.generateFirstFor('E', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: false, symbols: ['1','2','3','4'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('E', table, ruleIndex).then(() => {
+        assert.deepEqual(table['E'], { canBeEmpty: false, symbols: ['1','2','3','4'] });
         done();
       }).catch(done);
     });
 
     it('should obey rule 3c', done => {
-      firstTableCompiler.testAPI.generateFirstFor('I', terminalTable, nonterminalTable, ruleIndex).then(first => {
-        assert.deepEqual({ canBeEmpty: true, symbols: ['1','2','4','5','6'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('I', table, ruleIndex).then(() => {
+        assert.deepEqual(table['I'], { canBeEmpty: true, symbols: ['1','2','4','5','6'] });
         done();
       }).catch(done);
     });
 
     it('should work for simple grammar', done => {
-      firstTableCompiler.testAPI.generateFirstFor('RIGHT', simpleTerminalTable, simpleNonterminalTable, simpleRuleIndex).then(first => {
-        console.log(JSON.stringify(first))
-        assert.deepEqual({ canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] }, first);
+      firstTableCompiler.testAPI.generateFirstFor('RIGHT', simpleTable, simpleRuleIndex).then(() => {
+        assert.deepEqual(simpleTable['RIGHT'], { canBeEmpty: false, symbols: ['TOKEN_IDENTIFIER'] });
         done();
       }).catch(done);
     });

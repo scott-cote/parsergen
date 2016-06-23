@@ -74,23 +74,17 @@ let generateNonterminalEntries = function(terminalTable, options) {
 };
 */
 
-let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleIndex) {
-
-  console.log('generateFirstFor '+symbol)
+let generateFirstFor = function(symbol, table, ruleIndex) {
 
   let reduceRule = function(cntx, rule, done) {
 
     let reduceSymbol  = function(cntx, symbol, done) {
-
-      console.log('reduceSymbol '+symbol);
-
       if (!cntx.canBeEmpty) done(null, cntx);
-      generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex)
-        .then(first => {
-          nonterminalTable[symbol] = first;
+      generateFirstFor(symbol, table, ruleIndex).then(() => {
+          let first = table[symbol];
           cntx.symbols = cntx.symbols.concat(first.symbols);
           if (!first.canBeEmpty) cntx.canBeEmpty = false;
-          done(null, cntx);
+          done();
         }).catch(done);
     };
 
@@ -98,7 +92,8 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
       if (err) return done(err);
       cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
       cntx.symbols = cntx.symbols.concat(results.symbols);
-      done(null, cntx);
+      table[symbol] = cntx;
+      done();
     };
 
     asyncReduce(rule.right.map(element => element.symbol).filter(symbol => symbol != rule.left),
@@ -106,11 +101,7 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
   };
 
   return new Promise((resolve, reject) => {
-    let result = terminalTable[symbol] || nonterminalTable[symbol];
-    if (result) {
-      console.log('returning cached result for '+symbol)
-      return resolve(result);
-    }
+    if (!!table[symbol]) return resolve();
     let collectResults = (err, result) => err ? reject(err) : resolve(result);
     asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: [] },
       reduceRule, collectResults
@@ -118,26 +109,23 @@ let generateFirstFor = function(symbol, terminalTable, nonterminalTable, ruleInd
   });
 };
 
-let generateNonterminalEntries = function(terminalTable, options) {
+let generateNonterminalEntries = function(table, options) {
   let ruleIndex = options.rules.reduce((ruleIndex, rule) => {
     let rules = ruleIndex[rule.left] || [];
     rules.push(rule);
     ruleIndex[rule.left] = rules;
     return ruleIndex;
   }, {});
-  let nonterminalTable = {};
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
-    result = result.then(() => generateFirstFor(symbol, terminalTable, nonterminalTable, ruleIndex));
+    result = result.then(() => generateFirstFor(symbol, table, ruleIndex));
   });
   return result;
 };
 
 let generateFirstTable = function(options) {
-  let terminalTable = generateTerminalEntries(options.terminals);
-  return generateNonterminalEntries(terminalTable, options).then((nonterminalTable) => {
-    let table = Object.assign({}, terminalTable, nonterminalTable);
-    console.log(JSON.stringify(nonterminalTable));
+  let table = generateTerminalEntries(options.terminals);
+  return generateNonterminalEntries(table, options).then(table => {
     table.keys().forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });
