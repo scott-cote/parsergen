@@ -114,11 +114,13 @@ export default parser;
 class Transformer extends Stream.Transform {
 
   constructor() {
+    console.log('render start')
     super({ objectMode : true });
   }
 
   _transform(code, encoding, done) {
-    done(null, code);
+    console.log('render run')
+    done(null, 'this is output');
   }
 };
 export default function() {

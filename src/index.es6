@@ -31,10 +31,12 @@ let generator = function() {
 class Transformer extends Stream.Transform {
 
   constructor() {
+    console.log('gen start')
     super({ objectMode : true });
   }
 
   _transform(code, encoding, done) {
+    console.log('gen run')
     done(null, code);
   }
 };

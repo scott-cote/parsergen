@@ -138,21 +138,11 @@ let generateNonterminalEntries = function(table, options) {
 
 let generateFirstTable = function(options) {
   let table = generateTerminalEntries(options.terminals);
-  return generateNonterminalEntries(table, options).then(table => {
-    table.keys().forEach(key => {
+  return generateNonterminalEntries(table, options).then(() => {
+    Object.keys(table).forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });
     return table;
-  });
-};
-
-let compiler = function() {
-  return thru.obj(function(code, encoding, done) {
-    generateFirstTable(code).then(firstTable => {
-      code.firstTable = firstTable;
-      this.push(code);
-      done();
-    });
   });
 };
 
@@ -163,10 +153,11 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
+    console.log('table started')
     generateFirstTable(code).then(firstTable => {
       code.firstTable = firstTable;
-      this.push(code);
       console.log('table done')
+      this.push(code);
       done();
     }).catch(done);
   }

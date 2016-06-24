@@ -166,23 +166,11 @@ var generateNonterminalEntries = function generateNonterminalEntries(table, opti
 
 var generateFirstTable = function generateFirstTable(options) {
   var table = generateTerminalEntries(options.terminals);
-  return generateNonterminalEntries(table, options).then(function (table) {
-    table.keys().forEach(function (key) {
+  return generateNonterminalEntries(table, options).then(function () {
+    Object.keys(table).forEach(function (key) {
       table[key].symbols = new Set(table[key].symbols);
     });
     return table;
-  });
-};
-
-var compiler = function compiler() {
-  return thru.obj(function (code, encoding, done) {
-    var _this = this;
-
-    generateFirstTable(code).then(function (firstTable) {
-      code.firstTable = firstTable;
-      _this.push(code);
-      done();
-    });
   });
 };
 
@@ -198,12 +186,13 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      var _this3 = this;
+      var _this2 = this;
 
+      console.log('table started');
       generateFirstTable(code).then(function (firstTable) {
         code.firstTable = firstTable;
-        _this3.push(code);
         console.log('table done');
+        _this2.push(code);
         done();
       }).catch(done);
     }

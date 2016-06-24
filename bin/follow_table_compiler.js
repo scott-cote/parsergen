@@ -35,12 +35,14 @@ var Transformer = function (_Stream$Transform) {
   function Transformer() {
     _classCallCheck(this, Transformer);
 
+    console.log('follow start');
     return _possibleConstructorReturn(this, Object.getPrototypeOf(Transformer).call(this, { objectMode: true }));
   }
 
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
+      console.log('follow run');
       done(null, code);
     }
   }]);
@@ -49,4 +51,5 @@ var Transformer = function (_Stream$Transform) {
 }(_stream2.default.Transform);
 
 ;
+
 ;
