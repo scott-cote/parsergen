@@ -1,6 +1,6 @@
 import Stream from 'stream';
 
-let renderer = function() {
+//let renderer = function() {
 
   let render = function(code) {
 
@@ -106,11 +106,14 @@ export default parser;
 `;
     };
 
+/*
   return thru.obj(function(code, encoding, done) {
     this.push(render(code));
     done();
   });
 };
+*/
+
 class Transformer extends Stream.Transform {
 
   constructor() {
@@ -119,8 +122,9 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    console.log('render run')
-    done(null, 'this is output');
+    console.log('Running render');
+    this.push(render(code));
+    done();
   }
 };
 export default function() {

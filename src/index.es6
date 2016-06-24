@@ -36,8 +36,9 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    console.log('gen run')
-    done(null, code);
+    console.log('Running generator');
+    let parser = Generator.createParser(code);
+    return done(null, parser);
   }
 };
 export default function() {

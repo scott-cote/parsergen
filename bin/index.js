@@ -80,8 +80,9 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      console.log('gen run');
-      done(null, code);
+      console.log('Running generator');
+      var parser = Generator.createParser(code);
+      return done(null, parser);
     }
   }]);
 
