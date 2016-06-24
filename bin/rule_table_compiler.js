@@ -22,19 +22,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var compiler = function compiler() {
-
-  var compile = function compile(code) {
-    code.ruleTable = code.rules.map(function (rule) {
-      return { left: rule.left, rightCount: rule.right.length };
-    });
-    return code;
-  };
-
-  return thru.obj(function (code, encoding, done) {
-    this.push(compile(code));
-    done();
+var compile = function compile(code) {
+  code.ruleTable = code.rules.map(function (rule) {
+    return { left: rule.left, rightCount: rule.right.length };
   });
+  return code;
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -50,8 +42,8 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      console.log('rt run');
-      done(null, code);
+      this.push(compile(code));
+      done();
     }
   }]);
 
