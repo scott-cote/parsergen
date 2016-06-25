@@ -12,4 +12,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var assert = _chai2.default.assert;
 
-describe('followTableCompiler', function () {});
+describe('followTableCompiler', function () {
+
+  describe('generateFirstFor', function () {
+
+    /*
+       Rules for Follow Sets
+       1. If there is a production A -> aBb, (where "a" can be a whole string) then
+        everything in first(b) except for empty is placed in follow(B)
+       2. If there is a production A -> aB, then everything in follow(A)
+        is in follow(B)
+       3. If there is a production A -> aBb where first(b) contains empty then
+        everything in follow(A) is in follow(B)
+     */
+
+    // ... 
+  });
+});

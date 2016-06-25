@@ -1,5 +1,6 @@
 import Stream from 'stream';
 
+/*
 let generateFollowFor = function(symbol, table, rules, firstTable) {
 
   return new Promise((resolve, reject) => {
@@ -28,6 +29,7 @@ this.getFollowFor = function(nonterminal, follow, code) {
   }
   return follow[nonterminal];
 };
+*/
 
 class Transformer extends Stream.Transform {
 
@@ -47,7 +49,6 @@ let followTableCompiler = function() {
 };
 
 followTableCompiler.testAPI = {
-  generateFollowFor
 };
 
 export default followTableCompiler;
