@@ -3,6 +3,15 @@ let StatesModule = {
 
   createClass: function(State, Term) {
 
+    let getId = function(term) {
+      return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
+    };
+
+    let getRightNonterminal = function(term) {
+      let token = term.right[0];
+      if (token && token.type === 'NONTERMINAL') return token.symbol;
+    };
+
     let States = function(code) {
 
       let states = [];
@@ -31,7 +40,7 @@ let StatesModule = {
 
       this.getRootTerm = function() {
         let rule = code.rules[0];
-        return new Term(rule.id, rule.left, [], rule.right);
+        return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
       };
 
       states.push(new State(0, code, this.getRootTerm()));
@@ -41,7 +50,7 @@ let StatesModule = {
           if (symbol === '$') return;
           let rootTerms = states[index].getRootTermsFor(symbol);
           if (rootTerms.length) {
-            let id = rootTerms.map(term => term.getId()).sort().join();
+            let id = rootTerms.map(term => getId(term)).sort().join();
             let state = rootTermsState[id] || states.length;
             if (state === states.length) {
               rootTermsState[id] = state;

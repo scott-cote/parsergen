@@ -9,6 +9,24 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var StateModule = {
 
   createClass: function createClass(Term) {
+    var getId = function getId(term) {
+      return term.left + '>' + term.middle.map(function (element) {
+        return element.symbol;
+      }).join(':') + '.' + term.right.map(function (element) {
+        return element.symbol;
+      }).join(':');
+    };
+    var getRightNonterminal = function getRightNonterminal(term) {
+      var token = term.right[0];
+      if (token && token.type === 'NONTERMINAL') return token.symbol;
+    };
+    var getRightSymbol = function getRightSymbol(term) {
+      if (term.right[0]) return term.right[0].symbol;
+    };
+    var getRightTerminal = function getRightTerminal(term) {
+      var token = term.right[0];
+      if (token && token.type === 'TERMINAL') return token.symbol;
+    };
 
     var State = function State(id, code, rootTerms) {
 
@@ -51,7 +69,7 @@ var StateModule = {
         return code.rules.filter(function (rule) {
           return rule.left === symbol;
         }).map(function (rule) {
-          return new Term(rule.id, rule.left, [], rule.right);
+          return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
         });
       };
 
@@ -62,13 +80,13 @@ var StateModule = {
         var termIndex = {};
 
         var expandTerm = function expandTerm(term) {
-          var symbol = term.getRightNonterminal();
+          var symbol = getRightNonterminal(term);
           if (symbol) {
             var newTerms = createTermsFor(symbol).filter(function (term) {
-              return !termIndex[term.getId()];
+              return !termIndex[getId(term)];
             });
             newTerms.forEach(function (term) {
-              return termIndex[term.getId()] = true;
+              return termIndex[getId(term)] = true;
             });
             terms = terms.concat(newTerms);
           }
@@ -86,28 +104,34 @@ var StateModule = {
         if (symbolLookup) return;
         symbolLookup = {};
         terms.filter(function (term) {
-          return !!term.getRightSymbol();
+          return !!getRightSymbol(term);
         }).forEach(function (term) {
-          return symbolLookup[term.getRightSymbol()] = true;
+          return symbolLookup[getRightSymbol(term)] = true;
         });
       };
 
       this.getRootTermsFor = function (symbol) {
+
+        var createShiftTerm = function createShiftTerm(term) {
+          var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
+          return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
+        };
+
         completeState();
         createSymbolLookup();
         if (!symbolLookup[symbol]) return [];
         return terms.filter(function (term) {
-          return symbol === term.getRightSymbol();
+          return symbol === getRightSymbol(term);
         }).map(function (term) {
-          return term.createShiftTerm();
+          return createShiftTerm(term);
         });
       };
 
       this.setGotoFor = function (symbol, value) {
         terms.filter(function (term) {
-          return symbol === term.getRightSymbol();
+          return symbol === getRightSymbol(term);
         }).forEach(function (term) {
-          return term.setGoto(value);
+          return term.goto = value;
         });
       };
 
@@ -122,27 +146,27 @@ var StateModule = {
 
         var row = {};
         terms.filter(function (term) {
-          return term.getRightNonterminal();
+          return getRightNonterminal(term);
         }).forEach(function (term) {
-          row[term.getRightNonterminal()] = 'goto(' + term.getGoto() + ')';
+          row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
         });
         terms.filter(function (term) {
-          return term.getRightTerminal();
+          return getRightTerminal(term);
         }).forEach(function (term) {
-          var terminal = term.getRightTerminal();
+          var terminal = getRightTerminal(term);
           if (terminal === '$') {
             row[terminal] = 'accept()';
           } else {
-            row[terminal] = 'shift(' + term.getGoto() + ')';
+            row[terminal] = 'shift(' + term.goto + ')';
           }
         });
         terms.filter(function (term) {
-          return !term.getRightSymbol();
+          return !getRightSymbol(term);
         }).forEach(function (term) {
           //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-          var follow = _this.getFollowFor(term.getLeft());
+          var follow = _this.getFollowFor(term.left);
           follow.forEach(function (symbol) {
-            row[symbol] = 'reduce(' + term.getRule() + ')';
+            row[symbol] = 'reduce(' + term.rule + ')';
           });
         });
         return row;

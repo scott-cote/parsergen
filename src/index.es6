@@ -6,14 +6,12 @@ import ParserModule from './parser.js';
 //import SimpleRulesModule from './simple_rules.js';
 import StateModule from './state.js';
 import StatesModule from './states.js';
-import TermModule from './term.js';
 
-let Term = TermModule.createClass();
 //let SimpleRule = SimpleRuleModule.createClass(Term);
 //let SimpleRules = SimpleRulesModule.createClass(Term);
-let State = StateModule.createClass(Term);
+let State = StateModule.createClass();
 //let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-let States = StatesModule.createClass(State, Term);
+let States = StatesModule.createClass(State);
 
 let Generator = {
   createParser: function(code) {

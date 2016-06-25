@@ -30,10 +30,6 @@ var _states = require('./states.js');
 
 var _states2 = _interopRequireDefault(_states);
 
-var _term = require('./term.js');
-
-var _term2 = _interopRequireDefault(_term);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46,12 +42,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //import SimpleRulesModule from './simple_rules.js';
 
 
-var Term = _term2.default.createClass();
 //let SimpleRule = SimpleRuleModule.createClass(Term);
 //let SimpleRules = SimpleRulesModule.createClass(Term);
-var State = _state2.default.createClass(Term);
+var State = _state2.default.createClass();
 //let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-var States = _states2.default.createClass(State, Term);
+var States = _states2.default.createClass(State);
 
 var Generator = {
   createParser: function createParser(code) {
