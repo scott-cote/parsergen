@@ -1,6 +1,4 @@
-import fs from 'fs';
 import Stream from 'stream';
-import ParserModule from './parser.js';
 import StateModule from './state.js';
 
 let State = StateModule.createClass();
