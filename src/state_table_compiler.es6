@@ -1,7 +1,5 @@
 import Stream from 'stream';
-import StateModule from './state.js';
-
-let State = StateModule.createClass();
+import State from './state.js';
 
 let generateStates = function(code) {
 

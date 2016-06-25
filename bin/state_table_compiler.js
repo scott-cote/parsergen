@@ -26,8 +26,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var State = _state2.default.createClass();
-
 var generateStates = function generateStates(code) {
 
   var states = [];
@@ -47,7 +45,7 @@ var generateStates = function generateStates(code) {
     return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
   };
 
-  states.push(new State(0, code, getRootTerm()));
+  states.push(new _state2.default(0, code, getRootTerm()));
 
   var index = 0;while (index < states.length) {
     code.symbols.forEach(function (symbol) {
@@ -60,7 +58,7 @@ var generateStates = function generateStates(code) {
         var state = rootTermsState[id] || states.length;
         if (state === states.length) {
           rootTermsState[id] = state;
-          states.push(new State(states.length, code, rootTerms));
+          states.push(new _state2.default(states.length, code, rootTerms));
         }
         states[index].setGotoFor(symbol, state);
       }

@@ -1,7 +1,4 @@
 
-let StateModule = {
-
-  createClass: function(Term) {
     let getId = function(term) {
       return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
     };
@@ -148,8 +145,4 @@ let StateModule = {
         }
     };
 
-    return State;
-  }
-};
-
-export default StateModule;
+export default State;
