@@ -79,9 +79,6 @@ var generateStates = function generateStates(code) {
     console.log(JSON.stringify(row));
   });
   };
-  this.render = function() {
-  return states.map(state => state.render()).join(',\n  ');
-  };
   */
 
   var getRootTerm = function getRootTerm() {

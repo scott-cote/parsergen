@@ -45,9 +45,6 @@ let generateStates = function(code) {
     });
   };
 
-  this.render = function() {
-    return states.map(state => state.render()).join(',\n  ');
-  };
   */
 
   let getRootTerm = function() {
