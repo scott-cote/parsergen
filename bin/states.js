@@ -33,7 +33,7 @@ var StatesModule = {
       this.render = function () {
         return states.map(function (state) {
           return state.render();
-        }).join(',\n    ');
+        }).join(',\n  ');
       };
 
       this.getRootTerm = function () {

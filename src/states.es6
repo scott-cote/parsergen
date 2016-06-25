@@ -26,7 +26,7 @@ let StatesModule = {
       };
 
       this.render = function() {
-        return states.map(state => state.render()).join(',\n    ')  ;
+        return states.map(state => state.render()).join(',\n  ');
       };
 
       this.getRootTerm = function() {
