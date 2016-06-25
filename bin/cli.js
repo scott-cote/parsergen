@@ -34,10 +34,6 @@ var _rule_table_compiler = require('./rule_table_compiler.js');
 
 var _rule_table_compiler2 = _interopRequireDefault(_rule_table_compiler);
 
-var _state_table_compiler = require('./state_table_compiler.js');
-
-var _state_table_compiler2 = _interopRequireDefault(_state_table_compiler);
-
 var _first_table_compiler = require('./first_table_compiler.js');
 
 var _first_table_compiler2 = _interopRequireDefault(_first_table_compiler);
@@ -56,6 +52,9 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import state_table_compiler from './state_table_compiler.js';
+
+
 var stream = (0, _mergeStream2.default)();
 
 (0, _minimist2.default)(process.argv.slice(2))._.forEach(function (filename) {
@@ -67,4 +66,7 @@ var error = function error(err) {
   throw err;
 };
 
-stream.on('error', error).pipe((0, _scanner2.default)()).on('error', error).pipe((0, _parser2.default)()).on('error', error).pipe((0, _complex_rule_compiler2.default)()).on('error', error).pipe((0, _simple_rule_compiler2.default)()).on('error', error).pipe((0, _first_table_compiler2.default)()).on('error', error).pipe((0, _follow_table_compiler2.default)()).on('error', error).pipe((0, _rule_table_compiler2.default)()).on('error', error).pipe((0, _state_table_compiler2.default)()).on('error', error).pipe((0, _index2.default)()).on('error', error).pipe((0, _renderer2.default)()).on('error', error).pipe(_fs2.default.createWriteStream('./parser.es6')).on('error', error);
+stream.on('error', error).pipe((0, _scanner2.default)()).on('error', error).pipe((0, _parser2.default)()).on('error', error).pipe((0, _complex_rule_compiler2.default)()).on('error', error).pipe((0, _simple_rule_compiler2.default)()).on('error', error).pipe((0, _first_table_compiler2.default)()).on('error', error).pipe((0, _follow_table_compiler2.default)()).on('error', error).pipe((0, _rule_table_compiler2.default)()).on('error', error)
+//.pipe(state_table_compiler())
+//.on('error', error)
+.pipe((0, _index2.default)()).on('error', error).pipe((0, _renderer2.default)()).on('error', error).pipe(_fs2.default.createWriteStream('./parser.es6')).on('error', error);

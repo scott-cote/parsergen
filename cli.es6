@@ -6,7 +6,7 @@ import parser from './parser.js'
 import complex_rule_compiler from './complex_rule_compiler.js';
 import simple_rule_compiler from './simple_rule_compiler.js';
 import rule_table_compiler from './rule_table_compiler.js';
-import state_table_compiler from './state_table_compiler.js';
+//import state_table_compiler from './state_table_compiler.js';
 import first_table_compiler from './first_table_compiler.js';
 import follow_table_compiler from './follow_table_compiler.js';
 import renderer from './renderer.js';
@@ -38,8 +38,8 @@ stream
   .on('error', error)
   .pipe(rule_table_compiler())
   .on('error', error)
-  .pipe(state_table_compiler())
-  .on('error', error)
+  //.pipe(state_table_compiler())
+  //.on('error', error)
   .pipe(generator())
   .on('error', error)
   .pipe(renderer())
