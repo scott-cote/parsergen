@@ -84,6 +84,7 @@ var State = function State(id, code, rootTerms) {
       }, []);
       follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
     }
+    //console.log(nonterminal+': '+JSON.stringify(Array.from(code.followTable[nonterminal]))+' vs '+JSON.stringify(follow[nonterminal]));
     return follow[nonterminal];
   };
 

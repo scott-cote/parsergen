@@ -31,6 +31,34 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
+let compile = function(code) {
+  let table = {};
+
+  let addToFollowSet = function(symbol, item) {
+    let set = table[symbol] || new Set();
+    set.add(item);
+    table[symbol] = set;
+  };
+
+  code.rules.forEach(rule => {
+    rule.right.forEach((symbol, index) => {
+      if (symbol.type == 'NONTERMINAL') {
+        let nextSymbol = rule.right[index+1];
+        if (nextSymbol) {
+          // symbol then nextSymbol
+          let first = code.firstTable[nextSymbol.symbol];
+          Array.from(first.symbols).forEach(item => {
+            addToFollowSet(symbol.symbol, item);
+          });
+        } else {
+          // symbol at end
+        }
+      }
+    });
+  });
+  return table;
+};
+
 class Transformer extends Stream.Transform {
 
   constructor() {
@@ -40,6 +68,7 @@ class Transformer extends Stream.Transform {
 
   _transform(code, encoding, done) {
     console.log('follow run')
+    code.followTable = compile(code);
     done(null, code);
   }
 };

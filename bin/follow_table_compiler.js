@@ -49,6 +49,34 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
+var compile = function compile(code) {
+  var table = {};
+
+  var addToFollowSet = function addToFollowSet(symbol, item) {
+    var set = table[symbol] || new Set();
+    set.add(item);
+    table[symbol] = set;
+  };
+
+  code.rules.forEach(function (rule) {
+    rule.right.forEach(function (symbol, index) {
+      if (symbol.type == 'NONTERMINAL') {
+        var nextSymbol = rule.right[index + 1];
+        if (nextSymbol) {
+          // symbol then nextSymbol
+          var first = code.firstTable[nextSymbol.symbol];
+          Array.from(first.symbols).forEach(function (item) {
+            addToFollowSet(symbol.symbol, item);
+          });
+        } else {
+          // symbol at end
+        }
+      }
+    });
+  });
+  return table;
+};
+
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
 
@@ -63,6 +91,7 @@ var Transformer = function (_Stream$Transform) {
     key: '_transform',
     value: function _transform(code, encoding, done) {
       console.log('follow run');
+      code.followTable = compile(code);
       done(null, code);
     }
   }]);

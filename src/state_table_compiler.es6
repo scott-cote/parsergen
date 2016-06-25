@@ -56,6 +56,7 @@ let State = function(id, code, rootTerms) {
       }, []);
       follow[nonterminal] = [...new Set(allFollow)];
     }
+    //console.log(nonterminal+': '+JSON.stringify(Array.from(code.followTable[nonterminal]))+' vs '+JSON.stringify(follow[nonterminal]));
     return follow[nonterminal];
   };
 
