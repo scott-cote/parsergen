@@ -109,13 +109,6 @@ var generateStates = function generateStates(code) {
   return states;
 };
 
-var Generator = {
-  createParser: function createParser(code) {
-    code.states = generateStates(code);
-    return code;
-  }
-};
-
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
 
@@ -130,8 +123,8 @@ var Transformer = function (_Stream$Transform) {
     key: '_transform',
     value: function _transform(code, encoding, done) {
       console.log('Running generator');
-      var parser = Generator.createParser(code);
-      return done(null, parser);
+      code.states = generateStates(code);
+      return done(null, code);
     }
   }]);
 

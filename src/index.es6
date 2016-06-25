@@ -73,14 +73,6 @@ let generateStates = function(code) {
   return states;
 };
 
-
-let Generator = {
-  createParser: function(code) {
-    code.states = generateStates(code);
-    return code;
-  }
-};
-
 class Transformer extends Stream.Transform {
 
   constructor() {
@@ -90,8 +82,8 @@ class Transformer extends Stream.Transform {
 
   _transform(code, encoding, done) {
     console.log('Running generator');
-    let parser = Generator.createParser(code);
-    return done(null, parser);
+    code.states = generateStates(code);
+    return done(null, code);
   }
 };
 export default function() {
