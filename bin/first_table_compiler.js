@@ -29,37 +29,6 @@ var generateTerminalEntries = function generateTerminalEntries(terminals) {
   }, {});
 };
 
-var getDependencies = function getDependencies(rule) {
-  return new Set(rule.right.filter(function (element) {
-    return element.symbol !== rule.left;
-  }).map(function (element) {
-    return element.symbol;
-  }));
-};
-
-var augmentRule = function augmentRule(rule) {
-  return { orgRule: rule, dependencies: getDependencies(rule) };
-};
-
-var compareAugmentedRules = function compareAugmentedRules(ruleA, ruleB) {
-  if (ruleA.dependencies.has(ruleB.orgRule.left)) {
-    return 1;
-  }
-  if (ruleB.dependencies.has(ruleA.orgRule.left)) {
-    return -1;
-  }
-  return 0;
-};
-
-var getSortedRules = function getSortedRules(rules) {
-  return rules.map(augmentRule).reduce(function (augmentedRules, rule) {
-    augmentedRules.unshift(rule);
-    return augmentedRules.sort(compareAugmentedRules);
-  }, []).map(function (rule) {
-    return rule.orgRule;
-  });
-};
-
 var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
 
   var reduceRule = function reduceRule(cntx, rule, done) {

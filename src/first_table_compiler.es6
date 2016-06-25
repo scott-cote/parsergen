@@ -8,33 +8,6 @@ let generateTerminalEntries = function(terminals) {
   }, {});
 };
 
-let getDependencies = function(rule) {
-  return new Set(rule.right
-    .filter(element => element.symbol !== rule.left)
-    .map(element => element.symbol));
-};
-
-let augmentRule = function(rule) {
-  return { orgRule: rule, dependencies: getDependencies(rule) };
-};
-
-let compareAugmentedRules = function(ruleA, ruleB) {
-  if (ruleA.dependencies.has(ruleB.orgRule.left)) {
-    return 1;
-  }
-  if (ruleB.dependencies.has(ruleA.orgRule.left)) {
-    return -1;
-  }
-  return 0;
-};
-
-let getSortedRules = function(rules) {
-  return rules.map(augmentRule).reduce((augmentedRules, rule) => {
-    augmentedRules.unshift(rule);
-    return augmentedRules.sort(compareAugmentedRules);
-  }, []).map(rule => rule.orgRule);
-};
-
 let generateFirstFor = function(symbol, table, ruleIndex) {
 
   let reduceRule = function(cntx, rule, done) {
