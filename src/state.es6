@@ -37,7 +37,7 @@ let StateModule = {
         };
 
         this.getFirstFor = function(symbol) {
-          return code.firstTable[symbol].symbols;
+          return Array.from(code.firstTable[symbol].symbols);
         };
 
         let createTermsFor = function(symbol) {

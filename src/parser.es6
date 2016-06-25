@@ -1,3 +1,4 @@
+
 import Stream from 'stream';
 
 let rules, parseTable, input, stack, curNodes;
@@ -97,7 +98,7 @@ let processToken = function(token) {
 class Transformer extends Stream.Transform {
 
   constructor() {
-    super({ objectMode : true });
+    super({ objectMode: true });
   }
 
   _transform(token, encoding, done) {
@@ -115,3 +116,4 @@ class Transformer extends Stream.Transform {
 export default function() {
   return new Transformer();
 };
+

@@ -44,7 +44,7 @@ var StateModule = {
       };
 
       this.getFirstFor = function (symbol) {
-        return code.firstTable[symbol].symbols;
+        return Array.from(code.firstTable[symbol].symbols);
       };
 
       var createTermsFor = function createTermsFor(symbol) {
