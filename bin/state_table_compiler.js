@@ -48,7 +48,15 @@ var getRightTerminal = function getRightTerminal(term) {
 
 var State = function State(id, code, rootTerms) {
 
-  var terms = [].concat(rootTerms);
+  var state = this;
+
+  state.getRightNonterminal = getRightNonterminal;
+
+  state.getRightTerminal = getRightTerminal;
+
+  state.getRightSymbol = getRightSymbol;
+
+  state.terms = [].concat(rootTerms);
 
   var stateComplete = false;
 
@@ -106,12 +114,12 @@ var State = function State(id, code, rootTerms) {
         newTerms.forEach(function (term) {
           return termIndex[getId(term)] = true;
         });
-        terms = terms.concat(newTerms);
+        state.terms = state.terms.concat(newTerms);
       }
     };
 
-    var index = 0;while (index < terms.length) {
-      expandTerm(terms[index]);
+    var index = 0;while (index < state.terms.length) {
+      expandTerm(state.terms[index]);
       index++;
     }
 
@@ -121,7 +129,7 @@ var State = function State(id, code, rootTerms) {
   var createSymbolLookup = function createSymbolLookup() {
     if (symbolLookup) return;
     symbolLookup = {};
-    terms.filter(function (term) {
+    state.terms.filter(function (term) {
       return !!getRightSymbol(term);
     }).forEach(function (term) {
       return symbolLookup[getRightSymbol(term)] = true;
@@ -138,7 +146,7 @@ var State = function State(id, code, rootTerms) {
     completeState();
     createSymbolLookup();
     if (!symbolLookup[symbol]) return [];
-    return terms.filter(function (term) {
+    return state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
     }).map(function (term) {
       return createShiftTerm(term);
@@ -146,56 +154,11 @@ var State = function State(id, code, rootTerms) {
   };
 
   this.setGotoFor = function (symbol, value) {
-    terms.filter(function (term) {
+    state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
     }).forEach(function (term) {
       return term.goto = value;
     });
-  };
-
-  this.debugPrint = function () {
-    terms.forEach(function (term) {
-      return term.debugPrint();
-    });
-  };
-
-  this.createRow = function () {
-    var _this = this;
-
-    var row = {};
-    terms.filter(function (term) {
-      return getRightNonterminal(term);
-    }).forEach(function (term) {
-      row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
-    });
-    terms.filter(function (term) {
-      return getRightTerminal(term);
-    }).forEach(function (term) {
-      var terminal = getRightTerminal(term);
-      if (terminal === '$') {
-        row[terminal] = 'accept()';
-      } else {
-        row[terminal] = 'shift(' + term.goto + ')';
-      }
-    });
-    terms.filter(function (term) {
-      return !getRightSymbol(term);
-    }).forEach(function (term) {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-      var follow = _this.getFollowFor(term.left);
-      follow.forEach(function (symbol) {
-        row[symbol] = 'reduce(' + term.rule + ')';
-      });
-    });
-    return row;
-  };
-
-  this.render = function () {
-    var row = this.createRow();
-    var values = Object.keys(row).map(function (key) {
-      return '"' + key + '": ' + row[key];
-    }).join();
-    return '{ ' + values + ' }';
   };
 };
 

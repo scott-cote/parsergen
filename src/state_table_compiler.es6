@@ -20,7 +20,15 @@ let getRightTerminal = function(term) {
 
 let State = function(id, code, rootTerms) {
 
-  let terms = [].concat(rootTerms);
+  let state = this;
+
+  state.getRightNonterminal = getRightNonterminal;
+
+  state.getRightTerminal = getRightTerminal;
+
+  state.getRightSymbol = getRightSymbol;
+
+  state.terms = [].concat(rootTerms);
 
   let stateComplete = false;
 
@@ -72,12 +80,12 @@ let State = function(id, code, rootTerms) {
         let newTerms = createTermsFor(symbol)
           .filter(term => !termIndex[getId(term)]);
         newTerms.forEach(term => termIndex[getId(term)] = true);
-        terms = terms.concat(newTerms);
+        state.terms = state.terms.concat(newTerms);
       }
     };
 
-    let index = 0; while (index < terms.length) {
-      expandTerm(terms[index]);
+    let index = 0; while (index < state.terms.length) {
+      expandTerm(state.terms[index]);
       index++;
     }
 
@@ -87,7 +95,7 @@ let State = function(id, code, rootTerms) {
   let createSymbolLookup = function() {
     if (symbolLookup) return;
     symbolLookup = {};
-    terms
+    state.terms
       .filter(term => !!getRightSymbol(term))
       .forEach(term => symbolLookup[getRightSymbol(term)] = true);
   }
@@ -102,51 +110,16 @@ let State = function(id, code, rootTerms) {
     completeState();
     createSymbolLookup();
     if (!symbolLookup[symbol]) return [];
-    return terms
+    return state.terms
       .filter(term => symbol === getRightSymbol(term))
       .map(term => createShiftTerm(term));
   };
 
   this.setGotoFor = function(symbol, value) {
-    terms
+    state.terms
       .filter(term => symbol === getRightSymbol(term))
       .forEach(term => term.goto = value);
   };
-
-  this.debugPrint = function() {
-    terms.forEach(term => term.debugPrint());
-  };
-
-  this.createRow = function() {
-    let row = {};
-    terms.filter(term => getRightNonterminal(term)).forEach(term => {
-      row[getRightNonterminal(term)] = `goto(${term.goto})`;
-    });
-    terms.filter(term => getRightTerminal(term)).forEach(term => {
-      let terminal = getRightTerminal(term);
-      if (terminal === '$') {
-        row[terminal] = 'accept()';
-      } else {
-        row[terminal] = 'shift('+term.goto+')';
-      }
-    });
-    terms.filter(term => !getRightSymbol(term)).forEach(term => {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-      let follow = this.getFollowFor(term.left);
-      follow.forEach(symbol => {
-        row[symbol] = 'reduce('+term.rule+')';
-      });
-    });
-    return row;
-  };
-
-  this.render = function() {
-    let row = this.createRow();
-    let values = Object.keys(row).map(key => {
-      return `"${key}": ${row[key]}`;
-    }).join();
-    return `{ ${values} }`;
-  }
 };
 
 let generateStates = function(code) {
