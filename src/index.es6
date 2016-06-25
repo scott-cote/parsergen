@@ -20,12 +20,6 @@ let Generator = {
   }
 };
 
-let generator = function() {
-  return through.obj((chunk, enc, done) => {
-    let parser = Generator.createParser(chunk);
-    return done(null, parser);
-  });
-};
 class Transformer extends Stream.Transform {
 
   constructor() {

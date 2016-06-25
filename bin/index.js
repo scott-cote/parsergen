@@ -55,13 +55,6 @@ var Generator = {
   }
 };
 
-var generator = function generator() {
-  return through.obj(function (chunk, enc, done) {
-    var parser = Generator.createParser(chunk);
-    return done(null, parser);
-  });
-};
-
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
 
