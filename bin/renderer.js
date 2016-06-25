@@ -22,8 +22,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let renderer = function() {
-
 var render = function render(code) {
 
   var renderRuleTable = function renderRuleTable() {
@@ -40,14 +38,6 @@ var render = function render(code) {
 
   return '\nimport Stream from \'stream\';\n\nlet rules, parseTable, input, stack, curNodes;\n\nlet nodes = [];\n\nlet nodeStack = [];\n\nlet LeafNode = function(type, contents) {\n  this.id = nodes.length;\n  this.type = type;\n  this.contents = contents;\n  this.children = [];\n};\n\nlet TrunkNode = function(type, children) {\n  this.id = nodes.length;\n  this.type = type;\n  this.children = children.map(child => child.id);\n};\n\nlet shift = function(newState) {\n  return function(token, type) {\n    let node = new LeafNode(type, token);\n    nodes.push(node);\n    nodeStack.push(node);\n    stack.push(parseTable[newState]);\n    return true;\n  };\n};\n\nlet reduce = function(ruleIndex) {\n  return function(token, type) {\n    let rule = rules[ruleIndex];\n    curNodes = nodeStack.splice(-rule.rightCount, rule.rightCount);\n    stack.splice(-rule.rightCount, rule.rightCount)\n    input.push({ content: \'\', type: rule.left });\n  };\n};\n\nlet goto = function(newState) {\n  return function(token, type) {\n    let node = new TrunkNode(type, curNodes);\n    nodes.push(node);\n    nodeStack.push(node);\n    stack.push(parseTable[newState]);\n    return true;\n  };\n};\n\nlet accept = function() {\n  return function(token, type) {\n    curNodes = nodeStack.splice(-1, 1);\n    let node = new TrunkNode(type, curNodes);\n    nodes.push(node);\n    return true;\n  };\n}\n\nrules = [\n  ' + renderRuleTable() + '\n];\n\nparseTable = [\n  ' + renderStates() + '\n];\n\nstack = [parseTable[0]];\n\nlet processToken = function(token) {\n  input = [token];\n  while (input.length) {\n    let symbol = input[input.length-1];\n    let top = stack[stack.length-1];\n    if (top[symbol.type](symbol.content, symbol.type)) {\n      input.pop();\n    }\n  }\n};\n\nclass Transformer extends Stream.Transform {\n\n  constructor() {\n    super({ objectMode: true });\n  }\n\n  _transform(token, encoding, done) {\n    processToken(token);\n    done();\n  }\n\n  _flush(done) {\n    processToken({ content: \'\', type: \'$\' });\n    this.push(nodes);\n    done();\n  }\n};\n\nexport default function() {\n  return new Transformer();\n};\n\n';
 };
-
-/*
-  return thru.obj(function(code, encoding, done) {
-    this.push(render(code));
-    done();
-  });
-};
-*/
 
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
@@ -72,4 +62,5 @@ var Transformer = function (_Stream$Transform) {
 }(_stream2.default.Transform);
 
 ;
+
 ;

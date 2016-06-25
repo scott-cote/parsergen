@@ -1,18 +1,17 @@
 import Stream from 'stream';
 
-//let renderer = function() {
 
-  let render = function(code) {
+let render = function(code) {
 
-    let renderRuleTable = function() {
-      return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n  ');
-    };
+  let renderRuleTable = function() {
+    return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n  ');
+  };
 
-    let renderStates = function() {
-      return code.states.map(state => state.render()).join(',\n  ');
-    };
+  let renderStates = function() {
+    return code.states.map(state => state.render()).join(',\n  ');
+  };
 
-    return `
+  return `
 import Stream from 'stream';
 
 let rules, parseTable, input, stack, curNodes;
@@ -116,15 +115,7 @@ export default function() {
 };
 
 `;
-    };
-
-/*
-  return thru.obj(function(code, encoding, done) {
-    this.push(render(code));
-    done();
-  });
 };
-*/
 
 class Transformer extends Stream.Transform {
 
@@ -139,6 +130,7 @@ class Transformer extends Stream.Transform {
     done();
   }
 };
+
 export default function() {
   return new Transformer();
 };
