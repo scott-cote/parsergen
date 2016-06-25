@@ -1,6 +1,5 @@
 import Stream from 'stream';
 
-
 let compile = function(code) {
 
   code.rules = [{

@@ -31,13 +31,16 @@ var getId = function getId(term) {
     return element.symbol;
   }).join(':');
 };
+
 var getRightNonterminal = function getRightNonterminal(term) {
   var token = term.right[0];
   if (token && token.type === 'NONTERMINAL') return token.symbol;
 };
+
 var getRightSymbol = function getRightSymbol(term) {
   if (term.right[0]) return term.right[0].symbol;
 };
+
 var getRightTerminal = function getRightTerminal(term) {
   var token = term.right[0];
   if (token && token.type === 'TERMINAL') return token.symbol;
