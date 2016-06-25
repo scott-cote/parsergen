@@ -1,12 +1,6 @@
 import Stream from 'stream';
 
 /*
-let generateFollowFor = function(symbol, table, rules, firstTable) {
-
-  return new Promise((resolve, reject) => {
-  });
-};
-
 this.getFollowFor = function(nonterminal, follow, code) {
   let self = this;
   if (!follow[nonterminal]) {
@@ -32,6 +26,15 @@ this.getFollowFor = function(nonterminal, follow, code) {
 */
 
 let compile = function(code) {
+  code.followTable = {};
+  let result = Promise.resolve();
+  Object.keys(code.rules).forEach(rule => {
+    result = result.then(() => { /* generateFollowFor */});
+  });
+  return result;
+};
+
+   /*
   let table = {};
 
   let addToFollowSet = function(symbol, item) {
@@ -41,6 +44,8 @@ let compile = function(code) {
   };
 
   code.rules.forEach(rule => {
+    */
+    /*
     rule.right.forEach((symbol, index) => {
       if (symbol.type == 'NONTERMINAL') {
         let nextSymbol = rule.right[index+1];
@@ -55,9 +60,11 @@ let compile = function(code) {
         }
       }
     });
+    */
+    /*
   });
   return table;
-};
+  */
 
 class Transformer extends Stream.Transform {
 
@@ -68,8 +75,7 @@ class Transformer extends Stream.Transform {
 
   _transform(code, encoding, done) {
     console.log('follow run')
-    code.followTable = compile(code);
-    done(null, code);
+    compile(code).then(() => done(null, code));
   }
 };
 

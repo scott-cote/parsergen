@@ -19,12 +19,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /*
-let generateFollowFor = function(symbol, table, rules, firstTable) {
-
-  return new Promise((resolve, reject) => {
-  });
-};
-
 this.getFollowFor = function(nonterminal, follow, code) {
   let self = this;
   if (!follow[nonterminal]) {
@@ -50,32 +44,43 @@ this.getFollowFor = function(nonterminal, follow, code) {
 */
 
 var compile = function compile(code) {
-  var table = {};
-
-  var addToFollowSet = function addToFollowSet(symbol, item) {
-    var set = table[symbol] || new Set();
-    set.add(item);
-    table[symbol] = set;
-  };
-
-  code.rules.forEach(function (rule) {
-    rule.right.forEach(function (symbol, index) {
-      if (symbol.type == 'NONTERMINAL') {
-        var nextSymbol = rule.right[index + 1];
-        if (nextSymbol) {
-          // symbol then nextSymbol
-          var first = code.firstTable[nextSymbol.symbol];
-          Array.from(first.symbols).forEach(function (item) {
-            addToFollowSet(symbol.symbol, item);
-          });
-        } else {
-          // symbol at end
-        }
-      }
-    });
+  code.followTable = {};
+  var result = Promise.resolve();
+  Object.keys(code.rules).forEach(function (rule) {
+    result = result.then(function () {/* generateFollowFor */});
   });
-  return table;
+  return result;
 };
+
+/*
+let table = {};
+let addToFollowSet = function(symbol, item) {
+ let set = table[symbol] || new Set();
+ set.add(item);
+ table[symbol] = set;
+};
+code.rules.forEach(rule => {
+ */
+/*
+rule.right.forEach((symbol, index) => {
+  if (symbol.type == 'NONTERMINAL') {
+    let nextSymbol = rule.right[index+1];
+    if (nextSymbol) {
+      // symbol then nextSymbol
+      let first = code.firstTable[nextSymbol.symbol];
+      Array.from(first.symbols).forEach(item => {
+        addToFollowSet(symbol.symbol, item);
+      });
+    } else {
+      // symbol at end
+    }
+  }
+});
+*/
+/*
+});
+return table;
+*/
 
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
@@ -91,8 +96,9 @@ var Transformer = function (_Stream$Transform) {
     key: '_transform',
     value: function _transform(code, encoding, done) {
       console.log('follow run');
-      code.followTable = compile(code);
-      done(null, code);
+      compile(code).then(function () {
+        return done(null, code);
+      });
     }
   }]);
 
