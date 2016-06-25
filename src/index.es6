@@ -1,17 +1,9 @@
 import fs from 'fs';
 import Stream from 'stream';
 import ParserModule from './parser.js';
-//import RulesModule from './rules.js';
-//import SimpleRuleModule from './simple_rule.js';
-//import SimpleRulesModule from './simple_rules.js';
 import StateModule from './state.js';
-//import StatesModule from './states.js';
 
-//let SimpleRule = SimpleRuleModule.createClass(Term);
-//let SimpleRules = SimpleRulesModule.createClass(Term);
 let State = StateModule.createClass();
-//let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-//let States = StatesModule.createClass(State);
 
 let generateStates = function(code) {
 
@@ -19,33 +11,9 @@ let generateStates = function(code) {
 
   let rootTermsState = {};
 
-    let getId = function(term) {
-      return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
-    };
-
-    /*
-
-    let getRightNonterminal = function(term) {
-      let token = term.right[0];
-      if (token && token.type === 'NONTERMINAL') return token.symbol;
-    };
-  this.debugPrint = function() {
-    states.forEach((state, index) => {
-      console.log('');
-      console.log('I'+index);
-      state.debugPrint();
-    });
+  let getId = function(term) {
+    return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
   };
-
-  this.printTable = function() {
-    states.forEach((state, index) => {
-      let row = state.createRow();
-      row.state = index;
-      console.log(JSON.stringify(row));
-    });
-  };
-
-  */
 
   let getRootTerm = function() {
     let rule = code.rules[0];
@@ -70,6 +38,7 @@ let generateStates = function(code) {
     });
     index++;
   }
+
   return states;
 };
 
@@ -86,6 +55,7 @@ class Transformer extends Stream.Transform {
     return done(null, code);
   }
 };
+
 export default function() {
   return new Transformer();
 };

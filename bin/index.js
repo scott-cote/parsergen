@@ -33,18 +33,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-//import RulesModule from './rules.js';
-//import SimpleRuleModule from './simple_rule.js';
-//import SimpleRulesModule from './simple_rules.js';
 
-
-//import StatesModule from './states.js';
-
-//let SimpleRule = SimpleRuleModule.createClass(Term);
-//let SimpleRules = SimpleRulesModule.createClass(Term);
 var State = _state2.default.createClass();
-//let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-//let States = StatesModule.createClass(State);
 
 var generateStates = function generateStates(code) {
 
@@ -59,27 +49,6 @@ var generateStates = function generateStates(code) {
       return element.symbol;
     }).join(':');
   };
-
-  /*
-   let getRightNonterminal = function(term) {
-    let token = term.right[0];
-    if (token && token.type === 'NONTERMINAL') return token.symbol;
-  };
-  this.debugPrint = function() {
-  states.forEach((state, index) => {
-    console.log('');
-    console.log('I'+index);
-    state.debugPrint();
-  });
-  };
-  this.printTable = function() {
-  states.forEach((state, index) => {
-    let row = state.createRow();
-    row.state = index;
-    console.log(JSON.stringify(row));
-  });
-  };
-  */
 
   var getRootTerm = function getRootTerm() {
     var rule = code.rules[0];
@@ -106,6 +75,7 @@ var generateStates = function generateStates(code) {
     });
     index++;
   }
+
   return states;
 };
 
@@ -132,4 +102,5 @@ var Transformer = function (_Stream$Transform) {
 }(_stream2.default.Transform);
 
 ;
+
 ;
