@@ -35,45 +35,6 @@ let getSortedRules = function(rules) {
   }, []).map(rule => rule.orgRule);
 };
 
-/*
-let canRuleBeEmpty = function(rule) {
-  // this is wrong ... canBeEmpty is part of the table
-  return -1 === rule.right.findIndex(element => { return !element.canBeEmpty });
-};
-*/
-
-/*
-let generateNonterminalSymbols = function(symbol, rule, terminalTable, nonterminalTable) {
-  return rule.right.reduce((cntx, element) => {
-    if (cntx.done || element.symbol === symbol) return cntx;
-    cntx.done = !element.canBeEmpty;
-    let expandedSymbols = terminalTable[element.symbol] || nonterminalTable[element.symbol];
-    cntx.symbols = cntx.symbols.concat(expandedSymbols);
-    return cntx;
-  }, { done: false, symbols: [] }).symbols;
-};
-
-let generateNonterminalEntry = function(terminalTable, nonterminalTable, rules) {
-  return rules.reduce((cntx, rule) => {
-    cntx.canBeEmpty = cntx.canBeEmpty || canRuleBeEmpty(rule);
-    cntx.symbols = cntx.symbols.concat(generateNonterminalSymbols(rule));
-    return cntx;
-  }, { canBeEmpty: false, symbols: [] });
-};
-
-*/
-
-/*
-let generateNonterminalEntries = function(terminalTable, options) {
-  return getSortedRules(options.rules).reduce((nonterminalTable, rule) => {
-    let record = nonterminalTable[rule.left] || { canBeEmpty: false, symbols: new Set() };
-    record.canBeEmpty = record.canBeEmpty || rule.left.length === 0;
-    record.symbols = new Set([...record.symbols, ...getFirstForRule(rule, nonterminalTable)]);
-    nonterminalTable[rule.left] = record;
-  }, {});
-};
-*/
-
 let generateFirstFor = function(symbol, table, ruleIndex) {
 
   let reduceRule = function(cntx, rule, done) {
