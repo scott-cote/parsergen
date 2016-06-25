@@ -22,12 +22,30 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var compiler = function compiler() {
-  return thru.obj(function (code, encoding, done) {
-    this.push(code);
-    done();
-  });
+/*
+this.getFollowFor = function(nonterminal) {
+  let self = this;
+  if (!follow[nonterminal]) {
+    let allFollow = code.rules.reduce((outterValue, rule) => {
+      outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
+        if (nonterminal === token.symbol) {
+          if (index < array.length-1) {
+            let newVal = self.getFirstFor(array[index+1].symbol);
+            return value.concat(newVal);
+          } else {
+            let newVal = self.getFollowFor(rule.left);
+            return value.concat(newVal);
+          }
+        }
+        return value;
+      }, []));
+      return outterValue;
+    }, []);
+    follow[nonterminal] = [...new Set(allFollow)];
+  }
+  return follow[nonterminal];
 };
+*/
 
 var Transformer = function (_Stream$Transform) {
   _inherits(Transformer, _Stream$Transform);
