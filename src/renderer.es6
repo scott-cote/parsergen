@@ -8,6 +8,10 @@ import Stream from 'stream';
       return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n  ');
     };
 
+    let renderStates = function() {
+      return code.states.map(state => state.render()).join(',\n  ');
+    };
+
     return `
 import Stream from 'stream';
 
@@ -73,7 +77,7 @@ rules = [
 ];
 
 parseTable = [
-  ${code.states.render()}
+  ${renderStates()}
 ];
 
 stack = [parseTable[0]];

@@ -26,10 +26,6 @@ var _state = require('./state.js');
 
 var _state2 = _interopRequireDefault(_state);
 
-var _states = require('./states.js');
-
-var _states2 = _interopRequireDefault(_states);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42,15 +38,83 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //import SimpleRulesModule from './simple_rules.js';
 
 
+//import StatesModule from './states.js';
+
 //let SimpleRule = SimpleRuleModule.createClass(Term);
 //let SimpleRules = SimpleRulesModule.createClass(Term);
 var State = _state2.default.createClass();
 //let GeneratorRules = RulesModule.createClass(SimpleRule, SimpleRules);
-var States = _states2.default.createClass(State);
+//let States = StatesModule.createClass(State);
+
+var generateStates = function generateStates(code) {
+
+  var states = [];
+
+  var rootTermsState = {};
+
+  var getId = function getId(term) {
+    return term.left + '>' + term.middle.map(function (element) {
+      return element.symbol;
+    }).join(':') + '.' + term.right.map(function (element) {
+      return element.symbol;
+    }).join(':');
+  };
+
+  /*
+   let getRightNonterminal = function(term) {
+    let token = term.right[0];
+    if (token && token.type === 'NONTERMINAL') return token.symbol;
+  };
+  this.debugPrint = function() {
+  states.forEach((state, index) => {
+    console.log('');
+    console.log('I'+index);
+    state.debugPrint();
+  });
+  };
+  this.printTable = function() {
+  states.forEach((state, index) => {
+    let row = state.createRow();
+    row.state = index;
+    console.log(JSON.stringify(row));
+  });
+  };
+  this.render = function() {
+  return states.map(state => state.render()).join(',\n  ');
+  };
+  */
+
+  var getRootTerm = function getRootTerm() {
+    var rule = code.rules[0];
+    return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
+  };
+
+  states.push(new State(0, code, getRootTerm()));
+
+  var index = 0;while (index < states.length) {
+    code.symbols.forEach(function (symbol) {
+      if (symbol === '$') return;
+      var rootTerms = states[index].getRootTermsFor(symbol);
+      if (rootTerms.length) {
+        var id = rootTerms.map(function (term) {
+          return getId(term);
+        }).sort().join();
+        var state = rootTermsState[id] || states.length;
+        if (state === states.length) {
+          rootTermsState[id] = state;
+          states.push(new State(states.length, code, rootTerms));
+        }
+        states[index].setGotoFor(symbol, state);
+      }
+    });
+    index++;
+  }
+  return states;
+};
 
 var Generator = {
   createParser: function createParser(code) {
-    code.states = new States(code);
+    code.states = generateStates(code);
     return code;
   }
 };
