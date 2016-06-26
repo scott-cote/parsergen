@@ -1,6 +1,8 @@
 import Stream from 'stream';
+import asyncReduce from 'async-reduce';
 
 /*
+
 this.getFollowFor = function(nonterminal, follow, code) {
   let self = this;
   if (!follow[nonterminal]) {
@@ -23,6 +25,7 @@ this.getFollowFor = function(nonterminal, follow, code) {
   }
   return follow[nonterminal];
 };
+
 */
 
 /*
@@ -37,18 +40,34 @@ this.getFollowFor = function(nonterminal, follow, code) {
 
 */
 
-let generateFollowFor = function(symbol, table, rules) {
-  return new Promise((resolve, reject) => {
-    resolve();
+// reduceRule collectRule
+
+// reduceRules collectRules
+
+let processRule = function(symbol, table, rule) {
+  let result = Promise.resolve();
+  rule.right.forEach((item, index) => {
+    result = result.then(() => processProcessItem(symbol, table, item, index));
   });
+  return result;
+};
+
+let generateFollowFor = function(symbol, table, rules) {
+  let result = Promise.resolve();
+  rules.forEach(rule => {
+    result = result.then(() => processRule(symbol, table, rule));
+  });
+  return result;
 };
 
 let compile = function(code) {
   code.followTable = {};
   let result = Promise.resolve();
+  /*
   code.nonterminals.forEach(symbol => {
     result = result.then(() => generateFollowFor(symbol, code.followTable, code.rules));
   });
+  */
   return result;
 };
 

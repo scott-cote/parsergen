@@ -10,6 +10,10 @@ var _stream = require('stream');
 
 var _stream2 = _interopRequireDefault(_stream);
 
+var _asyncReduce = require('async-reduce');
+
+var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -19,6 +23,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /*
+
 this.getFollowFor = function(nonterminal, follow, code) {
   let self = this;
   if (!follow[nonterminal]) {
@@ -41,6 +46,7 @@ this.getFollowFor = function(nonterminal, follow, code) {
   }
   return follow[nonterminal];
 };
+
 */
 
 /*
@@ -55,20 +61,38 @@ this.getFollowFor = function(nonterminal, follow, code) {
 
 */
 
-var generateFollowFor = function generateFollowFor(symbol, table, rules) {
-  return new Promise(function (resolve, reject) {
-    resolve();
+// reduceRule collectRule
+
+// reduceRules collectRules
+
+var processRule = function processRule(symbol, table, rule) {
+  var result = Promise.resolve();
+  rule.right.forEach(function (item, index) {
+    result = result.then(function () {
+      return processProcessItem(symbol, table, item, index);
+    });
   });
+  return result;
+};
+
+var generateFollowFor = function generateFollowFor(symbol, table, rules) {
+  var result = Promise.resolve();
+  rules.forEach(function (rule) {
+    result = result.then(function () {
+      return processRule(symbol, table, rule);
+    });
+  });
+  return result;
 };
 
 var compile = function compile(code) {
   code.followTable = {};
   var result = Promise.resolve();
-  code.nonterminals.forEach(function (symbol) {
-    result = result.then(function () {
-      return generateFollowFor(symbol, code.followTable, code.rules);
-    });
+  /*
+  code.nonterminals.forEach(symbol => {
+    result = result.then(() => generateFollowFor(symbol, code.followTable, code.rules));
   });
+  */
   return result;
 };
 
