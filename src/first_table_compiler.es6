@@ -1,5 +1,5 @@
 import Stream from 'stream';
-import asyncReduce from 'async-reduce';
+//import asyncReduce from 'async-reduce';
 
 let generateTerminalEntries = function(terminals) {
   return Array.from(terminals.keys()).reduce((table, symbol) => {
@@ -10,7 +10,11 @@ let generateTerminalEntries = function(terminals) {
 
 let generateFirstFor = function(symbol, table, ruleIndex) {
 
-  let reduceRule = function(cntx, rule, done) {
+  let ruleReduction = { canBeEmpty: false, symbols: [] };
+
+  let reduceRule = function(rule) {
+
+    /*
 
     //console.log('reduceRule '+rule.left);
 
@@ -37,8 +41,46 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
 
     asyncReduce(rule.right.map(element => element.symbol).filter(symbol => symbol != rule.left),
       { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
+
+    */
+
+    let itemReduction = { canBeEmpty: true, symbols: [] };
+
+    let reduceItem = function(item) {
+      if (!itemReduction.canBeEmpty) return;
+      return generateFirstFor(item.symbol, table, ruleIndex).then(() => {
+        let first = table[item.symbol];
+        itemReduction.symbols = itemReduction.symbols.concat(first.symbols);
+        if (!first.canBeEmpty) itemReduction.canBeEmpty = false;
+      });
+    };
+
+    let result = Promise.resolve();
+
+    rule.right.filter(item => item.symbol != rule.left).forEach(item => {
+      result = result.then(() => reduceItem(item));
+    });
+
+    return result.then(() => {
+      ruleReduction.canBeEmpty = ruleReduction.canBeEmpty || itemReduction.canBeEmpty;
+      ruleReduction.symbols = ruleReduction.symbols.concat(itemReduction.symbols);
+      return
+    });
   };
 
+  let result = Promise.resolve();
+
+  if (!table[symbol]) {
+    ruleIndex[symbol].forEach(rule => {
+      result = result.then(() => reduceRule(rule));
+    });
+    result = result.then(() => {
+      table[symbol] = ruleReduction;
+    });
+  }
+
+  return result;
+  /*
   return new Promise((resolve, reject) => {
     if (!!table[symbol]) {
       //console.log('skipping, '+symbol+' already generated');
@@ -54,6 +96,7 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
       reduceRule, collectResults
     );
   });
+  */
 };
 
 let generateNonterminalEntries = function(table, options) {
