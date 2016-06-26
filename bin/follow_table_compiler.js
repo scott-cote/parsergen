@@ -43,11 +43,20 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
+var generateFollowFor = function generateFollowFor(symbol, table) {
+  return new Promise(function (resolve, reject) {
+    if (table[symbol]) return resolve();
+    resolve();
+  });
+};
+
 var compile = function compile(code) {
   code.followTable = {};
   var result = Promise.resolve();
-  Object.keys(code.rules).forEach(function (rule) {
-    result = result.then(function () {/* generateFollowFor */});
+  code.nonterminals.forEach(function (symbol) {
+    result = result.then(function () {
+      return generateFollowFor(symbol, code.followTable);
+    });
   });
   return result;
 };
@@ -98,7 +107,7 @@ var Transformer = function (_Stream$Transform) {
       console.log('follow run');
       compile(code).then(function () {
         return done(null, code);
-      });
+      }).catch(done);
     }
   }]);
 

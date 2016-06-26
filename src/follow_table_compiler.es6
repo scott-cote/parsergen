@@ -25,11 +25,18 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
+let generateFollowFor = function(symbol, table) {
+  return new Promise((resolve, reject) => {
+    if (table[symbol]) return resolve();
+    resolve();
+  });
+};
+
 let compile = function(code) {
   code.followTable = {};
   let result = Promise.resolve();
-  Object.keys(code.rules).forEach(rule => {
-    result = result.then(() => { /* generateFollowFor */});
+  code.nonterminals.forEach(symbol => {
+    result = result.then(() => generateFollowFor(symbol, code.followTable));
   });
   return result;
 };
@@ -75,7 +82,7 @@ class Transformer extends Stream.Transform {
 
   _transform(code, encoding, done) {
     console.log('follow run')
-    compile(code).then(() => done(null, code));
+    compile(code).then(() => done(null, code)).catch(done);
   }
 };
 
