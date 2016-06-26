@@ -18,8 +18,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//import asyncReduce from 'async-reduce';
-
 var generateTerminalEntries = function generateTerminalEntries(terminals) {
   return Array.from(terminals.keys()).reduce(function (table, symbol) {
     table[symbol] = { canBeEmpty: false, symbols: [symbol] };
@@ -32,29 +30,6 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
   var ruleReduction = { canBeEmpty: false, symbols: [] };
 
   var reduceRule = function reduceRule(rule) {
-
-    /*
-     //console.log('reduceRule '+rule.left);
-     let reduceSymbol = function(cntx, symbol, done) {
-       //console.log('reduceSymbol '+symbol);
-       if (!cntx.canBeEmpty) done(null, cntx);
-      generateFirstFor(symbol, table, ruleIndex).then(() => {
-          //console.log('Got results for '+symbol);
-          let first = table[symbol];
-          cntx.symbols = cntx.symbols.concat(first.symbols);
-          if (!first.canBeEmpty) cntx.canBeEmpty = false;
-          done(null, cntx);
-        }).catch(done);
-    };
-     let collectResults = function(err, results) {
-      if (err) return done(err);
-      cntx.canBeEmpty = cntx.canBeEmpty || results.canBeEmpty;
-      cntx.symbols = cntx.symbols.concat(results.symbols);
-      done(null, cntx);
-    };
-     asyncReduce(rule.right.map(element => element.symbol).filter(symbol => symbol != rule.left),
-      { canBeEmpty: true, symbols: [] }, reduceSymbol, collectResults);
-     */
 
     var itemReduction = { canBeEmpty: true, symbols: [] };
 
@@ -98,23 +73,6 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
   }
 
   return result;
-  /*
-  return new Promise((resolve, reject) => {
-    if (!!table[symbol]) {
-      //console.log('skipping, '+symbol+' already generated');
-      return resolve();
-    }
-    let collectResults = function(err, result) {
-      if (err) return reject(err);
-      table[symbol] = result;
-      //console.log(symbol+' = '+JSON.stringify(table[symbol]));
-      resolve();
-    };
-    asyncReduce(ruleIndex[symbol], { canBeEmpty: false, symbols: [] },
-      reduceRule, collectResults
-    );
-  });
-  */
 };
 
 var generateNonterminalEntries = function generateNonterminalEntries(table, options) {

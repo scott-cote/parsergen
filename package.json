@@ -1,6 +1,6 @@
 {
   "name": "parsergen",
-  "version": "0.0.2-alpha-2016062500",
+  "version": "0.0.2-alpha-2016062600",
   "description": "A parser generator for Javascript.",
   "main": "bin/index.js",
   "scripts": {
@@ -30,7 +30,6 @@
     "mocha": "^2.5.3"
   },
   "dependencies": {
-    "async-reduce": "0.0.1",
     "merge-stream": "^1.0.0",
     "minimist": "^1.2.0",
     "tokenizer": "^1.1.2"

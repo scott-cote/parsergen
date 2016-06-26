@@ -1,5 +1,4 @@
 import Stream from 'stream';
-import asyncReduce from 'async-reduce';
 
 /*
 

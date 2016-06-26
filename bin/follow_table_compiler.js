@@ -10,10 +10,6 @@ var _stream = require('stream');
 
 var _stream2 = _interopRequireDefault(_stream);
 
-var _asyncReduce = require('async-reduce');
-
-var _asyncReduce2 = _interopRequireDefault(_asyncReduce);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
