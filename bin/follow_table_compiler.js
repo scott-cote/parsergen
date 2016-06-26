@@ -43,9 +43,20 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
-var generateFollowFor = function generateFollowFor(symbol, table) {
+/*
+
+  for each rule in rules
+    for each item and index in rule.right
+      if item.symbol == symbol
+        nextItem = rule.right[index+1]
+        if nextItem, traverse next chain adding first until !first.canBeEmpty
+          or you reach the end. If end, add generateFollowFor(rule.left)
+        else add generateFollowFor(rule.left)
+
+*/
+
+var generateFollowFor = function generateFollowFor(symbol, table, rules) {
   return new Promise(function (resolve, reject) {
-    if (table[symbol]) return resolve();
     resolve();
   });
 };
@@ -55,7 +66,7 @@ var compile = function compile(code) {
   var result = Promise.resolve();
   code.nonterminals.forEach(function (symbol) {
     result = result.then(function () {
-      return generateFollowFor(symbol, code.followTable);
+      return generateFollowFor(symbol, code.followTable, code.rules);
     });
   });
   return result;

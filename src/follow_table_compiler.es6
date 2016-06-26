@@ -25,9 +25,20 @@ this.getFollowFor = function(nonterminal, follow, code) {
 };
 */
 
-let generateFollowFor = function(symbol, table) {
+/*
+
+  for each rule in rules
+    for each item and index in rule.right
+      if item.symbol == symbol
+        nextItem = rule.right[index+1]
+        if nextItem, traverse next chain adding first until !first.canBeEmpty
+          or you reach the end. If end, add generateFollowFor(rule.left)
+        else add generateFollowFor(rule.left)
+
+*/
+
+let generateFollowFor = function(symbol, table, rules) {
   return new Promise((resolve, reject) => {
-    if (table[symbol]) return resolve();
     resolve();
   });
 };
@@ -36,7 +47,7 @@ let compile = function(code) {
   code.followTable = {};
   let result = Promise.resolve();
   code.nonterminals.forEach(symbol => {
-    result = result.then(() => generateFollowFor(symbol, code.followTable));
+    result = result.then(() => generateFollowFor(symbol, code.followTable, code.rules));
   });
   return result;
 };
