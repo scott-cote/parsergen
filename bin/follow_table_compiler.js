@@ -57,38 +57,42 @@ this.getFollowFor = function(nonterminal, follow, code) {
 
 */
 
-// reduceRule collectRule
-
-// reduceRules collectRules
-
-var processRule = function processRule(symbol, table, rule) {
-  var result = Promise.resolve();
-  rule.right.forEach(function (item, index) {
-    result = result.then(function () {
-      return processProcessItem(symbol, table, item, index);
-    });
-  });
-  return result;
-};
-
 var generateFollowFor = function generateFollowFor(symbol, table, rules) {
+
+  var reduceItem = function reduceItem(item) {
+    var result = Promise.resolve();
+    return result;
+  };
+
+  var reduceRule = function reduceRule(rule) {
+    var result = Promise.resolve();
+    rule.right.forEach(function (item, index) {
+      result = result.then(function () {
+        return reduceItem(item);
+      });
+    });
+    return result;
+  };
+
   var result = Promise.resolve();
+
   rules.forEach(function (rule) {
     result = result.then(function () {
-      return processRule(symbol, table, rule);
+      return reduceRule(rule);
     });
   });
+
   return result;
 };
 
 var compile = function compile(code) {
   code.followTable = {};
   var result = Promise.resolve();
-  /*
-  code.nonterminals.forEach(symbol => {
-    result = result.then(() => generateFollowFor(symbol, code.followTable, code.rules));
+  code.nonterminals.forEach(function (symbol) {
+    result = result.then(function () {
+      return generateFollowFor(symbol, code.followTable, code.rules);
+    });
   });
-  */
   return result;
 };
 
