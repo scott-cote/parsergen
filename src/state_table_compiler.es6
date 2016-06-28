@@ -195,6 +195,7 @@ class Transformer extends Stream.Transform {
   _transform(code, encoding, done) {
     console.log('Running generator');
     code.states = generateStates(code);
+    code.stateTable = code.states.map(state => state.row);
     return done(null, code);
   }
 };

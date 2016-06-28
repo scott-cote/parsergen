@@ -252,6 +252,9 @@ var Transformer = function (_Stream$Transform) {
     value: function _transform(code, encoding, done) {
       console.log('Running generator');
       code.states = generateStates(code);
+      code.stateTable = code.states.map(function (state) {
+        return state.row;
+      });
       return done(null, code);
     }
   }]);

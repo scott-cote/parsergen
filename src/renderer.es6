@@ -6,15 +6,15 @@ let render = function(code) {
     return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n  ');
   };
 
-  let renderState = function(state) {
-    let values = Object.keys(state.row).map(key => {
-      return `"${key}": ${state.row[key]}`;
+  let renderRow = function(row) {
+    let values = Object.keys(row).map(key => {
+      return `"${key}": ${row[key]}`;
     }).join();
     return `{ ${values} }`;
   };
 
   let renderStates = function() {
-    return code.states.map(state => renderState(state)).join(',\n  ');
+    return code.stateTable.map(row => renderRow(row)).join(',\n  ');
   };
 
   return `
