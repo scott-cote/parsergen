@@ -13,31 +13,9 @@ let render = function(code) {
   };
   */
 
-  let createRow = function(state) {
-    let row = {};
-    state.terms.filter(term => state.getRightNonterminal(term)).forEach(term => {
-      row[state.getRightNonterminal(term)] = `goto(${term.goto})`;
-    });
-    state.terms.filter(term => state.getRightTerminal(term)).forEach(term => {
-      let terminal = state.getRightTerminal(term);
-      if (terminal === '$') {
-        row[terminal] = 'accept()';
-      } else {
-        row[terminal] = 'shift('+term.goto+')';
-      }
-    });
-    state.terms.filter(term => !state.getRightSymbol(term)).forEach(term => {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-      let follow = state.getFollowFor(term.left);
-      follow.forEach(symbol => {
-        row[symbol] = 'reduce('+term.rule+')';
-      });
-    });
-    return row;
-  };
 
   let renderState = function(state) {
-    let row = createRow(state);
+    let row = state.createRow();
     let values = Object.keys(row).map(key => {
       return `"${key}": ${row[key]}`;
     }).join();

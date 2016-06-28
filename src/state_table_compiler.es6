@@ -22,6 +22,8 @@ let State = function(id, code, rootTerms) {
 
   let state = this;
 
+  state.row = {};
+
   state.getRightNonterminal = getRightNonterminal;
 
   state.getRightTerminal = getRightTerminal;
@@ -35,6 +37,28 @@ let State = function(id, code, rootTerms) {
   let symbolLookup;
 
   let follow = {};
+
+  state.createRow = function() {
+    state.terms.filter(term => state.getRightNonterminal(term)).forEach(term => {
+      state.row[state.getRightNonterminal(term)] = `goto(${term.goto})`;
+    });
+    state.terms.filter(term => state.getRightTerminal(term)).forEach(term => {
+      let terminal = state.getRightTerminal(term);
+      if (terminal === '$') {
+        state.row[terminal] = 'accept()';
+      } else {
+        state.row[terminal] = 'shift('+term.goto+')';
+      }
+    });
+    state.terms.filter(term => !state.getRightSymbol(term)).forEach(term => {
+      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+      let follow = state.getFollowFor(term.left);
+      follow.forEach(symbol => {
+        state.row[symbol] = 'reduce('+term.rule+')';
+      });
+    });
+    return state.row;
+  };
 
   this.getFollowFor = function(nonterminal) {
     let self = this;

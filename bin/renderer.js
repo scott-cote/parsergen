@@ -36,37 +36,8 @@ var render = function render(code) {
   };
   */
 
-  var createRow = function createRow(state) {
-    var row = {};
-    state.terms.filter(function (term) {
-      return state.getRightNonterminal(term);
-    }).forEach(function (term) {
-      row[state.getRightNonterminal(term)] = 'goto(' + term.goto + ')';
-    });
-    state.terms.filter(function (term) {
-      return state.getRightTerminal(term);
-    }).forEach(function (term) {
-      var terminal = state.getRightTerminal(term);
-      if (terminal === '$') {
-        row[terminal] = 'accept()';
-      } else {
-        row[terminal] = 'shift(' + term.goto + ')';
-      }
-    });
-    state.terms.filter(function (term) {
-      return !state.getRightSymbol(term);
-    }).forEach(function (term) {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
-      var follow = state.getFollowFor(term.left);
-      follow.forEach(function (symbol) {
-        row[symbol] = 'reduce(' + term.rule + ')';
-      });
-    });
-    return row;
-  };
-
   var renderState = function renderState(state) {
-    var row = createRow(state);
+    var row = state.createRow();
     var values = Object.keys(row).map(function (key) {
       return '"' + key + '": ' + row[key];
     }).join();

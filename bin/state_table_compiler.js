@@ -50,6 +50,8 @@ var State = function State(id, code, rootTerms) {
 
   var state = this;
 
+  state.row = {};
+
   state.getRightNonterminal = getRightNonterminal;
 
   state.getRightTerminal = getRightTerminal;
@@ -63,6 +65,34 @@ var State = function State(id, code, rootTerms) {
   var symbolLookup = void 0;
 
   var follow = {};
+
+  state.createRow = function () {
+    state.terms.filter(function (term) {
+      return state.getRightNonterminal(term);
+    }).forEach(function (term) {
+      state.row[state.getRightNonterminal(term)] = 'goto(' + term.goto + ')';
+    });
+    state.terms.filter(function (term) {
+      return state.getRightTerminal(term);
+    }).forEach(function (term) {
+      var terminal = state.getRightTerminal(term);
+      if (terminal === '$') {
+        state.row[terminal] = 'accept()';
+      } else {
+        state.row[terminal] = 'shift(' + term.goto + ')';
+      }
+    });
+    state.terms.filter(function (term) {
+      return !state.getRightSymbol(term);
+    }).forEach(function (term) {
+      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
+      var follow = state.getFollowFor(term.left);
+      follow.forEach(function (symbol) {
+        state.row[symbol] = 'reduce(' + term.rule + ')';
+      });
+    });
+    return state.row;
+  };
 
   this.getFollowFor = function (nonterminal) {
     var self = this;
