@@ -178,6 +178,7 @@ let generateStates = function(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
+    states[index].createRow();
     index++;
   }
 

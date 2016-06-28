@@ -230,6 +230,7 @@ var generateStates = function generateStates(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
+    states[index].createRow();
     index++;
   }
 

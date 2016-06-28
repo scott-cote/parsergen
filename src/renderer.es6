@@ -1,23 +1,14 @@
 import Stream from 'stream';
 
-
 let render = function(code) {
 
   let renderRuleTable = function() {
     return code.ruleTable.map(rule => JSON.stringify(rule)).join(',\n  ');
   };
 
-  /*
-  this.debugPrint = function() {
-    terms.forEach(term => term.debugPrint());
-  };
-  */
-
-
   let renderState = function(state) {
-    let row = state.createRow();
-    let values = Object.keys(row).map(key => {
-      return `"${key}": ${row[key]}`;
+    let values = Object.keys(state.row).map(key => {
+      return `"${key}": ${state.row[key]}`;
     }).join();
     return `{ ${values} }`;
   };

@@ -30,16 +30,9 @@ var render = function render(code) {
     }).join(',\n  ');
   };
 
-  /*
-  this.debugPrint = function() {
-    terms.forEach(term => term.debugPrint());
-  };
-  */
-
   var renderState = function renderState(state) {
-    var row = state.createRow();
-    var values = Object.keys(row).map(function (key) {
-      return '"' + key + '": ' + row[key];
+    var values = Object.keys(state.row).map(function (key) {
+      return '"' + key + '": ' + state.row[key];
     }).join();
     return '{ ' + values + ' }';
   };
