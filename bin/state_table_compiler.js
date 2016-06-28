@@ -167,7 +167,7 @@ var State = function State(id, code, rootTerms) {
     });
   };
 
-  this.getRootTermsFor = function (symbol) {
+  this.getSeedTermsFor = function (symbol) {
 
     var createShiftTerm = function createShiftTerm(term) {
       var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
@@ -217,15 +217,15 @@ var generateStates = function generateStates(code) {
   var index = 0;while (index < states.length) {
     code.symbols.forEach(function (symbol) {
       if (symbol === '$') return;
-      var rootTerms = states[index].getRootTermsFor(symbol);
-      if (rootTerms.length) {
-        var id = rootTerms.map(function (term) {
+      var seedTerms = states[index].getSeedTermsFor(symbol);
+      if (seedTerms.length) {
+        var id = seedTerms.map(function (term) {
           return getId(term);
         }).sort().join();
         var state = rootTermsState[id] || states.length;
         if (state === states.length) {
           rootTermsState[id] = state;
-          states.push(new State(states.length, code, rootTerms));
+          states.push(new State(states.length, code, seedTerms));
         }
         states[index].setGotoFor(symbol, state);
       }

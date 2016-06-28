@@ -125,7 +125,7 @@ let State = function(id, code, rootTerms) {
       .forEach(term => symbolLookup[getRightSymbol(term)] = true);
   }
 
-  this.getRootTermsFor = function(symbol) {
+  this.getSeedTermsFor = function(symbol) {
 
     let createShiftTerm = function(term) {
       let newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
@@ -167,13 +167,13 @@ let generateStates = function(code) {
   let index = 0; while (index < states.length) {
     code.symbols.forEach(symbol => {
       if (symbol === '$') return;
-      let rootTerms = states[index].getRootTermsFor(symbol);
-      if (rootTerms.length) {
-        let id = rootTerms.map(term => getId(term)).sort().join();
+      let seedTerms = states[index].getSeedTermsFor(symbol);
+      if (seedTerms.length) {
+        let id = seedTerms.map(term => getId(term)).sort().join();
         let state = rootTermsState[id] || states.length;
         if (state === states.length) {
           rootTermsState[id] = state;
-          states.push(new State(states.length, code, rootTerms));
+          states.push(new State(states.length, code, seedTerms));
         }
         states[index].setGotoFor(symbol, state);
       }
