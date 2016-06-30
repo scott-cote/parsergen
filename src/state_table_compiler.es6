@@ -44,7 +44,7 @@ let State = function(id, code, rootTerms) {
 
     let termIndex = {};
 
-    let expandTerm = function(term) {
+    let expandTerm = function(state, term) {
       let symbol = getRightNonterminal(term);
       if (symbol) {
         let newTerms = createTermsFor(symbol)
@@ -55,7 +55,7 @@ let State = function(id, code, rootTerms) {
     };
 
     let index = 0; while (index < state.terms.length) {
-      expandTerm(state.terms[index]);
+      expandTerm(state, state.terms[index]);
       index++;
     }
 

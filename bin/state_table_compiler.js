@@ -72,7 +72,7 @@ var State = function State(id, code, rootTerms) {
 
     var termIndex = {};
 
-    var expandTerm = function expandTerm(term) {
+    var expandTerm = function expandTerm(state, term) {
       var symbol = getRightNonterminal(term);
       if (symbol) {
         var newTerms = createTermsFor(symbol).filter(function (term) {
@@ -86,7 +86,7 @@ var State = function State(id, code, rootTerms) {
     };
 
     var index = 0;while (index < state.terms.length) {
-      expandTerm(state.terms[index]);
+      expandTerm(state, state.terms[index]);
       index++;
     }
 
