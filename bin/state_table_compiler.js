@@ -24,6 +24,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+var follow = {};
+
 var getFirstFor = function getFirstFor(code, symbol) {
   return Array.from(code.firstTable[symbol].symbols);
 };
@@ -50,7 +52,7 @@ var getRightTerminal = function getRightTerminal(term) {
   if (token && token.type === 'TERMINAL') return token.symbol;
 };
 
-var createRow = function createRow(state) {
+var createRow = function createRow(code, state) {
   state.terms.filter(function (term) {
     return getRightNonterminal(term);
   }).forEach(function (term) {
@@ -69,7 +71,7 @@ var createRow = function createRow(state) {
   state.terms.filter(function (term) {
     return !getRightSymbol(term);
   }).forEach(function (term) {
-    var follow = state.getFollowFor(term.left);
+    var follow = state.getFollowFor(code, term.left);
     follow.forEach(function (symbol) {
       state.row[symbol] = 'reduce(' + term.rule + ')';
     });
@@ -88,8 +90,6 @@ var State = function State(id, code, rootTerms) {
   state.stateComplete = false;
 
   var symbolLookup = void 0;
-
-  var follow = {};
 
   var completeState = function completeState(state) {
 
@@ -118,7 +118,7 @@ var State = function State(id, code, rootTerms) {
     state.stateComplete = true;
   };
 
-  this.getFollowFor = function (nonterminal) {
+  this.getFollowFor = function (code, nonterminal) {
     var self = this;
     if (!follow[nonterminal]) {
       var allFollow = code.rules.reduce(function (outterValue, rule) {
@@ -128,7 +128,7 @@ var State = function State(id, code, rootTerms) {
               var newVal = getFirstFor(code, array[index + 1].symbol);
               return value.concat(newVal);
             } else {
-              var _newVal = self.getFollowFor(rule.left);
+              var _newVal = self.getFollowFor(code, rule.left);
               return value.concat(_newVal);
             }
           }
@@ -210,7 +210,7 @@ var generateStates = function generateStates(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
-    createRow(states[index]);
+    createRow(code, states[index]);
     index++;
   }
 

@@ -1,5 +1,7 @@
 import Stream from 'stream';
 
+let follow = {};
+
 let getFirstFor = function(code, symbol) {
   return Array.from(code.firstTable[symbol].symbols);
 };
@@ -22,7 +24,7 @@ let getRightTerminal = function(term) {
   if (token && token.type === 'TERMINAL') return token.symbol;
 };
 
-let createRow = function(state) {
+let createRow = function(code, state) {
   state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
     state.row[getRightNonterminal(term)] = `goto(${term.goto})`;
   });
@@ -35,7 +37,7 @@ let createRow = function(state) {
     }
   });
   state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-    let follow = state.getFollowFor(term.left);
+    let follow = state.getFollowFor(code, term.left);
     follow.forEach(symbol => {
       state.row[symbol] = 'reduce('+term.rule+')';
     });
@@ -55,7 +57,6 @@ let State = function(id, code, rootTerms) {
 
   let symbolLookup;
 
-  let follow = {};
 
   let completeState = function(state) {
 
@@ -81,7 +82,7 @@ let State = function(id, code, rootTerms) {
     state.stateComplete = true;
   };
 
-  this.getFollowFor = function(nonterminal) {
+  this.getFollowFor = function(code, nonterminal) {
     let self = this;
     if (!follow[nonterminal]) {
       let allFollow = code.rules.reduce((outterValue, rule) => {
@@ -91,7 +92,7 @@ let State = function(id, code, rootTerms) {
               let newVal = getFirstFor(code, array[index+1].symbol);
               return value.concat(newVal);
             } else {
-              let newVal = self.getFollowFor(rule.left);
+              let newVal = self.getFollowFor(code, rule.left);
               return value.concat(newVal);
             }
           }
@@ -162,7 +163,7 @@ let generateStates = function(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
-    createRow(states[index]);
+    createRow(code, states[index]);
     index++;
   }
 
