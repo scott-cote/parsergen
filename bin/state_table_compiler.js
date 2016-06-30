@@ -46,6 +46,33 @@ var getRightTerminal = function getRightTerminal(term) {
   if (token && token.type === 'TERMINAL') return token.symbol;
 };
 
+var createRow = function createRow(state) {
+  state.terms.filter(function (term) {
+    return getRightNonterminal(term);
+  }).forEach(function (term) {
+    state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
+  });
+  state.terms.filter(function (term) {
+    return getRightTerminal(term);
+  }).forEach(function (term) {
+    var terminal = getRightTerminal(term);
+    if (terminal === '$') {
+      state.row[terminal] = 'accept()';
+    } else {
+      state.row[terminal] = 'shift(' + term.goto + ')';
+    }
+  });
+  state.terms.filter(function (term) {
+    return !getRightSymbol(term);
+  }).forEach(function (term) {
+    var follow = state.getFollowFor(term.left);
+    follow.forEach(function (symbol) {
+      state.row[symbol] = 'reduce(' + term.rule + ')';
+    });
+  });
+  return state.row;
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -85,33 +112,6 @@ var State = function State(id, code, rootTerms) {
     }
 
     state.stateComplete = true;
-  };
-
-  state.createRow = function () {
-    state.terms.filter(function (term) {
-      return getRightNonterminal(term);
-    }).forEach(function (term) {
-      state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
-    });
-    state.terms.filter(function (term) {
-      return getRightTerminal(term);
-    }).forEach(function (term) {
-      var terminal = getRightTerminal(term);
-      if (terminal === '$') {
-        state.row[terminal] = 'accept()';
-      } else {
-        state.row[terminal] = 'shift(' + term.goto + ')';
-      }
-    });
-    state.terms.filter(function (term) {
-      return !getRightSymbol(term);
-    }).forEach(function (term) {
-      var follow = state.getFollowFor(term.left);
-      follow.forEach(function (symbol) {
-        state.row[symbol] = 'reduce(' + term.rule + ')';
-      });
-    });
-    return state.row;
   };
 
   this.getFollowFor = function (nonterminal) {
@@ -210,7 +210,7 @@ var generateStates = function generateStates(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
-    states[index].createRow();
+    createRow(states[index]);
     index++;
   }
 

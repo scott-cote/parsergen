@@ -18,6 +18,27 @@ let getRightTerminal = function(term) {
   if (token && token.type === 'TERMINAL') return token.symbol;
 };
 
+let createRow = function(state) {
+  state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
+    state.row[getRightNonterminal(term)] = `goto(${term.goto})`;
+  });
+  state.terms.filter(term => getRightTerminal(term)).forEach(term => {
+    let terminal = getRightTerminal(term);
+    if (terminal === '$') {
+      state.row[terminal] = 'accept()';
+    } else {
+      state.row[terminal] = 'shift('+term.goto+')';
+    }
+  });
+  state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
+    let follow = state.getFollowFor(term.left);
+    follow.forEach(symbol => {
+      state.row[symbol] = 'reduce('+term.rule+')';
+    });
+  });
+  return state.row;
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -54,27 +75,6 @@ let State = function(id, code, rootTerms) {
     }
 
     state.stateComplete = true;
-  };
-
-  state.createRow = function() {
-    state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
-      state.row[getRightNonterminal(term)] = `goto(${term.goto})`;
-    });
-    state.terms.filter(term => getRightTerminal(term)).forEach(term => {
-      let terminal = getRightTerminal(term);
-      if (terminal === '$') {
-        state.row[terminal] = 'accept()';
-      } else {
-        state.row[terminal] = 'shift('+term.goto+')';
-      }
-    });
-    state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-      let follow = state.getFollowFor(term.left);
-      follow.forEach(symbol => {
-        state.row[symbol] = 'reduce('+term.rule+')';
-      });
-    });
-    return state.row;
   };
 
   this.getFollowFor = function(nonterminal) {
@@ -162,7 +162,7 @@ let generateStates = function(code) {
         states[index].setGotoFor(symbol, state);
       }
     });
-    states[index].createRow();
+    createRow(states[index]);
     index++;
   }
 
