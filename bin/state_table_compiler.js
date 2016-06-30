@@ -197,7 +197,7 @@ var generateStates = function generateStates(code) {
 
   var states = [];
 
-  var rootTermsState = {};
+  var stateCache = {};
 
   var rule = code.rules[0];
   states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
@@ -210,9 +210,9 @@ var generateStates = function generateStates(code) {
         var id = seedTerms.map(function (term) {
           return getId(term);
         }).sort().join();
-        var state = rootTermsState[id] || states.length;
+        var state = stateCache[id] || states.length;
         if (state === states.length) {
-          rootTermsState[id] = state;
+          stateCache[id] = state;
           states.push(new State(states.length, code, seedTerms));
         }
         states[index].setGotoFor(symbol, state);
