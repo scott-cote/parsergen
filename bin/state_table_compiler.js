@@ -52,8 +52,6 @@ var State = function State(id, code, rootTerms) {
 
   state.row = {};
 
-  state.getRightTerminal = getRightTerminal;
-
   state.getRightSymbol = getRightSymbol;
 
   state.terms = [].concat(rootTerms);
@@ -98,9 +96,9 @@ var State = function State(id, code, rootTerms) {
       state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
     });
     state.terms.filter(function (term) {
-      return state.getRightTerminal(term);
+      return getRightTerminal(term);
     }).forEach(function (term) {
-      var terminal = state.getRightTerminal(term);
+      var terminal = getRightTerminal(term);
       if (terminal === '$') {
         state.row[terminal] = 'accept()';
       } else {
