@@ -52,8 +52,6 @@ var State = function State(id, code, rootTerms) {
 
   state.row = {};
 
-  state.getRightSymbol = getRightSymbol;
-
   state.terms = [].concat(rootTerms);
 
   state.stateComplete = false;
@@ -106,7 +104,7 @@ var State = function State(id, code, rootTerms) {
       }
     });
     state.terms.filter(function (term) {
-      return !state.getRightSymbol(term);
+      return !getRightSymbol(term);
     }).forEach(function (term) {
       //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
       var follow = state.getFollowFor(term.left);

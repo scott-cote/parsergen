@@ -24,8 +24,6 @@ let State = function(id, code, rootTerms) {
 
   state.row = {};
 
-  state.getRightSymbol = getRightSymbol;
-
   state.terms = [].concat(rootTerms);
 
   state.stateComplete = false;
@@ -70,7 +68,7 @@ let State = function(id, code, rootTerms) {
         state.row[terminal] = 'shift('+term.goto+')';
       }
     });
-    state.terms.filter(term => !state.getRightSymbol(term)).forEach(term => {
+    state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
       //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
       let follow = state.getFollowFor(term.left);
       follow.forEach(symbol => {
