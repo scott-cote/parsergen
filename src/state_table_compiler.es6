@@ -153,9 +153,11 @@ let generateStates = function(code) {
 
   let rootTermsState = {};
 
+  /*
   let getId = function(term) {
     return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
   };
+  */
 
   let getRootTerm = function() {
     let rule = code.rules[0];

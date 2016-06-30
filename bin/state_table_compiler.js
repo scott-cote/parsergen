@@ -199,13 +199,11 @@ var generateStates = function generateStates(code) {
 
   var rootTermsState = {};
 
-  var getId = function getId(term) {
-    return term.left + '>' + term.middle.map(function (element) {
-      return element.symbol;
-    }).join(':') + '.' + term.right.map(function (element) {
-      return element.symbol;
-    }).join(':');
+  /*
+  let getId = function(term) {
+    return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
   };
+  */
 
   var getRootTerm = function getRootTerm() {
     var rule = code.rules[0];
