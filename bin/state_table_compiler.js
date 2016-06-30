@@ -52,8 +52,6 @@ var State = function State(id, code, rootTerms) {
 
   state.row = {};
 
-  state.getRightNonterminal = getRightNonterminal;
-
   state.getRightTerminal = getRightTerminal;
 
   state.getRightSymbol = getRightSymbol;
@@ -95,9 +93,9 @@ var State = function State(id, code, rootTerms) {
 
   state.createRow = function () {
     state.terms.filter(function (term) {
-      return state.getRightNonterminal(term);
+      return getRightNonterminal(term);
     }).forEach(function (term) {
-      state.row[state.getRightNonterminal(term)] = 'goto(' + term.goto + ')';
+      state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
     });
     state.terms.filter(function (term) {
       return state.getRightTerminal(term);
