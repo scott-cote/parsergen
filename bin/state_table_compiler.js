@@ -106,7 +106,6 @@ var State = function State(id, code, rootTerms) {
     state.terms.filter(function (term) {
       return !getRightSymbol(term);
     }).forEach(function (term) {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
       var follow = state.getFollowFor(term.left);
       follow.forEach(function (symbol) {
         state.row[symbol] = 'reduce(' + term.rule + ')';
@@ -135,7 +134,6 @@ var State = function State(id, code, rootTerms) {
       }, []);
       follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
     }
-    //console.log(nonterminal+': '+JSON.stringify(Array.from(code.followTable[nonterminal]))+' vs '+JSON.stringify(follow[nonterminal]));
     return follow[nonterminal];
   };
 

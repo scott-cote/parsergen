@@ -69,7 +69,6 @@ let State = function(id, code, rootTerms) {
       }
     });
     state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-      //row['follow '+term.getLeft()] = 'r('+term.getRule()+')';
       let follow = state.getFollowFor(term.left);
       follow.forEach(symbol => {
         state.row[symbol] = 'reduce('+term.rule+')';
@@ -98,7 +97,6 @@ let State = function(id, code, rootTerms) {
       }, []);
       follow[nonterminal] = [...new Set(allFollow)];
     }
-    //console.log(nonterminal+': '+JSON.stringify(Array.from(code.followTable[nonterminal]))+' vs '+JSON.stringify(follow[nonterminal]));
     return follow[nonterminal];
   };
 
@@ -110,7 +108,6 @@ let State = function(id, code, rootTerms) {
     return code.rules.filter(rule => rule.left === symbol)
       .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
   };
-
 
   let createSymbolLookup = function() {
     if (symbolLookup) return;
