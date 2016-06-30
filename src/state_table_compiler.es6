@@ -38,7 +38,7 @@ let State = function(id, code, rootTerms) {
 
   let follow = {};
 
-  let completeState = function() {
+  let completeState = function(state) {
 
     if (state.stateComplete) return;
 
@@ -133,7 +133,7 @@ let State = function(id, code, rootTerms) {
       return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
     };
 
-    completeState();
+    completeState(state);
     createSymbolLookup();
     if (!symbolLookup[symbol]) return [];
     return state.terms
