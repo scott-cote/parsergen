@@ -60,11 +60,38 @@ var State = function State(id, code, rootTerms) {
 
   state.terms = [].concat(rootTerms);
 
-  var stateComplete = false;
+  state.stateComplete = false;
 
   var symbolLookup = void 0;
 
   var follow = {};
+
+  var completeState = function completeState() {
+
+    if (state.stateComplete) return;
+
+    var termIndex = {};
+
+    var expandTerm = function expandTerm(term) {
+      var symbol = getRightNonterminal(term);
+      if (symbol) {
+        var newTerms = createTermsFor(symbol).filter(function (term) {
+          return !termIndex[getId(term)];
+        });
+        newTerms.forEach(function (term) {
+          return termIndex[getId(term)] = true;
+        });
+        state.terms = state.terms.concat(newTerms);
+      }
+    };
+
+    var index = 0;while (index < state.terms.length) {
+      expandTerm(state.terms[index]);
+      index++;
+    }
+
+    state.stateComplete = true;
+  };
 
   state.createRow = function () {
     state.terms.filter(function (term) {
@@ -128,33 +155,6 @@ var State = function State(id, code, rootTerms) {
     }).map(function (rule) {
       return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
     });
-  };
-
-  var completeState = function completeState() {
-
-    if (stateComplete) return;
-
-    var termIndex = {};
-
-    var expandTerm = function expandTerm(term) {
-      var symbol = getRightNonterminal(term);
-      if (symbol) {
-        var newTerms = createTermsFor(symbol).filter(function (term) {
-          return !termIndex[getId(term)];
-        });
-        newTerms.forEach(function (term) {
-          return termIndex[getId(term)] = true;
-        });
-        state.terms = state.terms.concat(newTerms);
-      }
-    };
-
-    var index = 0;while (index < state.terms.length) {
-      expandTerm(state.terms[index]);
-      index++;
-    }
-
-    stateComplete = true;
   };
 
   var createSymbolLookup = function createSymbolLookup() {

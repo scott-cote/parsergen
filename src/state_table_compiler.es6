@@ -32,11 +32,35 @@ let State = function(id, code, rootTerms) {
 
   state.terms = [].concat(rootTerms);
 
-  let stateComplete = false;
+  state.stateComplete = false;
 
   let symbolLookup;
 
   let follow = {};
+
+  let completeState = function() {
+
+    if (state.stateComplete) return;
+
+    let termIndex = {};
+
+    let expandTerm = function(term) {
+      let symbol = getRightNonterminal(term);
+      if (symbol) {
+        let newTerms = createTermsFor(symbol)
+          .filter(term => !termIndex[getId(term)]);
+        newTerms.forEach(term => termIndex[getId(term)] = true);
+        state.terms = state.terms.concat(newTerms);
+      }
+    };
+
+    let index = 0; while (index < state.terms.length) {
+      expandTerm(state.terms[index]);
+      index++;
+    }
+
+    state.stateComplete = true;
+  };
 
   state.createRow = function() {
     state.terms.filter(term => state.getRightNonterminal(term)).forEach(term => {
@@ -93,29 +117,6 @@ let State = function(id, code, rootTerms) {
       .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
   };
 
-  let completeState = function() {
-
-    if (stateComplete) return;
-
-    let termIndex = {};
-
-    let expandTerm = function(term) {
-      let symbol = getRightNonterminal(term);
-      if (symbol) {
-        let newTerms = createTermsFor(symbol)
-          .filter(term => !termIndex[getId(term)]);
-        newTerms.forEach(term => termIndex[getId(term)] = true);
-        state.terms = state.terms.concat(newTerms);
-      }
-    };
-
-    let index = 0; while (index < state.terms.length) {
-      expandTerm(state.terms[index]);
-      index++;
-    }
-
-    stateComplete = true;
-  };
 
   let createSymbolLookup = function() {
     if (symbolLookup) return;
