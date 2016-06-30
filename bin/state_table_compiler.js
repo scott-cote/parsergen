@@ -24,6 +24,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
+var getFirstFor = function getFirstFor(code, symbol) {
+  return Array.from(code.firstTable[symbol].symbols);
+};
+
 var getId = function getId(term) {
   return term.left + '>' + term.middle.map(function (element) {
     return element.symbol;
@@ -121,7 +125,7 @@ var State = function State(id, code, rootTerms) {
         outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
           if (nonterminal === token.symbol) {
             if (index < array.length - 1) {
-              var newVal = self.getFirstFor(array[index + 1].symbol);
+              var newVal = getFirstFor(code, array[index + 1].symbol);
               return value.concat(newVal);
             } else {
               var _newVal = self.getFollowFor(rule.left);
@@ -135,10 +139,6 @@ var State = function State(id, code, rootTerms) {
       follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
     }
     return follow[nonterminal];
-  };
-
-  this.getFirstFor = function (symbol) {
-    return Array.from(code.firstTable[symbol].symbols);
   };
 
   var createTermsFor = function createTermsFor(symbol) {

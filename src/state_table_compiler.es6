@@ -1,5 +1,9 @@
 import Stream from 'stream';
 
+let getFirstFor = function(code, symbol) {
+  return Array.from(code.firstTable[symbol].symbols);
+};
+
 let getId = function(term) {
   return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
 };
@@ -84,7 +88,7 @@ let State = function(id, code, rootTerms) {
         outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
           if (nonterminal === token.symbol) {
             if (index < array.length-1) {
-              let newVal = self.getFirstFor(array[index+1].symbol);
+              let newVal = getFirstFor(code, array[index+1].symbol);
               return value.concat(newVal);
             } else {
               let newVal = self.getFollowFor(rule.left);
@@ -98,10 +102,6 @@ let State = function(id, code, rootTerms) {
       follow[nonterminal] = [...new Set(allFollow)];
     }
     return follow[nonterminal];
-  };
-
-  this.getFirstFor = function(symbol) {
-    return Array.from(code.firstTable[symbol].symbols);
   };
 
   let createTermsFor = function(symbol) {
