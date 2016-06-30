@@ -153,18 +153,8 @@ let generateStates = function(code) {
 
   let rootTermsState = {};
 
-  /*
-  let getId = function(term) {
-    return term.left+'>'+term.middle.map(element => element.symbol).join(':')+'.'+term.right.map(element => element.symbol).join(':');
-  };
-  */
-
-  let getRootTerm = function() {
-    let rule = code.rules[0];
-    return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
-  };
-
-  states.push(new State(0, code, getRootTerm()));
+  let rule = code.rules[0];
+  states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
   let index = 0; while (index < states.length) {
     code.symbols.forEach(symbol => {
