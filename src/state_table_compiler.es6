@@ -94,8 +94,6 @@ let completeState = function(code, state) {
 };
 
 let getSeedTermsFor = function(code, state, symbol) {
-  completeState(code, state);
-  createSymbolLookup(state);
   if (!state.symbolLookup[symbol]) return [];
   return state.terms
     .filter(term => symbol === getRightSymbol(term))
@@ -148,6 +146,9 @@ let generateStates = function(code) {
   states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
   let index = 0; while (index < states.length) {
+    let state = states[index];
+    completeState(code, state);
+    createSymbolLookup(state);
     code.symbols.forEach(symbol => {
       if (symbol === '$') return;
       let seedTerms = getSeedTermsFor(code, states[index], symbol);
