@@ -64,6 +64,11 @@ let createSymbolLookup = function(state) {
     .forEach(term => state.symbolLookup[getRightSymbol(term)] = true);
 };
 
+let createTermsFor = function(code, symbol) {
+  return code.rules.filter(rule => rule.left === symbol)
+    .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -85,7 +90,7 @@ let State = function(id, code, rootTerms) {
     let expandTerm = function(state, term) {
       let symbol = getRightNonterminal(term);
       if (symbol) {
-        let newTerms = createTermsFor(symbol)
+        let newTerms = createTermsFor(code, symbol)
           .filter(term => !termIndex[getId(term)]);
         newTerms.forEach(term => termIndex[getId(term)] = true);
         state.terms = state.terms.concat(newTerms);
@@ -123,10 +128,6 @@ let State = function(id, code, rootTerms) {
     return follow[nonterminal];
   };
 
-  let createTermsFor = function(symbol) {
-    return code.rules.filter(rule => rule.left === symbol)
-      .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
-  };
 
   this.getSeedTermsFor = function(symbol) {
     completeState(state);

@@ -102,6 +102,14 @@ var createSymbolLookup = function createSymbolLookup(state) {
   });
 };
 
+var createTermsFor = function createTermsFor(code, symbol) {
+  return code.rules.filter(function (rule) {
+    return rule.left === symbol;
+  }).map(function (rule) {
+    return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
+  });
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -123,7 +131,7 @@ var State = function State(id, code, rootTerms) {
     var expandTerm = function expandTerm(state, term) {
       var symbol = getRightNonterminal(term);
       if (symbol) {
-        var newTerms = createTermsFor(symbol).filter(function (term) {
+        var newTerms = createTermsFor(code, symbol).filter(function (term) {
           return !termIndex[getId(term)];
         });
         newTerms.forEach(function (term) {
@@ -162,14 +170,6 @@ var State = function State(id, code, rootTerms) {
       follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
     }
     return follow[nonterminal];
-  };
-
-  var createTermsFor = function createTermsFor(symbol) {
-    return code.rules.filter(function (rule) {
-      return rule.left === symbol;
-    }).map(function (rule) {
-      return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
-    });
   };
 
   this.getSeedTermsFor = function (symbol) {
