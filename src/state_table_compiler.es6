@@ -55,8 +55,7 @@ let State = function(id, code, rootTerms) {
 
   state.stateComplete = false;
 
-  let symbolLookup;
-
+  state.symbolLookup;
 
   let completeState = function(state) {
 
@@ -111,11 +110,11 @@ let State = function(id, code, rootTerms) {
   };
 
   let createSymbolLookup = function() {
-    if (symbolLookup) return;
-    symbolLookup = {};
+    if (state.symbolLookup) return;
+    state.symbolLookup = {};
     state.terms
       .filter(term => !!getRightSymbol(term))
-      .forEach(term => symbolLookup[getRightSymbol(term)] = true);
+      .forEach(term => state.symbolLookup[getRightSymbol(term)] = true);
   }
 
   this.getSeedTermsFor = function(symbol) {
@@ -127,7 +126,7 @@ let State = function(id, code, rootTerms) {
 
     completeState(state);
     createSymbolLookup();
-    if (!symbolLookup[symbol]) return [];
+    if (!state.symbolLookup[symbol]) return [];
     return state.terms
       .filter(term => symbol === getRightSymbol(term))
       .map(term => createShiftTerm(term));

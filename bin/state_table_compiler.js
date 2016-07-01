@@ -89,7 +89,7 @@ var State = function State(id, code, rootTerms) {
 
   state.stateComplete = false;
 
-  var symbolLookup = void 0;
+  state.symbolLookup;
 
   var completeState = function completeState(state) {
 
@@ -150,12 +150,12 @@ var State = function State(id, code, rootTerms) {
   };
 
   var createSymbolLookup = function createSymbolLookup() {
-    if (symbolLookup) return;
-    symbolLookup = {};
+    if (state.symbolLookup) return;
+    state.symbolLookup = {};
     state.terms.filter(function (term) {
       return !!getRightSymbol(term);
     }).forEach(function (term) {
-      return symbolLookup[getRightSymbol(term)] = true;
+      return state.symbolLookup[getRightSymbol(term)] = true;
     });
   };
 
@@ -168,7 +168,7 @@ var State = function State(id, code, rootTerms) {
 
     completeState(state);
     createSymbolLookup();
-    if (!symbolLookup[symbol]) return [];
+    if (!state.symbolLookup[symbol]) return [];
     return state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
     }).map(function (term) {
