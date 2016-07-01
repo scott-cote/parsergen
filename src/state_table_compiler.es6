@@ -51,6 +51,11 @@ let setGotoFor = function(state, symbol, value) {
     .forEach(term => term.goto = value);
 };
 
+let createShiftTerm = function(term) {
+  let newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
+  return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -124,11 +129,6 @@ let State = function(id, code, rootTerms) {
   }
 
   this.getSeedTermsFor = function(symbol) {
-
-    let createShiftTerm = function(term) {
-      let newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
-      return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
-    };
 
     completeState(state);
     createSymbolLookup();

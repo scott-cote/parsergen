@@ -87,6 +87,11 @@ var setGotoFor = function setGotoFor(state, symbol, value) {
   });
 };
 
+var createShiftTerm = function createShiftTerm(term) {
+  var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
+  return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -168,11 +173,6 @@ var State = function State(id, code, rootTerms) {
   };
 
   this.getSeedTermsFor = function (symbol) {
-
-    var createShiftTerm = function createShiftTerm(term) {
-      var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
-      return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
-    };
 
     completeState(state);
     createSymbolLookup();
