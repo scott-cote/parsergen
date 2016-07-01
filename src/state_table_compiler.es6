@@ -45,6 +45,12 @@ let createRow = function(code, state) {
   return state.row;
 };
 
+let setGotoFor = function(state, symbol, value) {
+  state.terms
+    .filter(term => symbol === getRightSymbol(term))
+    .forEach(term => term.goto = value);
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -132,11 +138,6 @@ let State = function(id, code, rootTerms) {
       .map(term => createShiftTerm(term));
   };
 
-  this.setGotoFor = function(symbol, value) {
-    state.terms
-      .filter(term => symbol === getRightSymbol(term))
-      .forEach(term => term.goto = value);
-  };
 };
 
 let generateStates = function(code) {
@@ -159,7 +160,7 @@ let generateStates = function(code) {
           stateCache[id] = state;
           states.push(new State(states.length, code, seedTerms));
         }
-        states[index].setGotoFor(symbol, state);
+        setGotoFor(states[index], symbol, state);
       }
     });
     createRow(code, states[index]);
