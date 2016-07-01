@@ -168,22 +168,21 @@ let generateStates = function(code) {
   return states;
 };
 
+let compile = function(code) {
+  code.states = generateStates(code);
+  code.stateTable = code.states.map(state => state.row);
+  return code;
+};
+
 class Transformer extends Stream.Transform {
 
   constructor() {
-    console.log('gen start')
     super({ objectMode : true });
   }
 
   _transform(code, encoding, done) {
-    try {
-      console.log('Running generator');
-      code.states = generateStates(code);
-      code.stateTable = code.states.map(state => state.row);
-      return done(null, code);
-    } catch (err) {
-      done(err);
-    }
+    try { done(null, compile(code)); }
+    catch (err) { done(err); }
   }
 };
 
