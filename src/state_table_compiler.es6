@@ -37,7 +37,7 @@ let createRow = function(code, state) {
     }
   });
   state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-    let follow = state.getFollowFor(code, term.left);
+    let follow = getFollowFor(code, state, term.left);
     follow.forEach(symbol => {
       state.row[symbol] = 'reduce('+term.rule+')';
     });
@@ -102,6 +102,29 @@ let getSeedTermsFor = function(code, state, symbol) {
     .map(term => createShiftTerm(term));
 };
 
+let getFollowFor = function(code, state, nonterminal) {
+  let self = this;
+  if (!follow[nonterminal]) {
+    let allFollow = code.rules.reduce((outterValue, rule) => {
+      outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
+        if (nonterminal === token.symbol) {
+          if (index < array.length-1) {
+            let newVal = getFirstFor(code, array[index+1].symbol);
+            return value.concat(newVal);
+          } else {
+            let newVal = getFollowFor(code, self, rule.left);
+            return value.concat(newVal);
+          }
+        }
+        return value;
+      }, []));
+      return outterValue;
+    }, []);
+    follow[nonterminal] = [...new Set(allFollow)];
+  }
+  return follow[nonterminal];
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -113,30 +136,6 @@ let State = function(id, code, rootTerms) {
   state.stateComplete = false;
 
   state.symbolLookup;
-
-  this.getFollowFor = function(code, nonterminal) {
-    let self = this;
-    if (!follow[nonterminal]) {
-      let allFollow = code.rules.reduce((outterValue, rule) => {
-        outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
-          if (nonterminal === token.symbol) {
-            if (index < array.length-1) {
-              let newVal = getFirstFor(code, array[index+1].symbol);
-              return value.concat(newVal);
-            } else {
-              let newVal = self.getFollowFor(code, rule.left);
-              return value.concat(newVal);
-            }
-          }
-          return value;
-        }, []));
-        return outterValue;
-      }, []);
-      follow[nonterminal] = [...new Set(allFollow)];
-    }
-    return follow[nonterminal];
-  };
-
 };
 
 let generateStates = function(code) {
