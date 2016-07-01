@@ -79,6 +79,20 @@ let expandTerm = function(code, state, termIndex, term) {
   }
 };
 
+let completeState = function(code, state) {
+
+  if (state.stateComplete) return;
+
+  let termIndex = {};
+
+  let index = 0; while (index < state.terms.length) {
+    expandTerm(code, state, termIndex, state.terms[index]);
+    index++;
+  }
+
+  state.stateComplete = true;
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -90,20 +104,6 @@ let State = function(id, code, rootTerms) {
   state.stateComplete = false;
 
   state.symbolLookup;
-
-  let completeState = function(state) {
-
-    if (state.stateComplete) return;
-
-    let termIndex = {};
-
-    let index = 0; while (index < state.terms.length) {
-      expandTerm(code, state, termIndex, state.terms[index]);
-      index++;
-    }
-
-    state.stateComplete = true;
-  };
 
   this.getFollowFor = function(code, nonterminal) {
     let self = this;
@@ -129,14 +129,13 @@ let State = function(id, code, rootTerms) {
   };
 
   this.getSeedTermsFor = function(symbol) {
-    completeState(state);
+    completeState(code, state);
     createSymbolLookup(state);
     if (!state.symbolLookup[symbol]) return [];
     return state.terms
       .filter(term => symbol === getRightSymbol(term))
       .map(term => createShiftTerm(term));
   };
-
 };
 
 let generateStates = function(code) {
