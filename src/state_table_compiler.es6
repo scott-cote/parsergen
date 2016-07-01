@@ -93,6 +93,15 @@ let completeState = function(code, state) {
   state.stateComplete = true;
 };
 
+let getSeedTermsFor = function(code, state, symbol) {
+  completeState(code, state);
+  createSymbolLookup(state);
+  if (!state.symbolLookup[symbol]) return [];
+  return state.terms
+    .filter(term => symbol === getRightSymbol(term))
+    .map(term => createShiftTerm(term));
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -128,14 +137,6 @@ let State = function(id, code, rootTerms) {
     return follow[nonterminal];
   };
 
-  this.getSeedTermsFor = function(symbol) {
-    completeState(code, state);
-    createSymbolLookup(state);
-    if (!state.symbolLookup[symbol]) return [];
-    return state.terms
-      .filter(term => symbol === getRightSymbol(term))
-      .map(term => createShiftTerm(term));
-  };
 };
 
 let generateStates = function(code) {
@@ -150,7 +151,7 @@ let generateStates = function(code) {
   let index = 0; while (index < states.length) {
     code.symbols.forEach(symbol => {
       if (symbol === '$') return;
-      let seedTerms = states[index].getSeedTermsFor(symbol);
+      let seedTerms = getSeedTermsFor(code, states[index], symbol);
       if (seedTerms.length) {
         let id = seedTerms.map(term => getId(term)).sort().join();
         let state = stateCache[id] || states.length;

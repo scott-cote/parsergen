@@ -137,6 +137,17 @@ var completeState = function completeState(code, state) {
   state.stateComplete = true;
 };
 
+var getSeedTermsFor = function getSeedTermsFor(code, state, symbol) {
+  completeState(code, state);
+  createSymbolLookup(state);
+  if (!state.symbolLookup[symbol]) return [];
+  return state.terms.filter(function (term) {
+    return symbol === getRightSymbol(term);
+  }).map(function (term) {
+    return createShiftTerm(term);
+  });
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -171,17 +182,6 @@ var State = function State(id, code, rootTerms) {
     }
     return follow[nonterminal];
   };
-
-  this.getSeedTermsFor = function (symbol) {
-    completeState(code, state);
-    createSymbolLookup(state);
-    if (!state.symbolLookup[symbol]) return [];
-    return state.terms.filter(function (term) {
-      return symbol === getRightSymbol(term);
-    }).map(function (term) {
-      return createShiftTerm(term);
-    });
-  };
 };
 
 var generateStates = function generateStates(code) {
@@ -196,7 +196,7 @@ var generateStates = function generateStates(code) {
   var index = 0;while (index < states.length) {
     code.symbols.forEach(function (symbol) {
       if (symbol === '$') return;
-      var seedTerms = states[index].getSeedTermsFor(symbol);
+      var seedTerms = getSeedTermsFor(code, states[index], symbol);
       if (seedTerms.length) {
         var id = seedTerms.map(function (term) {
           return getId(term);
