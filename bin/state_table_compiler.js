@@ -110,6 +110,19 @@ var createTermsFor = function createTermsFor(code, symbol) {
   });
 };
 
+var expandTerm = function expandTerm(code, state, termIndex, term) {
+  var symbol = getRightNonterminal(term);
+  if (symbol) {
+    var newTerms = createTermsFor(code, symbol).filter(function (term) {
+      return !termIndex[getId(term)];
+    });
+    newTerms.forEach(function (term) {
+      return termIndex[getId(term)] = true;
+    });
+    state.terms = state.terms.concat(newTerms);
+  }
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -128,21 +141,8 @@ var State = function State(id, code, rootTerms) {
 
     var termIndex = {};
 
-    var expandTerm = function expandTerm(state, term) {
-      var symbol = getRightNonterminal(term);
-      if (symbol) {
-        var newTerms = createTermsFor(code, symbol).filter(function (term) {
-          return !termIndex[getId(term)];
-        });
-        newTerms.forEach(function (term) {
-          return termIndex[getId(term)] = true;
-        });
-        state.terms = state.terms.concat(newTerms);
-      }
-    };
-
     var index = 0;while (index < state.terms.length) {
-      expandTerm(state, state.terms[index]);
+      expandTerm(code, state, termIndex, state.terms[index]);
       index++;
     }
 

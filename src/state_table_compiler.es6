@@ -69,6 +69,16 @@ let createTermsFor = function(code, symbol) {
     .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
 };
 
+let expandTerm = function(code, state, termIndex, term) {
+  let symbol = getRightNonterminal(term);
+  if (symbol) {
+    let newTerms = createTermsFor(code, symbol)
+      .filter(term => !termIndex[getId(term)]);
+    newTerms.forEach(term => termIndex[getId(term)] = true);
+    state.terms = state.terms.concat(newTerms);
+  }
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -87,18 +97,8 @@ let State = function(id, code, rootTerms) {
 
     let termIndex = {};
 
-    let expandTerm = function(state, term) {
-      let symbol = getRightNonterminal(term);
-      if (symbol) {
-        let newTerms = createTermsFor(code, symbol)
-          .filter(term => !termIndex[getId(term)]);
-        newTerms.forEach(term => termIndex[getId(term)] = true);
-        state.terms = state.terms.concat(newTerms);
-      }
-    };
-
     let index = 0; while (index < state.terms.length) {
-      expandTerm(state, state.terms[index]);
+      expandTerm(code, state, termIndex, state.terms[index]);
       index++;
     }
 
@@ -127,7 +127,6 @@ let State = function(id, code, rootTerms) {
     }
     return follow[nonterminal];
   };
-
 
   this.getSeedTermsFor = function(symbol) {
     completeState(state);
