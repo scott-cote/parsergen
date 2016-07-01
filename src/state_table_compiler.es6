@@ -56,6 +56,14 @@ let createShiftTerm = function(term) {
   return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
 };
 
+let createSymbolLookup = function(state) {
+  if (state.symbolLookup) return;
+  state.symbolLookup = {};
+  state.terms
+    .filter(term => !!getRightSymbol(term))
+    .forEach(term => state.symbolLookup[getRightSymbol(term)] = true);
+};
+
 let State = function(id, code, rootTerms) {
 
   let state = this;
@@ -120,18 +128,9 @@ let State = function(id, code, rootTerms) {
       .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
   };
 
-  let createSymbolLookup = function() {
-    if (state.symbolLookup) return;
-    state.symbolLookup = {};
-    state.terms
-      .filter(term => !!getRightSymbol(term))
-      .forEach(term => state.symbolLookup[getRightSymbol(term)] = true);
-  }
-
   this.getSeedTermsFor = function(symbol) {
-
     completeState(state);
-    createSymbolLookup();
+    createSymbolLookup(state);
     if (!state.symbolLookup[symbol]) return [];
     return state.terms
       .filter(term => symbol === getRightSymbol(term))

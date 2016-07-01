@@ -92,6 +92,16 @@ var createShiftTerm = function createShiftTerm(term) {
   return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
 };
 
+var createSymbolLookup = function createSymbolLookup(state) {
+  if (state.symbolLookup) return;
+  state.symbolLookup = {};
+  state.terms.filter(function (term) {
+    return !!getRightSymbol(term);
+  }).forEach(function (term) {
+    return state.symbolLookup[getRightSymbol(term)] = true;
+  });
+};
+
 var State = function State(id, code, rootTerms) {
 
   var state = this;
@@ -162,20 +172,9 @@ var State = function State(id, code, rootTerms) {
     });
   };
 
-  var createSymbolLookup = function createSymbolLookup() {
-    if (state.symbolLookup) return;
-    state.symbolLookup = {};
-    state.terms.filter(function (term) {
-      return !!getRightSymbol(term);
-    }).forEach(function (term) {
-      return state.symbolLookup[getRightSymbol(term)] = true;
-    });
-  };
-
   this.getSeedTermsFor = function (symbol) {
-
     completeState(state);
-    createSymbolLookup();
+    createSymbolLookup(state);
     if (!state.symbolLookup[symbol]) return [];
     return state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
