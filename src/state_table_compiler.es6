@@ -1,4 +1,5 @@
 import Stream from 'stream';
+let compile = function(code) {
 
 let follow = {};
 
@@ -169,7 +170,6 @@ let generateStates = function(code) {
   return states;
 };
 
-let compile = function(code) {
   code.states = generateStates(code);
   code.stateTable = code.states.map(state => state.row);
   return code;

@@ -24,200 +24,201 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var follow = {};
+var compile = function compile(code) {
 
-var getFirstFor = function getFirstFor(code, symbol) {
-  return Array.from(code.firstTable[symbol].symbols);
-};
+  var follow = {};
 
-var getId = function getId(term) {
-  return term.left + '>' + term.middle.map(function (element) {
-    return element.symbol;
-  }).join(':') + '.' + term.right.map(function (element) {
-    return element.symbol;
-  }).join(':');
-};
+  var getFirstFor = function getFirstFor(code, symbol) {
+    return Array.from(code.firstTable[symbol].symbols);
+  };
 
-var getRightNonterminal = function getRightNonterminal(term) {
-  var token = term.right[0];
-  if (token && token.type === 'NONTERMINAL') return token.symbol;
-};
+  var getId = function getId(term) {
+    return term.left + '>' + term.middle.map(function (element) {
+      return element.symbol;
+    }).join(':') + '.' + term.right.map(function (element) {
+      return element.symbol;
+    }).join(':');
+  };
 
-var getRightSymbol = function getRightSymbol(term) {
-  if (term.right[0]) return term.right[0].symbol;
-};
+  var getRightNonterminal = function getRightNonterminal(term) {
+    var token = term.right[0];
+    if (token && token.type === 'NONTERMINAL') return token.symbol;
+  };
 
-var getRightTerminal = function getRightTerminal(term) {
-  var token = term.right[0];
-  if (token && token.type === 'TERMINAL') return token.symbol;
-};
+  var getRightSymbol = function getRightSymbol(term) {
+    if (term.right[0]) return term.right[0].symbol;
+  };
 
-var createRow = function createRow(code, state) {
-  state.terms.filter(function (term) {
-    return getRightNonterminal(term);
-  }).forEach(function (term) {
-    state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
-  });
-  state.terms.filter(function (term) {
-    return getRightTerminal(term);
-  }).forEach(function (term) {
-    var terminal = getRightTerminal(term);
-    if (terminal === '$') {
-      state.row[terminal] = 'accept()';
-    } else {
-      state.row[terminal] = 'shift(' + term.goto + ')';
-    }
-  });
-  state.terms.filter(function (term) {
-    return !getRightSymbol(term);
-  }).forEach(function (term) {
-    var follow = getFollowFor(code, state, term.left);
-    follow.forEach(function (symbol) {
-      state.row[symbol] = 'reduce(' + term.rule + ')';
+  var getRightTerminal = function getRightTerminal(term) {
+    var token = term.right[0];
+    if (token && token.type === 'TERMINAL') return token.symbol;
+  };
+
+  var createRow = function createRow(code, state) {
+    state.terms.filter(function (term) {
+      return getRightNonterminal(term);
+    }).forEach(function (term) {
+      state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
     });
-  });
-  return state.row;
-};
-
-var setGotoFor = function setGotoFor(state, symbol, value) {
-  state.terms.filter(function (term) {
-    return symbol === getRightSymbol(term);
-  }).forEach(function (term) {
-    return term.goto = value;
-  });
-};
-
-var createShiftTerm = function createShiftTerm(term) {
-  var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
-  return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
-};
-
-var createSymbolLookup = function createSymbolLookup(state) {
-  if (state.symbolLookup) return;
-  state.symbolLookup = {};
-  state.terms.filter(function (term) {
-    return !!getRightSymbol(term);
-  }).forEach(function (term) {
-    return state.symbolLookup[getRightSymbol(term)] = true;
-  });
-};
-
-var createTermsFor = function createTermsFor(code, symbol) {
-  return code.rules.filter(function (rule) {
-    return rule.left === symbol;
-  }).map(function (rule) {
-    return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
-  });
-};
-
-var expandTerm = function expandTerm(code, state, termIndex, term) {
-  var symbol = getRightNonterminal(term);
-  if (symbol) {
-    var newTerms = createTermsFor(code, symbol).filter(function (term) {
-      return !termIndex[getId(term)];
-    });
-    newTerms.forEach(function (term) {
-      return termIndex[getId(term)] = true;
-    });
-    state.terms = state.terms.concat(newTerms);
-  }
-};
-
-var completeState = function completeState(code, state) {
-
-  if (state.stateComplete) return;
-
-  var termIndex = {};
-
-  var index = 0;while (index < state.terms.length) {
-    expandTerm(code, state, termIndex, state.terms[index]);
-    index++;
-  }
-
-  state.stateComplete = true;
-};
-
-var getSeedTermsFor = function getSeedTermsFor(code, state, symbol) {
-  if (!state.symbolLookup[symbol]) return [];
-  return state.terms.filter(function (term) {
-    return symbol === getRightSymbol(term);
-  }).map(function (term) {
-    return createShiftTerm(term);
-  });
-};
-
-var getFollowFor = function getFollowFor(code, state, nonterminal) {
-  var self = this;
-  if (!follow[nonterminal]) {
-    var allFollow = code.rules.reduce(function (outterValue, rule) {
-      outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
-        if (nonterminal === token.symbol) {
-          if (index < array.length - 1) {
-            var newVal = getFirstFor(code, array[index + 1].symbol);
-            return value.concat(newVal);
-          } else {
-            var _newVal = getFollowFor(code, self, rule.left);
-            return value.concat(_newVal);
-          }
-        }
-        return value;
-      }, []));
-      return outterValue;
-    }, []);
-    follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
-  }
-  return follow[nonterminal];
-};
-
-var State = function State(id, code, rootTerms) {
-
-  var state = this;
-
-  state.row = {};
-
-  state.terms = [].concat(rootTerms);
-
-  state.stateComplete = false;
-
-  state.symbolLookup;
-};
-
-var generateStates = function generateStates(code) {
-
-  var states = [];
-
-  var stateCache = {};
-
-  var rule = code.rules[0];
-  states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
-
-  var index = 0;while (index < states.length) {
-    var state = states[index];
-    completeState(code, state);
-    createSymbolLookup(state);
-    code.symbols.forEach(function (symbol) {
-      if (symbol === '$') return;
-      var seedTerms = getSeedTermsFor(code, states[index], symbol);
-      if (seedTerms.length) {
-        var id = seedTerms.map(function (term) {
-          return getId(term);
-        }).sort().join();
-        var _state = stateCache[id] || states.length;
-        if (_state === states.length) {
-          stateCache[id] = _state;
-          states.push(new State(states.length, code, seedTerms));
-        }
-        setGotoFor(states[index], symbol, _state);
+    state.terms.filter(function (term) {
+      return getRightTerminal(term);
+    }).forEach(function (term) {
+      var terminal = getRightTerminal(term);
+      if (terminal === '$') {
+        state.row[terminal] = 'accept()';
+      } else {
+        state.row[terminal] = 'shift(' + term.goto + ')';
       }
     });
-    createRow(code, states[index]);
-    index++;
-  }
+    state.terms.filter(function (term) {
+      return !getRightSymbol(term);
+    }).forEach(function (term) {
+      var follow = getFollowFor(code, state, term.left);
+      follow.forEach(function (symbol) {
+        state.row[symbol] = 'reduce(' + term.rule + ')';
+      });
+    });
+    return state.row;
+  };
 
-  return states;
-};
+  var setGotoFor = function setGotoFor(state, symbol, value) {
+    state.terms.filter(function (term) {
+      return symbol === getRightSymbol(term);
+    }).forEach(function (term) {
+      return term.goto = value;
+    });
+  };
 
-var compile = function compile(code) {
+  var createShiftTerm = function createShiftTerm(term) {
+    var newMiddle = term.right[0] ? term.middle.concat(term.right[0]) : term.middle;
+    return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
+  };
+
+  var createSymbolLookup = function createSymbolLookup(state) {
+    if (state.symbolLookup) return;
+    state.symbolLookup = {};
+    state.terms.filter(function (term) {
+      return !!getRightSymbol(term);
+    }).forEach(function (term) {
+      return state.symbolLookup[getRightSymbol(term)] = true;
+    });
+  };
+
+  var createTermsFor = function createTermsFor(code, symbol) {
+    return code.rules.filter(function (rule) {
+      return rule.left === symbol;
+    }).map(function (rule) {
+      return { rule: rule.id, left: rule.left, middle: [], right: rule.right };
+    });
+  };
+
+  var expandTerm = function expandTerm(code, state, termIndex, term) {
+    var symbol = getRightNonterminal(term);
+    if (symbol) {
+      var newTerms = createTermsFor(code, symbol).filter(function (term) {
+        return !termIndex[getId(term)];
+      });
+      newTerms.forEach(function (term) {
+        return termIndex[getId(term)] = true;
+      });
+      state.terms = state.terms.concat(newTerms);
+    }
+  };
+
+  var completeState = function completeState(code, state) {
+
+    if (state.stateComplete) return;
+
+    var termIndex = {};
+
+    var index = 0;while (index < state.terms.length) {
+      expandTerm(code, state, termIndex, state.terms[index]);
+      index++;
+    }
+
+    state.stateComplete = true;
+  };
+
+  var getSeedTermsFor = function getSeedTermsFor(code, state, symbol) {
+    if (!state.symbolLookup[symbol]) return [];
+    return state.terms.filter(function (term) {
+      return symbol === getRightSymbol(term);
+    }).map(function (term) {
+      return createShiftTerm(term);
+    });
+  };
+
+  var getFollowFor = function getFollowFor(code, state, nonterminal) {
+    var self = this;
+    if (!follow[nonterminal]) {
+      var allFollow = code.rules.reduce(function (outterValue, rule) {
+        outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
+          if (nonterminal === token.symbol) {
+            if (index < array.length - 1) {
+              var newVal = getFirstFor(code, array[index + 1].symbol);
+              return value.concat(newVal);
+            } else {
+              var _newVal = getFollowFor(code, self, rule.left);
+              return value.concat(_newVal);
+            }
+          }
+          return value;
+        }, []));
+        return outterValue;
+      }, []);
+      follow[nonterminal] = [].concat(_toConsumableArray(new Set(allFollow)));
+    }
+    return follow[nonterminal];
+  };
+
+  var State = function State(id, code, rootTerms) {
+
+    var state = this;
+
+    state.row = {};
+
+    state.terms = [].concat(rootTerms);
+
+    state.stateComplete = false;
+
+    state.symbolLookup;
+  };
+
+  var generateStates = function generateStates(code) {
+
+    var states = [];
+
+    var stateCache = {};
+
+    var rule = code.rules[0];
+    states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+
+    var index = 0;while (index < states.length) {
+      var state = states[index];
+      completeState(code, state);
+      createSymbolLookup(state);
+      code.symbols.forEach(function (symbol) {
+        if (symbol === '$') return;
+        var seedTerms = getSeedTermsFor(code, states[index], symbol);
+        if (seedTerms.length) {
+          var id = seedTerms.map(function (term) {
+            return getId(term);
+          }).sort().join();
+          var _state = stateCache[id] || states.length;
+          if (_state === states.length) {
+            stateCache[id] = _state;
+            states.push(new State(states.length, code, seedTerms));
+          }
+          setGotoFor(states[index], symbol, _state);
+        }
+      });
+      createRow(code, states[index]);
+      index++;
+    }
+
+    return states;
+  };
+
   code.states = generateStates(code);
   code.stateTable = code.states.map(function (state) {
     return state.row;
