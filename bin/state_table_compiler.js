@@ -125,7 +125,7 @@ var compile = function compile(code) {
     }
   };
 
-  var completeState = function completeState(code, state) {
+  var completeState = function completeState(state) {
 
     if (state.stateComplete) return;
 
@@ -195,7 +195,7 @@ var compile = function compile(code) {
 
     var index = 0;while (index < states.length) {
       var state = states[index];
-      completeState(code, state);
+      completeState(state);
       createSymbolLookup(state);
       code.symbols.forEach(function (symbol) {
         if (symbol === '$') return;

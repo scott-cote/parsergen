@@ -81,7 +81,7 @@ let compile = function(code) {
     }
   };
 
-  let completeState = function(code, state) {
+  let completeState = function(state) {
 
     if (state.stateComplete) return;
 
@@ -149,7 +149,7 @@ let compile = function(code) {
 
     let index = 0; while (index < states.length) {
       let state = states[index];
-      completeState(code, state);
+      completeState(state);
       createSymbolLookup(state);
       code.symbols.forEach(symbol => {
         if (symbol === '$') return;
