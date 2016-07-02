@@ -138,7 +138,7 @@ let compile = function(code) {
     state.symbolLookup;
   };
 
-  let generateStates = function(code) {
+  let generateStates = function() {
 
     let states = [];
 
@@ -171,7 +171,7 @@ let compile = function(code) {
     return states;
   };
 
-  code.states = generateStates(code);
+  code.states = generateStates();
   code.stateTable = code.states.map(state => state.row);
   return code;
 };
