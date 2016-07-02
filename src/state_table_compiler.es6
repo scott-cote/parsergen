@@ -4,7 +4,7 @@ let compile = function(code) {
 
   let follow = {};
 
-  let getFirstFor = function(code, symbol) {
+  let getFirstFor = function(symbol) {
     return Array.from(code.firstTable[symbol].symbols);
   };
 
@@ -109,7 +109,7 @@ let compile = function(code) {
         outterValue = outterValue.concat(rule.right.reduce((value, token, index, array) => {
           if (nonterminal === token.symbol) {
             if (index < array.length-1) {
-              let newVal = getFirstFor(code, array[index+1].symbol);
+              let newVal = getFirstFor(array[index+1].symbol);
               return value.concat(newVal);
             } else {
               let newVal = getFollowFor(code, self, rule.left);

@@ -28,7 +28,7 @@ var compile = function compile(code) {
 
   var follow = {};
 
-  var getFirstFor = function getFirstFor(code, symbol) {
+  var getFirstFor = function getFirstFor(symbol) {
     return Array.from(code.firstTable[symbol].symbols);
   };
 
@@ -155,7 +155,7 @@ var compile = function compile(code) {
         outterValue = outterValue.concat(rule.right.reduce(function (value, token, index, array) {
           if (nonterminal === token.symbol) {
             if (index < array.length - 1) {
-              var newVal = getFirstFor(code, array[index + 1].symbol);
+              var newVal = getFirstFor(array[index + 1].symbol);
               return value.concat(newVal);
             } else {
               var _newVal = getFollowFor(code, self, rule.left);
