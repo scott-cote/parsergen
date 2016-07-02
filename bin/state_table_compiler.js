@@ -112,7 +112,7 @@ var compile = function compile(code) {
     });
   };
 
-  var expandTerm = function expandTerm(code, state, termIndex, term) {
+  var expandTerm = function expandTerm(state, termIndex, term) {
     var symbol = getRightNonterminal(term);
     if (symbol) {
       var newTerms = createTermsFor(symbol).filter(function (term) {
@@ -132,7 +132,7 @@ var compile = function compile(code) {
     var termIndex = {};
 
     var index = 0;while (index < state.terms.length) {
-      expandTerm(code, state, termIndex, state.terms[index]);
+      expandTerm(state, termIndex, state.terms[index]);
       index++;
     }
 

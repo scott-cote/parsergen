@@ -71,7 +71,7 @@ let compile = function(code) {
       .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
   };
 
-  let expandTerm = function(code, state, termIndex, term) {
+  let expandTerm = function(state, termIndex, term) {
     let symbol = getRightNonterminal(term);
     if (symbol) {
       let newTerms = createTermsFor(symbol)
@@ -88,7 +88,7 @@ let compile = function(code) {
     let termIndex = {};
 
     let index = 0; while (index < state.terms.length) {
-      expandTerm(code, state, termIndex, state.terms[index]);
+      expandTerm(state, termIndex, state.terms[index]);
       index++;
     }
 
