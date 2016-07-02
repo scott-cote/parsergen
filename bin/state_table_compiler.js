@@ -73,7 +73,7 @@ var compile = function compile(code) {
     state.terms.filter(function (term) {
       return !getRightSymbol(term);
     }).forEach(function (term) {
-      var follow = getFollowFor(code, state, term.left);
+      var follow = getFollowFor(state, term.left);
       follow.forEach(function (symbol) {
         state.row[symbol] = 'reduce(' + term.rule + ')';
       });
@@ -139,7 +139,7 @@ var compile = function compile(code) {
     state.stateComplete = true;
   };
 
-  var getSeedTermsFor = function getSeedTermsFor(code, state, symbol) {
+  var getSeedTermsFor = function getSeedTermsFor(state, symbol) {
     if (!state.symbolLookup[symbol]) return [];
     return state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
@@ -148,7 +148,7 @@ var compile = function compile(code) {
     });
   };
 
-  var getFollowFor = function getFollowFor(code, state, nonterminal) {
+  var getFollowFor = function getFollowFor(state, nonterminal) {
     var self = this;
     if (!follow[nonterminal]) {
       var allFollow = code.rules.reduce(function (outterValue, rule) {
@@ -158,7 +158,7 @@ var compile = function compile(code) {
               var newVal = getFirstFor(array[index + 1].symbol);
               return value.concat(newVal);
             } else {
-              var _newVal = getFollowFor(code, self, rule.left);
+              var _newVal = getFollowFor(self, rule.left);
               return value.concat(_newVal);
             }
           }
@@ -171,7 +171,7 @@ var compile = function compile(code) {
     return follow[nonterminal];
   };
 
-  var State = function State(id, code, rootTerms) {
+  var State = function State(id, rootTerms) {
 
     var state = this;
 
@@ -191,7 +191,7 @@ var compile = function compile(code) {
     var stateCache = {};
 
     var rule = code.rules[0];
-    states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+    states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
     var index = 0;while (index < states.length) {
       var state = states[index];
@@ -199,7 +199,7 @@ var compile = function compile(code) {
       createSymbolLookup(state);
       code.symbols.forEach(function (symbol) {
         if (symbol === '$') return;
-        var seedTerms = getSeedTermsFor(code, states[index], symbol);
+        var seedTerms = getSeedTermsFor(states[index], symbol);
         if (seedTerms.length) {
           var id = seedTerms.map(function (term) {
             return getId(term);
@@ -207,7 +207,7 @@ var compile = function compile(code) {
           var _state = stateCache[id] || states.length;
           if (_state === states.length) {
             stateCache[id] = _state;
-            states.push(new State(states.length, code, seedTerms));
+            states.push(new State(states.length, seedTerms));
           }
           setGotoFor(states[index], symbol, _state);
         }

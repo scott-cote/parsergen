@@ -39,7 +39,7 @@ let compile = function(code) {
       }
     });
     state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-      let follow = getFollowFor(code, state, term.left);
+      let follow = getFollowFor(state, term.left);
       follow.forEach(symbol => {
         state.row[symbol] = 'reduce('+term.rule+')';
       });
@@ -95,14 +95,14 @@ let compile = function(code) {
     state.stateComplete = true;
   };
 
-  let getSeedTermsFor = function(code, state, symbol) {
+  let getSeedTermsFor = function(state, symbol) {
     if (!state.symbolLookup[symbol]) return [];
     return state.terms
       .filter(term => symbol === getRightSymbol(term))
       .map(term => createShiftTerm(term));
   };
 
-  let getFollowFor = function(code, state, nonterminal) {
+  let getFollowFor = function(state, nonterminal) {
     let self = this;
     if (!follow[nonterminal]) {
       let allFollow = code.rules.reduce((outterValue, rule) => {
@@ -112,7 +112,7 @@ let compile = function(code) {
               let newVal = getFirstFor(array[index+1].symbol);
               return value.concat(newVal);
             } else {
-              let newVal = getFollowFor(code, self, rule.left);
+              let newVal = getFollowFor(self, rule.left);
               return value.concat(newVal);
             }
           }
@@ -125,7 +125,7 @@ let compile = function(code) {
     return follow[nonterminal];
   };
 
-  let State = function(id, code, rootTerms) {
+  let State = function(id, rootTerms) {
 
     let state = this;
 
@@ -145,7 +145,7 @@ let compile = function(code) {
     let stateCache = {};
 
     let rule = code.rules[0];
-    states.push(new State(0, code, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+    states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
     let index = 0; while (index < states.length) {
       let state = states[index];
@@ -153,13 +153,13 @@ let compile = function(code) {
       createSymbolLookup(state);
       code.symbols.forEach(symbol => {
         if (symbol === '$') return;
-        let seedTerms = getSeedTermsFor(code, states[index], symbol);
+        let seedTerms = getSeedTermsFor(states[index], symbol);
         if (seedTerms.length) {
           let id = seedTerms.map(term => getId(term)).sort().join();
           let state = stateCache[id] || states.length;
           if (state === states.length) {
             stateCache[id] = state;
-            states.push(new State(states.length, code, seedTerms));
+            states.push(new State(states.length, seedTerms));
           }
           setGotoFor(states[index], symbol, state);
         }
