@@ -104,7 +104,7 @@ var compile = function compile(code) {
     });
   };
 
-  var createTermsFor = function createTermsFor(code, symbol) {
+  var createTermsFor = function createTermsFor(symbol) {
     return code.rules.filter(function (rule) {
       return rule.left === symbol;
     }).map(function (rule) {
@@ -115,7 +115,7 @@ var compile = function compile(code) {
   var expandTerm = function expandTerm(code, state, termIndex, term) {
     var symbol = getRightNonterminal(term);
     if (symbol) {
-      var newTerms = createTermsFor(code, symbol).filter(function (term) {
+      var newTerms = createTermsFor(symbol).filter(function (term) {
         return !termIndex[getId(term)];
       });
       newTerms.forEach(function (term) {
