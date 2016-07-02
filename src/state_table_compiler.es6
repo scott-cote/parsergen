@@ -26,7 +26,7 @@ let compile = function(code) {
     if (token && token.type === 'TERMINAL') return token.symbol;
   };
 
-  let createRow = function(code, state) {
+  let createRow = function(state) {
     state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
       state.row[getRightNonterminal(term)] = `goto(${term.goto})`;
     });
@@ -164,7 +164,7 @@ let compile = function(code) {
           setGotoFor(states[index], symbol, state);
         }
       });
-      createRow(code, states[index]);
+      createRow(states[index]);
       index++;
     }
 

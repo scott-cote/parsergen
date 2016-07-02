@@ -54,7 +54,7 @@ var compile = function compile(code) {
     if (token && token.type === 'TERMINAL') return token.symbol;
   };
 
-  var createRow = function createRow(code, state) {
+  var createRow = function createRow(state) {
     state.terms.filter(function (term) {
       return getRightNonterminal(term);
     }).forEach(function (term) {
@@ -212,7 +212,7 @@ var compile = function compile(code) {
           setGotoFor(states[index], symbol, _state);
         }
       });
-      createRow(code, states[index]);
+      createRow(states[index]);
       index++;
     }
 
