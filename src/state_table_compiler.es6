@@ -1,5 +1,6 @@
 import Stream from 'stream';
-  let compile = function(code) {
+
+let compile = function(code) {
 
   let follow = {};
 
