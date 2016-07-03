@@ -125,21 +125,6 @@ let compile = function(code) {
     return follow[nonterminal];
   };
 
-  /*
-  let State = function(id, rootTerms) {
-
-    let state = this;
-
-    state.row = {};
-
-    state.terms = [].concat(rootTerms);
-
-    state.stateComplete = false;
-
-    state.symbolLookup;
-  };
-  */
-
   let createState = function(seedTerms) {
     return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
