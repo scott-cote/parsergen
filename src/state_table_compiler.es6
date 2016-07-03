@@ -143,39 +143,37 @@ let compile = function(code) {
     createSymbolLookup(state);
   };
 
-  let generateStates = function() {
-
-    let states = [];
-
-    let stateCache = {};
-
-    let rule = code.rules[0];
-    states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
-
-    let index = 0; while (index < states.length) {
-      let state = states[index];
-      expandTerms(state);
-      code.symbols.forEach(symbol => {
-        if (symbol === '$') return;
-        let seedTerms = getSeedTermsFor(states[index], symbol);
-        if (seedTerms.length) {
-          let id = seedTerms.map(term => getId(term)).sort().join();
-          let state = stateCache[id] || states.length;
-          if (state === states.length) {
-            stateCache[id] = state;
-            states.push(new State(states.length, seedTerms));
-          }
-          setGotoFor(states[index], symbol, state);
+  let spawnStates = function(state, states, stateCache) {
+    code.symbols.forEach(symbol => {
+      if (symbol === '$') return;
+      let seedTerms = getSeedTermsFor(state, symbol);
+      if (seedTerms.length) {
+        let id = seedTerms.map(term => getId(term)).sort().join();
+        let stateIndex = stateCache[id] || states.length;
+        if (stateIndex === states.length) {
+          stateCache[id] = stateIndex;
+          states.push(new State(states.length, seedTerms));
         }
-      });
-      createRow(states[index]);
-      index++;
-    }
-
-    return states;
+        setGotoFor(state, symbol, stateIndex);
+      }
+    });
+    createRow(state);
   };
 
-  code.states = generateStates();
+  code.states = [];
+
+  let stateCache = {};
+
+  let rule = code.rules[0];
+  code.states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+
+  let index = 0; while (index < code.states.length) {
+    let state = code.states[index];
+    expandTerms(state);
+    spawnStates(state, code.states, stateCache);
+    index++;
+  }
+
   code.stateTable = code.states.map(state => state.row);
   return code;
 };

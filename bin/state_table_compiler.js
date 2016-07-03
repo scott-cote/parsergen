@@ -189,41 +189,39 @@ var compile = function compile(code) {
     createSymbolLookup(state);
   };
 
-  var generateStates = function generateStates() {
-
-    var states = [];
-
-    var stateCache = {};
-
-    var rule = code.rules[0];
-    states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
-
-    var index = 0;while (index < states.length) {
-      var state = states[index];
-      expandTerms(state);
-      code.symbols.forEach(function (symbol) {
-        if (symbol === '$') return;
-        var seedTerms = getSeedTermsFor(states[index], symbol);
-        if (seedTerms.length) {
-          var id = seedTerms.map(function (term) {
-            return getId(term);
-          }).sort().join();
-          var _state = stateCache[id] || states.length;
-          if (_state === states.length) {
-            stateCache[id] = _state;
-            states.push(new State(states.length, seedTerms));
-          }
-          setGotoFor(states[index], symbol, _state);
+  var spawnStates = function spawnStates(state, states, stateCache) {
+    code.symbols.forEach(function (symbol) {
+      if (symbol === '$') return;
+      var seedTerms = getSeedTermsFor(state, symbol);
+      if (seedTerms.length) {
+        var id = seedTerms.map(function (term) {
+          return getId(term);
+        }).sort().join();
+        var stateIndex = stateCache[id] || states.length;
+        if (stateIndex === states.length) {
+          stateCache[id] = stateIndex;
+          states.push(new State(states.length, seedTerms));
         }
-      });
-      createRow(states[index]);
-      index++;
-    }
-
-    return states;
+        setGotoFor(state, symbol, stateIndex);
+      }
+    });
+    createRow(state);
   };
 
-  code.states = generateStates();
+  code.states = [];
+
+  var stateCache = {};
+
+  var rule = code.rules[0];
+  code.states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+
+  var index = 0;while (index < code.states.length) {
+    var state = code.states[index];
+    expandTerms(state);
+    spawnStates(state, code.states, stateCache);
+    index++;
+  }
+
   code.stateTable = code.states.map(function (state) {
     return state.row;
   });
