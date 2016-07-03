@@ -171,17 +171,18 @@ var compile = function compile(code) {
     return follow[nonterminal];
   };
 
-  var State = function State(id, rootTerms) {
+  /*
+  let State = function(id, rootTerms) {
+     let state = this;
+     state.row = {};
+     state.terms = [].concat(rootTerms);
+     state.stateComplete = false;
+     state.symbolLookup;
+  };
+  */
 
-    var state = this;
-
-    state.row = {};
-
-    state.terms = [].concat(rootTerms);
-
-    state.stateComplete = false;
-
-    state.symbolLookup;
+  var createState = function createState(seedTerms) {
+    return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
 
   var expandTerms = function expandTerms(state) {
@@ -200,7 +201,7 @@ var compile = function compile(code) {
         var stateIndex = stateCache[id] || states.length;
         if (stateIndex === states.length) {
           stateCache[id] = stateIndex;
-          states.push(new State(states.length, seedTerms));
+          states.push(createState(seedTerms));
         }
         setGotoFor(state, symbol, stateIndex);
       }
@@ -213,7 +214,7 @@ var compile = function compile(code) {
   var stateCache = {};
 
   var rule = code.rules[0];
-  code.states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+  code.states.push(createState({ rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
   var index = 0;while (index < code.states.length) {
     var state = code.states[index];

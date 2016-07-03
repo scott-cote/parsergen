@@ -171,7 +171,7 @@ let compile = function(code) {
   let stateCache = {};
 
   let rule = code.rules[0];
-  code.states.push(new State(0, { rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+  code.states.push(createState({ rule: rule.id, left: rule.left, middle: [], right: rule.right }));
 
   let index = 0; while (index < code.states.length) {
     let state = code.states[index];
