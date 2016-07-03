@@ -125,6 +125,7 @@ let compile = function(code) {
     return follow[nonterminal];
   };
 
+  /*
   let State = function(id, rootTerms) {
 
     let state = this;
@@ -136,6 +137,11 @@ let compile = function(code) {
     state.stateComplete = false;
 
     state.symbolLookup;
+  };
+  */
+
+  let createState = function(seedTerms) {
+    return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
 
   let expandTerms = function(state) {
@@ -152,7 +158,7 @@ let compile = function(code) {
         let stateIndex = stateCache[id] || states.length;
         if (stateIndex === states.length) {
           stateCache[id] = stateIndex;
-          states.push(new State(states.length, seedTerms));
+          states.push(createState(seedTerms));
         }
         setGotoFor(state, symbol, stateIndex);
       }
