@@ -184,6 +184,11 @@ var compile = function compile(code) {
     state.symbolLookup;
   };
 
+  var expandTerms = function expandTerms(state) {
+    completeState(state);
+    createSymbolLookup(state);
+  };
+
   var generateStates = function generateStates() {
 
     var states = [];
@@ -195,8 +200,7 @@ var compile = function compile(code) {
 
     var index = 0;while (index < states.length) {
       var state = states[index];
-      completeState(state);
-      createSymbolLookup(state);
+      expandTerms(state);
       code.symbols.forEach(function (symbol) {
         if (symbol === '$') return;
         var seedTerms = getSeedTermsFor(states[index], symbol);
