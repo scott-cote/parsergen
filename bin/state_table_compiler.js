@@ -171,16 +171,6 @@ var compile = function compile(code) {
     return follow[nonterminal];
   };
 
-  /*
-  let State = function(id, rootTerms) {
-     let state = this;
-     state.row = {};
-     state.terms = [].concat(rootTerms);
-     state.stateComplete = false;
-     state.symbolLookup;
-  };
-  */
-
   var createState = function createState(seedTerms) {
     return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
