@@ -74,17 +74,11 @@ let compile = function(code) {
   };
 
   let completeState = function(state) {
-
-    if (state.stateComplete) return;
-
     let termIndex = {};
-
     let index = 0; while (index < state.terms.length) {
       expandTerm(state, termIndex, state.terms[index]);
       index++;
     }
-
-    state.stateComplete = true;
   };
 
   let getSeedTermsFor = function(state, symbol) {
@@ -117,7 +111,7 @@ let compile = function(code) {
   };
 
   let createState = function(seedTerms) {
-    return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
+    return { row: {}, terms: [].concat(seedTerms) };
   };
 
   let spawnStates = function(state, states, stateCache) {
