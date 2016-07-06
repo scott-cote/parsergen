@@ -94,16 +94,6 @@ var compile = function compile(code) {
     return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
   };
 
-  var createSymbolLookup = function createSymbolLookup(state) {
-    if (state.symbolLookup) return;
-    state.symbolLookup = {};
-    state.terms.filter(function (term) {
-      return !!getRightSymbol(term);
-    }).forEach(function (term) {
-      return state.symbolLookup[getRightSymbol(term)] = true;
-    });
-  };
-
   var createTermsFor = function createTermsFor(symbol) {
     return code.rules.filter(function (rule) {
       return rule.left === symbol;
@@ -140,7 +130,6 @@ var compile = function compile(code) {
   };
 
   var getSeedTermsFor = function getSeedTermsFor(state, symbol) {
-    if (!state.symbolLookup[symbol]) return [];
     return state.terms.filter(function (term) {
       return symbol === getRightSymbol(term);
     }).map(function (term) {
@@ -177,7 +166,6 @@ var compile = function compile(code) {
 
   var expandTerms = function expandTerms(state) {
     completeState(state);
-    createSymbolLookup(state);
   };
 
   var spawnStates = function spawnStates(state, states, stateCache) {

@@ -58,14 +58,6 @@ let compile = function(code) {
     return { rule: term.rule, left: term.left, middle: newMiddle, right: term.right.slice(1) };
   };
 
-  let createSymbolLookup = function(state) {
-    if (state.symbolLookup) return;
-    state.symbolLookup = {};
-    state.terms
-      .filter(term => !!getRightSymbol(term))
-      .forEach(term => state.symbolLookup[getRightSymbol(term)] = true);
-  };
-
   let createTermsFor = function(symbol) {
     return code.rules.filter(rule => rule.left === symbol)
       .map(rule => { return { rule: rule.id, left: rule.left, middle: [], right: rule.right }});
@@ -96,7 +88,6 @@ let compile = function(code) {
   };
 
   let getSeedTermsFor = function(state, symbol) {
-    if (!state.symbolLookup[symbol]) return [];
     return state.terms
       .filter(term => symbol === getRightSymbol(term))
       .map(term => createShiftTerm(term));
@@ -131,7 +122,6 @@ let compile = function(code) {
 
   let expandTerms = function(state) {
     completeState(state);
-    createSymbolLookup(state);
   };
 
   let spawnStates = function(state, states, stateCache) {
