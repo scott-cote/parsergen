@@ -111,7 +111,10 @@ var compile = function compile(code) {
       newTerms.forEach(function (term) {
         return termIndex[getId(term)] = true;
       });
-      state.terms = state.terms.concat(newTerms);
+      //state.terms = state.terms.concat(newTerms);
+      newTerms.forEach(function (term) {
+        return addTerm(state, term);
+      });
     }
   };
 
@@ -154,8 +157,16 @@ var compile = function compile(code) {
     return follow[nonterminal];
   };
 
+  var addTerm = function addTerm(state, term) {
+    state.terms.push(term);
+  };
+
   var createState = function createState(seedTerms) {
-    return { row: {}, terms: [].concat(seedTerms) };
+    var state = { row: {}, terms: [] };
+    seedTerms.forEach(function (term) {
+      return addTerm(state, term);
+    });
+    return state;
   };
 
   var spawnStates = function spawnStates(state, states, stateCache) {
@@ -182,7 +193,7 @@ var compile = function compile(code) {
   var stateCache = {};
 
   var rule = code.rules[0];
-  code.states.push(createState({ rule: rule.id, left: rule.left, middle: [], right: rule.right }));
+  code.states.push(createState([{ rule: rule.id, left: rule.left, middle: [], right: rule.right }]));
 
   var index = 0;while (index < code.states.length) {
     var state = code.states[index];
