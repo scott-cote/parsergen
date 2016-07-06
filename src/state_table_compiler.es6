@@ -120,10 +120,6 @@ let compile = function(code) {
     return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
 
-  let expandTerms = function(state) {
-    completeState(state);
-  };
-
   let spawnStates = function(state, states, stateCache) {
     code.symbols.forEach(symbol => {
       if (symbol === '$') return;
@@ -150,7 +146,7 @@ let compile = function(code) {
 
   let index = 0; while (index < code.states.length) {
     let state = code.states[index];
-    expandTerms(state);
+    completeState(state);
     spawnStates(state, code.states, stateCache);
     index++;
   }

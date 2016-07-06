@@ -164,10 +164,6 @@ var compile = function compile(code) {
     return { row: {}, terms: [].concat(seedTerms), stateComplete: false };
   };
 
-  var expandTerms = function expandTerms(state) {
-    completeState(state);
-  };
-
   var spawnStates = function spawnStates(state, states, stateCache) {
     code.symbols.forEach(function (symbol) {
       if (symbol === '$') return;
@@ -196,7 +192,7 @@ var compile = function compile(code) {
 
   var index = 0;while (index < code.states.length) {
     var state = code.states[index];
-    expandTerms(state);
+    completeState(state);
     spawnStates(state, code.states, stateCache);
     index++;
   }
