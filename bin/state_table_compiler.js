@@ -55,11 +55,11 @@ var compile = function compile(code) {
   };
 
   var createRow = function createRow(state) {
-    state.terms.filter(function (term) {
-      return getRightNonterminal(term);
-    }).forEach(function (term) {
+    /*
+    state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
       state.row[getRightNonterminal(term)] = { operation: 'goto', value: term.goto }; // `goto(${term.goto})`;
     });
+    */
     state.terms.filter(function (term) {
       return getRightTerminal(term);
     }).forEach(function (term) {
@@ -86,6 +86,12 @@ var compile = function compile(code) {
       return symbol === getRightSymbol(term);
     }).forEach(function (term) {
       return term.goto = value;
+    });
+    Object.keys(state.row).forEach(function (key) {
+      var item = state.row[key];
+      if (symbol === item.symbol && (item.operation === 'shift' || item.operation === 'goto')) {
+        item.value = value;
+      }
     });
   };
 
@@ -159,13 +165,11 @@ var compile = function compile(code) {
 
   var addTerm = function addTerm(state, term) {
     state.terms.push(term);
-    /*
-    let nonterminal = getRightNonterminal(term);
+    var nonterminal = getRightNonterminal(term);
     if (!!nonterminal) {
-      state.row[nonterminal] = `goto(${term.goto})`;
+      state.row[nonterminal] = { operation: 'goto', symbol: getRightSymbol(term) }; // `goto(${term.goto})`;
       return;
     }
-    */
   };
 
   var createState = function createState(seedTerms) {

@@ -27,9 +27,11 @@ let compile = function(code) {
   };
 
   let createRow = function(state) {
+    /*
     state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
       state.row[getRightNonterminal(term)] = { operation: 'goto', value: term.goto }; // `goto(${term.goto})`;
     });
+    */
     state.terms.filter(term => getRightTerminal(term)).forEach(term => {
       let terminal = getRightTerminal(term);
       if (terminal === '$') {
@@ -51,6 +53,12 @@ let compile = function(code) {
     state.terms
       .filter(term => symbol === getRightSymbol(term))
       .forEach(term => term.goto = value);
+    Object.keys(state.row).forEach(key => {
+      let item = state.row[key];
+      if (symbol === item.symbol && (item.operation === 'shift' || item.operation === 'goto')) {
+        item.value = value;
+      }
+    });
   };
 
   let createShiftTerm = function(term) {
@@ -113,13 +121,11 @@ let compile = function(code) {
 
   let addTerm = function(state, term) {
     state.terms.push(term);
-    /*
     let nonterminal = getRightNonterminal(term);
     if (!!nonterminal) {
-      state.row[nonterminal] = `goto(${term.goto})`;
+      state.row[nonterminal] = { operation: 'goto', symbol: getRightSymbol(term) }; // `goto(${term.goto})`;
       return;
     }
-    */
   };
 
   let createState = function(seedTerms) {
