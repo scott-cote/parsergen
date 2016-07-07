@@ -87,7 +87,7 @@ var accept = function accept() {
 
 rules = [{ "left": "RULES'", "rightCount": 2 }, { "left": "RULES", "rightCount": 2 }, { "left": "RULES", "rightCount": 1 }, { "left": "RULE", "rightCount": 4 }, { "left": "LEFT", "rightCount": 1 }, { "left": "RIGHT", "rightCount": 2 }, { "left": "RIGHT", "rightCount": 1 }];
 
-parseTable = [{ "RULES": goto(1), "RULE": goto(2), "LEFT": goto(3), "TOKEN_IDENTIFIER": shift(4) }, { "RULE": goto(5), "LEFT": goto(3), "$": accept(), "TOKEN_IDENTIFIER": shift(4) }, { "$": reduce(2), "TOKEN_IDENTIFIER": reduce(2) }, { "TOKEN_ROCKET": shift(6) }, { "TOKEN_ROCKET": reduce(4) }, { "$": reduce(1), "TOKEN_IDENTIFIER": reduce(1) }, { "RIGHT": goto(7), "TOKEN_IDENTIFIER": shift(8) }, { "TOKEN_SEMICOLON": shift(9), "TOKEN_IDENTIFIER": shift(10) }, { "TOKEN_SEMICOLON": reduce(6), "TOKEN_IDENTIFIER": reduce(6) }, { "$": reduce(3), "TOKEN_IDENTIFIER": reduce(3) }, { "TOKEN_SEMICOLON": reduce(5), "TOKEN_IDENTIFIER": reduce(5) }];
+parseTable = [{ "RULES": goto(1), "RULE": goto(2), "LEFT": goto(3), "TOKEN_IDENTIFIER": shift(4) }, { "$": accept(), "RULE": goto(5), "LEFT": goto(3), "TOKEN_IDENTIFIER": shift(4) }, { "$": reduce(2), "TOKEN_IDENTIFIER": reduce(2) }, { "TOKEN_ROCKET": shift(6) }, { "TOKEN_ROCKET": reduce(4) }, { "$": reduce(1), "TOKEN_IDENTIFIER": reduce(1) }, { "RIGHT": goto(7), "TOKEN_IDENTIFIER": shift(8) }, { "TOKEN_SEMICOLON": shift(9), "TOKEN_IDENTIFIER": shift(10) }, { "TOKEN_SEMICOLON": reduce(6), "TOKEN_IDENTIFIER": reduce(6) }, { "$": reduce(3), "TOKEN_IDENTIFIER": reduce(3) }, { "TOKEN_SEMICOLON": reduce(5), "TOKEN_IDENTIFIER": reduce(5) }];
 
 stack = [parseTable[0]];
 

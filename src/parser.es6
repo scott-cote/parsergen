@@ -70,7 +70,7 @@ rules = [
 
 parseTable = [
   { "RULES": goto(1),"RULE": goto(2),"LEFT": goto(3),"TOKEN_IDENTIFIER": shift(4) },
-  { "RULE": goto(5),"LEFT": goto(3),"$": accept(),"TOKEN_IDENTIFIER": shift(4) },
+  { "$": accept(),"RULE": goto(5),"LEFT": goto(3),"TOKEN_IDENTIFIER": shift(4) },
   { "$": reduce(2),"TOKEN_IDENTIFIER": reduce(2) },
   { "TOKEN_ROCKET": shift(6) },
   { "TOKEN_ROCKET": reduce(4) },
