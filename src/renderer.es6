@@ -8,7 +8,7 @@ let render = function(code) {
 
   let renderRow = function(row) {
     let values = Object.keys(row).map(key => {
-      return `"${key}": ${row[key]}`;
+      return `"${key}": ${row[key].operation}(${row[key].value||''})`;
     }).join();
     return `{ ${values} }`;
   };

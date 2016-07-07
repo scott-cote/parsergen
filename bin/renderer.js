@@ -32,7 +32,7 @@ var render = function render(code) {
 
   var renderRow = function renderRow(row) {
     var values = Object.keys(row).map(function (key) {
-      return '"' + key + '": ' + row[key];
+      return '"' + key + '": ' + row[key].operation + '(' + (row[key].value || '') + ')';
     }).join();
     return '{ ' + values + ' }';
   };

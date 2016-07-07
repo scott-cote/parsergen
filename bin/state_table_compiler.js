@@ -58,24 +58,24 @@ var compile = function compile(code) {
     state.terms.filter(function (term) {
       return getRightNonterminal(term);
     }).forEach(function (term) {
-      state.row[getRightNonterminal(term)] = 'goto(' + term.goto + ')';
+      state.row[getRightNonterminal(term)] = { operation: 'goto', value: term.goto }; // `goto(${term.goto})`;
     });
     state.terms.filter(function (term) {
       return getRightTerminal(term);
     }).forEach(function (term) {
       var terminal = getRightTerminal(term);
       if (terminal === '$') {
-        state.row[terminal] = 'accept()';
+        state.row[terminal] = { operation: 'accept' }; // 'accept()';
       } else {
-        state.row[terminal] = 'shift(' + term.goto + ')';
-      }
+          state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
+        }
     });
     state.terms.filter(function (term) {
       return !getRightSymbol(term);
     }).forEach(function (term) {
       var follow = getFollowFor(state, term.left);
       follow.forEach(function (symbol) {
-        state.row[symbol] = 'reduce(' + term.rule + ')';
+        state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
       });
     });
     return state.row;
