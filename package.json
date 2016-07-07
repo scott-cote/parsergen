@@ -1,6 +1,6 @@
 {
   "name": "parsergen",
-  "version": "0.0.2-alpha-2016070501",
+  "version": "0.0.2-alpha-2016070700",
   "description": "A parser generator for Javascript.",
   "main": "bin/index.js",
   "scripts": {
