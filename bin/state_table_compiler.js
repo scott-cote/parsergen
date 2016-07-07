@@ -59,18 +59,14 @@ var compile = function compile(code) {
     state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
       state.row[getRightNonterminal(term)] = { operation: 'goto', value: term.goto }; // `goto(${term.goto})`;
     });
-    */
-    state.terms.filter(function (term) {
-      return getRightTerminal(term);
-    }).forEach(function (term) {
-      var terminal = getRightTerminal(term);
+    state.terms.filter(term => getRightTerminal(term)).forEach(term => {
+      let terminal = getRightTerminal(term);
       if (terminal === '$') {
         state.row[terminal] = { operation: 'accept' }; // 'accept()';
       } else {
-          state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
-        }
+        state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
+      }
     });
-    /*
     state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
       let follow = getFollowFor(state, term.left);
       follow.forEach(symbol => {
@@ -170,6 +166,15 @@ var compile = function compile(code) {
       state.row[nonterminal] = { operation: 'goto', symbol: getRightSymbol(term) }; // `goto(${term.goto})`;
       return;
     }
+    var terminal = getRightTerminal(term);
+    if (!!terminal) {
+      if (terminal === '$') {
+        state.row[terminal] = { operation: 'accept' }; // 'accept()';
+      } else {
+          state.row[terminal] = { operation: 'shift', symbol: getRightSymbol(term) }; // 'shift('+term.goto+')';
+        }
+      return;
+    };
     if (!getRightSymbol(term)) {
       getFollowFor(state, term.left).forEach(function (symbol) {
         state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
