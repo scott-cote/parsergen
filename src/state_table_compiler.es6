@@ -26,29 +26,6 @@ let compile = function(code) {
     if (token && token.type === 'TERMINAL') return token.symbol;
   };
 
-  let createRow = function(state) {
-    /*
-    state.terms.filter(term => getRightNonterminal(term)).forEach(term => {
-      state.row[getRightNonterminal(term)] = { operation: 'goto', value: term.goto }; // `goto(${term.goto})`;
-    });
-    state.terms.filter(term => getRightTerminal(term)).forEach(term => {
-      let terminal = getRightTerminal(term);
-      if (terminal === '$') {
-        state.row[terminal] = { operation: 'accept' }; // 'accept()';
-      } else {
-        state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
-      }
-    });
-    state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
-      let follow = getFollowFor(state, term.left);
-      follow.forEach(symbol => {
-        state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
-      });
-    });
-    */
-    return state.row;
-  };
-
   let setGotoFor = function(state, symbol, value) {
     state.terms
       .filter(term => symbol === getRightSymbol(term))
@@ -163,7 +140,6 @@ let compile = function(code) {
         setGotoFor(state, symbol, stateIndex);
       }
     });
-    createRow(state);
   };
 
   code.states = [];
