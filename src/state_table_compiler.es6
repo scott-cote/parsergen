@@ -27,9 +27,11 @@ let compile = function(code) {
   };
 
   let setGotoFor = function(state, symbol, value) {
+    /*
     state.terms
       .filter(term => symbol === getRightSymbol(term))
       .forEach(term => term.goto = value);
+    */
     Object.keys(state.row).forEach(key => {
       let item = state.row[key];
       if (symbol === item.symbol && (item.operation === 'shift' || item.operation === 'goto')) {

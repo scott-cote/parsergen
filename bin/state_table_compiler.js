@@ -55,11 +55,11 @@ var compile = function compile(code) {
   };
 
   var setGotoFor = function setGotoFor(state, symbol, value) {
-    state.terms.filter(function (term) {
-      return symbol === getRightSymbol(term);
-    }).forEach(function (term) {
-      return term.goto = value;
-    });
+    /*
+    state.terms
+      .filter(term => symbol === getRightSymbol(term))
+      .forEach(term => term.goto = value);
+    */
     Object.keys(state.row).forEach(function (key) {
       var item = state.row[key];
       if (symbol === item.symbol && (item.operation === 'shift' || item.operation === 'goto')) {
