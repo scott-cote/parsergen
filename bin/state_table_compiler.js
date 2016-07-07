@@ -159,6 +159,13 @@ var compile = function compile(code) {
 
   var addTerm = function addTerm(state, term) {
     state.terms.push(term);
+    /*
+    let nonterminal = getRightNonterminal(term);
+    if (!!nonterminal) {
+      state.row[nonterminal] = `goto(${term.goto})`;
+      return;
+    }
+    */
   };
 
   var createState = function createState(seedTerms) {
