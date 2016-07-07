@@ -40,12 +40,14 @@ let compile = function(code) {
         state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
       }
     });
+    /*
     state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
       let follow = getFollowFor(state, term.left);
       follow.forEach(symbol => {
         state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
       });
     });
+    */
     return state.row;
   };
 
@@ -126,6 +128,12 @@ let compile = function(code) {
       state.row[nonterminal] = { operation: 'goto', symbol: getRightSymbol(term) }; // `goto(${term.goto})`;
       return;
     }
+    if (!getRightSymbol(term)) {
+      getFollowFor(state, term.left).forEach(symbol => {
+        state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
+      });
+      return;
+    };
   };
 
   let createState = function(seedTerms) {

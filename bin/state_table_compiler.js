@@ -70,14 +70,14 @@ var compile = function compile(code) {
           state.row[terminal] = { operation: 'shift', value: term.goto }; // 'shift('+term.goto+')';
         }
     });
-    state.terms.filter(function (term) {
-      return !getRightSymbol(term);
-    }).forEach(function (term) {
-      var follow = getFollowFor(state, term.left);
-      follow.forEach(function (symbol) {
+    /*
+    state.terms.filter(term => !getRightSymbol(term)).forEach(term => {
+      let follow = getFollowFor(state, term.left);
+      follow.forEach(symbol => {
         state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
       });
     });
+    */
     return state.row;
   };
 
@@ -170,6 +170,12 @@ var compile = function compile(code) {
       state.row[nonterminal] = { operation: 'goto', symbol: getRightSymbol(term) }; // `goto(${term.goto})`;
       return;
     }
+    if (!getRightSymbol(term)) {
+      getFollowFor(state, term.left).forEach(function (symbol) {
+        state.row[symbol] = { operation: 'reduce', value: term.rule }; // 'reduce('+term.rule+')';
+      });
+      return;
+    };
   };
 
   var createState = function createState(seedTerms) {
