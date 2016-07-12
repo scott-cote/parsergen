@@ -12,6 +12,7 @@ import Stream from 'stream';
 
 */
 
+/*
 let generateFollowFor = function(symbol, table, rules) {
 
   let reduceItem = function(item, index, items) {
@@ -36,11 +37,17 @@ let generateFollowFor = function(symbol, table, rules) {
   return result;
 };
 
+*/
+
+let compileRule = function(rule, table) {
+  console.log(JSON.stringify(rule.right));
+}
+
 let compile = function(code) {
   code.followTable = {};
   let result = Promise.resolve();
-  code.nonterminals.forEach(symbol => {
-    result = result.then(() => generateFollowFor(symbol, code.followTable, code.rules));
+  code.rules.forEach(rule => {
+    result = result.then(() => compileRule(rule, code.followTable));
   });
   return result;
 };
@@ -48,12 +55,10 @@ let compile = function(code) {
 class Transformer extends Stream.Transform {
 
   constructor() {
-    console.log('follow start')
     super({ objectMode : true });
   }
 
   _transform(code, encoding, done) {
-    console.log('follow run')
     compile(code).then(() => done(null, code)).catch(done);
   }
 };

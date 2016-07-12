@@ -30,40 +30,43 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 */
 
-var generateFollowFor = function generateFollowFor(symbol, table, rules) {
+/*
+let generateFollowFor = function(symbol, table, rules) {
 
-  var reduceItem = function reduceItem(item, index, items) {
-    var result = Promise.resolve();
+  let reduceItem = function(item, index, items) {
+    let result = Promise.resolve();
     return result;
   };
 
-  var reduceRule = function reduceRule(rule) {
-    var result = Promise.resolve();
-    rule.right.forEach(function (item, index, items) {
-      result = result.then(function () {
-        return reduceItem(item, index, items);
-      });
+  let reduceRule = function(rule) {
+    let result = Promise.resolve();
+    rule.right.forEach((item, index, items) => {
+      result = result.then(() => reduceItem(item, index, items));
     });
     return result;
   };
 
-  var result = Promise.resolve();
+  let result = Promise.resolve();
 
-  rules.forEach(function (rule) {
-    result = result.then(function () {
-      return reduceRule(rule);
-    });
+  rules.forEach(rule => {
+    result = result.then(() => reduceRule(rule));
   });
 
   return result;
 };
 
+*/
+
+var compileRule = function compileRule(rule, table) {
+  console.log(JSON.stringify(rule.right));
+};
+
 var compile = function compile(code) {
   code.followTable = {};
   var result = Promise.resolve();
-  code.nonterminals.forEach(function (symbol) {
+  code.rules.forEach(function (rule) {
     result = result.then(function () {
-      return generateFollowFor(symbol, code.followTable, code.rules);
+      return compileRule(rule, code.followTable);
     });
   });
   return result;
@@ -75,14 +78,12 @@ var Transformer = function (_Stream$Transform) {
   function Transformer() {
     _classCallCheck(this, Transformer);
 
-    console.log('follow start');
     return _possibleConstructorReturn(this, Object.getPrototypeOf(Transformer).call(this, { objectMode: true }));
   }
 
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      console.log('follow run');
       compile(code).then(function () {
         return done(null, code);
       }).catch(done);
