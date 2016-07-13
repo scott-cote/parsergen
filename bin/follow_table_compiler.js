@@ -73,7 +73,6 @@ var generateRuleIndex = function generateRuleIndex(rules) {
 };
 
 var generateFollowFor = function generateFollowFor(symbol, table, ruleIndex) {
-  console.log('gen fol for ' + symbol);
   return Promise.resolve();
 };
 
