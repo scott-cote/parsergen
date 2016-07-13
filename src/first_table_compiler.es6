@@ -7,6 +7,15 @@ let generateTerminalEntries = function(terminals) {
   }, {});
 };
 
+let generateRuleIndex = function(rules) {
+  return rules.reduce((ruleIndex, rule) => {
+    let rules = ruleIndex[rule.left] || [];
+    rules.push(rule);
+    ruleIndex[rule.left] = rules;
+    return ruleIndex;
+  }, {});
+};
+
 let generateFirstFor = function(symbol, table, ruleIndex) {
 
   let ruleReduction = { canBeEmpty: false, symbols: [] };
@@ -51,13 +60,7 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
   return result;
 };
 
-let generateNonterminalEntries = function(table, options) {
-  let ruleIndex = options.rules.reduce((ruleIndex, rule) => {
-    let rules = ruleIndex[rule.left] || [];
-    rules.push(rule);
-    ruleIndex[rule.left] = rules;
-    return ruleIndex;
-  }, {});
+let generateNonterminalEntries = function(table, ruleIndex) {
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
     result = result.then(() => generateFirstFor(symbol, table, ruleIndex));
@@ -67,7 +70,8 @@ let generateNonterminalEntries = function(table, options) {
 
 let generateFirstTable = function(options) {
   let table = generateTerminalEntries(options.terminals);
-  return generateNonterminalEntries(table, options).then(() => {
+  let ruleIndex = generateRuleIndex(options.rules);
+  return generateNonterminalEntries(table, ruleIndex).then(() => {
     Object.keys(table).forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });

@@ -25,6 +25,15 @@ var generateTerminalEntries = function generateTerminalEntries(terminals) {
   }, {});
 };
 
+var generateRuleIndex = function generateRuleIndex(rules) {
+  return rules.reduce(function (ruleIndex, rule) {
+    var rules = ruleIndex[rule.left] || [];
+    rules.push(rule);
+    ruleIndex[rule.left] = rules;
+    return ruleIndex;
+  }, {});
+};
+
 var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
 
   var ruleReduction = { canBeEmpty: false, symbols: [] };
@@ -75,13 +84,7 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
   return result;
 };
 
-var generateNonterminalEntries = function generateNonterminalEntries(table, options) {
-  var ruleIndex = options.rules.reduce(function (ruleIndex, rule) {
-    var rules = ruleIndex[rule.left] || [];
-    rules.push(rule);
-    ruleIndex[rule.left] = rules;
-    return ruleIndex;
-  }, {});
+var generateNonterminalEntries = function generateNonterminalEntries(table, ruleIndex) {
   var result = Promise.resolve();
   Object.keys(ruleIndex).forEach(function (symbol) {
     result = result.then(function () {
@@ -93,7 +96,8 @@ var generateNonterminalEntries = function generateNonterminalEntries(table, opti
 
 var generateFirstTable = function generateFirstTable(options) {
   var table = generateTerminalEntries(options.terminals);
-  return generateNonterminalEntries(table, options).then(function () {
+  var ruleIndex = generateRuleIndex(options.rules);
+  return generateNonterminalEntries(table, ruleIndex).then(function () {
     Object.keys(table).forEach(function (key) {
       table[key].symbols = new Set(table[key].symbols);
     });
