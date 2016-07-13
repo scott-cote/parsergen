@@ -39,16 +39,32 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-let generateFollowFor = function(symbol, table) {
+let generateRuleIndex = function(rules) {
+  let ruleIndex = {};
+  return rules.reduce((ruleIndex, rule) => {
+    new Set(
+      rule.right
+        .filter(item => item.type === 'NONTERMINAL')
+        .map(item => item.symbol)
+    ).forEach(symbol => {
+      ruleIndex[symbol] = ruleIndex[symbol] || [];
+      ruleIndex[symbol].push(rule);
+    });
+    return ruleIndex;
+  }, {});
+};
+
+let generateFollowFor = function(symbol, table, ruleIndex) {
   console.log('gen fol for '+symbol);
   return Promise.resolve();
 };
 
 let generateFollowTable = function(options) {
   let table = {};
+  let ruleIndex = generateRuleIndex(options.rules);
   let result = Promise.resolve();
-  options.nonterminals.forEach(symbol => {
-    result = result.then(() => generateFollowFor(symbol, table));
+  Object.keys(ruleIndex).forEach(symbol => {
+    result = result.then(() => generateFollowFor(symbol, table, ruleIndex));
   });
   return result;
 };

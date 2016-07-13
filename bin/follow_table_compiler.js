@@ -57,17 +57,33 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-var generateFollowFor = function generateFollowFor(symbol, table) {
+var generateRuleIndex = function generateRuleIndex(rules) {
+  var ruleIndex = {};
+  return rules.reduce(function (ruleIndex, rule) {
+    new Set(rule.right.filter(function (item) {
+      return item.type === 'NONTERMINAL';
+    }).map(function (item) {
+      return item.symbol;
+    })).forEach(function (symbol) {
+      ruleIndex[symbol] = ruleIndex[symbol] || [];
+      ruleIndex[symbol].push(rule);
+    });
+    return ruleIndex;
+  }, {});
+};
+
+var generateFollowFor = function generateFollowFor(symbol, table, ruleIndex) {
   console.log('gen fol for ' + symbol);
   return Promise.resolve();
 };
 
 var generateFollowTable = function generateFollowTable(options) {
   var table = {};
+  var ruleIndex = generateRuleIndex(options.rules);
   var result = Promise.resolve();
-  options.nonterminals.forEach(function (symbol) {
+  Object.keys(ruleIndex).forEach(function (symbol) {
     result = result.then(function () {
-      return generateFollowFor(symbol, table);
+      return generateFollowFor(symbol, table, ruleIndex);
     });
   });
   return result;
