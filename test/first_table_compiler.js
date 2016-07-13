@@ -38,7 +38,8 @@ describe('firstTableCompiler', function () {
         '4': { canBeEmpty: false, symbols: ['4'] },
         '5': { canBeEmpty: false, symbols: ['5'] },
         '6': { canBeEmpty: false, symbols: ['6'] },
-        'A': { canBeEmpty: false, symbols: ['B'] }
+        'A': { canBeEmpty: false, symbols: ['B'] },
+        'JUNK': 'VALUE'
       };
       var rulesForA = [{ left: 'A', right: [{ type: 'NONTERMINAL', symbol: 'B' }] }];
       var rulesForB = [{ left: 'B', right: [] }];
@@ -76,7 +77,7 @@ describe('firstTableCompiler', function () {
 
     it('should return cached values', function (done) {
       _first_table_compiler2.default.testAPI.generateFirstFor('A', table, ruleIndex).then(function () {
-        assert.deepEqual(table['A'], { canBeEmpty: false, symbols: ['B'] });
+        assert.deepEqual(table['JUNK'], 'VALUE');
         done();
       }).catch(done);
     });
