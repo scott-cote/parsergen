@@ -84,25 +84,22 @@ var generateFirstFor = function generateFirstFor(symbol, table, ruleIndex) {
   return result;
 };
 
-var generateNonterminalEntries = function generateNonterminalEntries(table, ruleIndex) {
+var generateFirstTable = function generateFirstTable(options) {
+  var table = generateTerminalEntries(options.terminals);
+  var ruleIndex = generateRuleIndex(options.rules);
   var result = Promise.resolve();
   Object.keys(ruleIndex).forEach(function (symbol) {
     result = result.then(function () {
       return generateFirstFor(symbol, table, ruleIndex);
     });
   });
-  return result;
-};
-
-var generateFirstTable = function generateFirstTable(options) {
-  var table = generateTerminalEntries(options.terminals);
-  var ruleIndex = generateRuleIndex(options.rules);
-  return generateNonterminalEntries(table, ruleIndex).then(function () {
+  result = result.then(function () {
     Object.keys(table).forEach(function (key) {
       table[key].symbols = new Set(table[key].symbols);
     });
     return table;
   });
+  return result;
 };
 
 var Transformer = function (_Stream$Transform) {

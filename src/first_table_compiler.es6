@@ -60,23 +60,20 @@ let generateFirstFor = function(symbol, table, ruleIndex) {
   return result;
 };
 
-let generateNonterminalEntries = function(table, ruleIndex) {
+let generateFirstTable = function(options) {
+  let table = generateTerminalEntries(options.terminals);
+  let ruleIndex = generateRuleIndex(options.rules);
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
     result = result.then(() => generateFirstFor(symbol, table, ruleIndex));
   });
-  return result;
-};
-
-let generateFirstTable = function(options) {
-  let table = generateTerminalEntries(options.terminals);
-  let ruleIndex = generateRuleIndex(options.rules);
-  return generateNonterminalEntries(table, ruleIndex).then(() => {
+  result = result.then(() => {
     Object.keys(table).forEach(key => {
       table[key].symbols = new Set(table[key].symbols);
     });
     return table;
   });
+  return result;
 };
 
 class Transformer extends Stream.Transform {
