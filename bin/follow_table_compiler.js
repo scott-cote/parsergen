@@ -57,19 +57,8 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-var compileRule = function compileRule(rule, table) {
-  console.log(JSON.stringify(rule.right));
-};
-
-var compile = function compile(code) {
-  code.followTable = {};
-  var result = Promise.resolve();
-  code.rules.forEach(function (rule) {
-    result = result.then(function () {
-      return compileRule(rule, code.followTable);
-    });
-  });
-  return result;
+var generateFollowTable = function generateFollowTable(options) {
+  return Promise.resolve();
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -84,9 +73,12 @@ var Transformer = function (_Stream$Transform) {
   _createClass(Transformer, [{
     key: '_transform',
     value: function _transform(code, encoding, done) {
-      compile(code).then(function () {
-        return done(null, code);
-      }).catch(done);
+      var _this2 = this;
+
+      generateFollowTable(code).then(function (followTable) {
+        code.followTable = followTable;
+        _this2.push(code);
+      });
     }
   }]);
 

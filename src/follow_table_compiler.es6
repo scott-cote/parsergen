@@ -39,17 +39,8 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-let compileRule = function(rule, table) {
-  console.log(JSON.stringify(rule.right));
-}
-
-let compile = function(code) {
-  code.followTable = {};
-  let result = Promise.resolve();
-  code.rules.forEach(rule => {
-    result = result.then(() => compileRule(rule, code.followTable));
-  });
-  return result;
+let generateFollowTable = function(options) {
+  return Promise.resolve();
 };
 
 class Transformer extends Stream.Transform {
@@ -59,7 +50,10 @@ class Transformer extends Stream.Transform {
   }
 
   _transform(code, encoding, done) {
-    compile(code).then(() => done(null, code)).catch(done);
+    generateFollowTable(code).then(followTable => {
+      code.followTable = followTable;
+      this.push(code);
+    });
   }
 };
 
