@@ -57,8 +57,20 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-var generateFollowTable = function generateFollowTable(options) {
+var generateFollowFor = function generateFollowFor(symbol, table) {
+  console.log('gen fol for ' + symbol);
   return Promise.resolve();
+};
+
+var generateFollowTable = function generateFollowTable(options) {
+  var table = {};
+  var result = Promise.resolve();
+  options.nonterminals.forEach(function (symbol) {
+    result = result.then(function () {
+      return generateFollowFor(symbol, table);
+    });
+  });
+  return result;
 };
 
 var Transformer = function (_Stream$Transform) {
@@ -91,6 +103,8 @@ var followTableCompiler = function followTableCompiler() {
   return new Transformer();
 };
 
-followTableCompiler.testAPI = {};
+followTableCompiler.testAPI = {
+  generateFollowFor: generateFollowFor
+};
 
 exports.default = followTableCompiler;

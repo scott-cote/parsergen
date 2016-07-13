@@ -39,8 +39,18 @@ let generateFollowFor = function(symbol, table, rules) {
 
 */
 
-let generateFollowTable = function(options) {
+let generateFollowFor = function(symbol, table) {
+  console.log('gen fol for '+symbol);
   return Promise.resolve();
+};
+
+let generateFollowTable = function(options) {
+  let table = {};
+  let result = Promise.resolve();
+  options.nonterminals.forEach(symbol => {
+    result = result.then(() => generateFollowFor(symbol, table));
+  });
+  return result;
 };
 
 class Transformer extends Stream.Transform {
@@ -62,6 +72,7 @@ let followTableCompiler = function() {
 };
 
 followTableCompiler.testAPI = {
+  generateFollowFor
 };
 
 export default followTableCompiler;
