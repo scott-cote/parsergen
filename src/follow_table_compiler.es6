@@ -55,7 +55,13 @@ let generateRuleIndex = function(rules) {
 };
 
 let generateFollowFor = function(symbol, table, ruleIndex) {
-  return Promise.resolve();
+  let result = Promise.resolve();
+  if (!table[symbol]) {
+    ruleIndex[symbol].forEach(rule => {
+      console.log(JSON.stringify(rule));
+    });
+  }
+  return result;
 };
 
 let generateFollowTable = function(options) {
@@ -87,6 +93,7 @@ let followTableCompiler = function() {
 };
 
 followTableCompiler.testAPI = {
+  generateRuleIndex,
   generateFollowFor
 };
 

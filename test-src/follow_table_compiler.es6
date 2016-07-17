@@ -106,30 +106,22 @@ describe('followTableCompiler', () => {
         { left: 'O', right: [ { type: 'TERMINAL', symbol: '6' } ] },
         { left: 'O', right: [ ] }
       ];
-      ruleIndex = {
-        'A': rulesForA,
-        'B': rulesForB,
-        'C': rulesForC,
-        'D': rulesForD,
-        'E': rulesForE,
-        'F': rulesForF,
-        'G': rulesForG,
-        'H': rulesForH,
-        'I': rulesForI,
-        'J': rulesForJ,
-        'K': rulesForK,
-        'L': rulesForL,
-        'M': rulesForM,
-        'N': rulesForN,
-        'O': rulesForO
-      };
+      ruleIndex = followTableCompiler.testAPI.generateRuleIndex([].concat(rulesForC));
     });
 
     it('should return cached values', done => {
-      followTableCompiler.testAPI.generateFollowFor('A', table, ruleIndex).then(() => {
+      followTableCompiler.testAPI.generateFollowFor('JUNK', table, ruleIndex).then(() => {
         assert.deepEqual(table['JUNK'], 'VALUE');
         done();
       }).catch(done);
     });
+
+    it('should obey rule 1', done => {
+      followTableCompiler.testAPI.generateFollowFor('D', table, ruleIndex).then(() => {
+        assert.equal(table['D'], ['3']);
+        done();
+      }).catch(done);
+    });
+
   });
 });

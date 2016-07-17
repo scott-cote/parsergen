@@ -56,28 +56,19 @@ describe('followTableCompiler', function () {
       var rulesForM = [{ left: 'M', right: [{ type: 'TERMINAL', symbol: '4' }] }, { left: 'M', right: [] }];
       var rulesForN = [{ left: 'N', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'N', right: [] }];
       var rulesForO = [{ left: 'O', right: [{ type: 'TERMINAL', symbol: '6' }] }, { left: 'O', right: [] }];
-      ruleIndex = {
-        'A': rulesForA,
-        'B': rulesForB,
-        'C': rulesForC,
-        'D': rulesForD,
-        'E': rulesForE,
-        'F': rulesForF,
-        'G': rulesForG,
-        'H': rulesForH,
-        'I': rulesForI,
-        'J': rulesForJ,
-        'K': rulesForK,
-        'L': rulesForL,
-        'M': rulesForM,
-        'N': rulesForN,
-        'O': rulesForO
-      };
+      ruleIndex = _follow_table_compiler2.default.testAPI.generateRuleIndex([].concat(rulesForC));
     });
 
     it('should return cached values', function (done) {
-      _follow_table_compiler2.default.testAPI.generateFollowFor('A', table, ruleIndex).then(function () {
+      _follow_table_compiler2.default.testAPI.generateFollowFor('JUNK', table, ruleIndex).then(function () {
         assert.deepEqual(table['JUNK'], 'VALUE');
+        done();
+      }).catch(done);
+    });
+
+    it('should obey rule 1', function (done) {
+      _follow_table_compiler2.default.testAPI.generateFollowFor('D', table, ruleIndex).then(function () {
+        assert.equal(table['D'], ['3']);
         done();
       }).catch(done);
     });
