@@ -58,7 +58,13 @@ let generateFollowFor = function(symbol, followTable, firstTable, ruleIndex) {
   let result = Promise.resolve();
   if (!followTable[symbol]) {
     ruleIndex[symbol].forEach(rule => {
-      console.log(JSON.stringify(rule));
+      let right = rule.right.map(item => item.symbol);
+      right = right.slice(right.indexOf(symbol)+1);
+      let symbols = right.reduce((item, symbols) => {
+        return symbols;
+      }, new Set());
+      console.log(JSON.stringify(symbols));
+      result = result.then(() => symbols);
     });
   }
   return result;

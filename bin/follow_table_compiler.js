@@ -76,7 +76,17 @@ var generateFollowFor = function generateFollowFor(symbol, followTable, firstTab
   var result = Promise.resolve();
   if (!followTable[symbol]) {
     ruleIndex[symbol].forEach(function (rule) {
-      console.log(JSON.stringify(rule));
+      var right = rule.right.map(function (item) {
+        return item.symbol;
+      });
+      right = right.slice(right.indexOf(symbol) + 1);
+      var symbols = right.reduce(function (item, symbols) {
+        return symbols;
+      }, new Set());
+      console.log(JSON.stringify(symbols));
+      result = result.then(function () {
+        return symbols;
+      });
     });
   }
   return result;
