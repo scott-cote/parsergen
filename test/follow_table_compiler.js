@@ -26,11 +26,11 @@ describe('followTableCompiler', function () {
         everything in follow(A) is in follow(B)
      */
 
-    var terminalRecord = void 0;
-    var table = void 0;
-    var ruleIndex = void 0;
-
-    beforeEach(function () {
+    /*
+    let terminalRecord;
+    let table;
+    let ruleIndex;
+     beforeEach(() => {
       table = {
         '1': { canBeEmpty: false, symbols: ['1'] },
         '2': { canBeEmpty: false, symbols: ['2'] },
@@ -41,34 +41,94 @@ describe('followTableCompiler', function () {
         'A': { canBeEmpty: false, symbols: ['B'] },
         'JUNK': 'VALUE'
       };
-      var rulesForA = [{ left: 'A', right: [{ type: 'NONTERMINAL', symbol: 'B' }] }];
-      var rulesForB = [{ left: 'B', right: [] }];
-      var rulesForC = [{ left: 'C', right: [{ type: 'NONTERMINAL', symbol: 'D' }, { type: 'TERMINAL', symbol: '3' }] }];
-      var rulesForD = [{ left: 'D', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'D', right: [{ type: 'TERMINAL', symbol: '2' }] }];
-      var rulesForE = [{ left: 'E', right: [{ type: 'NONTERMINAL', symbol: 'F' }, { type: 'NONTERMINAL', symbol: 'G' }, { type: 'NONTERMINAL', symbol: 'H' }] }];
-      var rulesForF = [{ left: 'F', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'F', right: [{ type: 'TERMINAL', symbol: '2' }] }, { left: 'F', right: [] }];
-      var rulesForG = [{ left: 'G', right: [{ type: 'TERMINAL', symbol: '3' }] }, { left: 'G', right: [{ type: 'TERMINAL', symbol: '4' }] }];
-      var rulesForH = [{ left: 'H', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'H', right: [{ type: 'TERMINAL', symbol: '6' }] }];
-      var rulesForI = [{ left: 'I', right: [{ type: 'NONTERMINAL', symbol: 'J' }, { type: 'NONTERMINAL', symbol: 'K' }, { type: 'NONTERMINAL', symbol: 'L' }] }, { left: 'I', right: [{ type: 'NONTERMINAL', symbol: 'M' }, { type: 'NONTERMINAL', symbol: 'N' }, { type: 'NONTERMINAL', symbol: 'O' }] }];
-      var rulesForJ = [{ left: 'J', right: [{ type: 'TERMINAL', symbol: '1' }] }, { left: 'J', right: [] }];
-      var rulesForK = [{ left: 'K', right: [{ type: 'TERMINAL', symbol: '2' }] }];
-      var rulesForL = [{ left: 'L', right: [{ type: 'TERMINAL', symbol: '3' }] }, { left: 'L', right: [] }];
-      var rulesForM = [{ left: 'M', right: [{ type: 'TERMINAL', symbol: '4' }] }, { left: 'M', right: [] }];
-      var rulesForN = [{ left: 'N', right: [{ type: 'TERMINAL', symbol: '5' }] }, { left: 'N', right: [] }];
-      var rulesForO = [{ left: 'O', right: [{ type: 'TERMINAL', symbol: '6' }] }, { left: 'O', right: [] }];
-      ruleIndex = _follow_table_compiler2.default.testAPI.generateRuleIndex([].concat(rulesForC));
+      let rulesForA = [
+        { left: 'A', right: [{ type: 'NONTERMINAL', symbol: 'B' }] }
+      ];
+      let rulesForB = [
+        { left: 'B', right: [] }
+      ];
+      let rulesForC = [
+        { left: 'C', right: [ { type: 'NONTERMINAL', symbol: 'D'}, { type: 'TERMINAL', symbol: '3' } ] }
+      ];
+      let rulesForD = [
+        { left: 'D', right: [ { type: 'TERMINAL', symbol: '1' } ] },
+        { left: 'D', right: [ { type: 'TERMINAL', symbol: '2' } ] }
+      ];
+      let rulesForE = [
+        { left: 'E', right: [
+          { type: 'NONTERMINAL', symbol: 'F' },
+          { type: 'NONTERMINAL', symbol: 'G' },
+          { type: 'NONTERMINAL', symbol: 'H' }
+        ] }
+      ];
+      let rulesForF = [
+        { left: 'F', right: [ { type: 'TERMINAL', symbol: '1' } ] },
+        { left: 'F', right: [ { type: 'TERMINAL', symbol: '2' } ] },
+        { left: 'F', right: [] }
+      ];
+      let rulesForG = [
+        { left: 'G', right: [ { type: 'TERMINAL', symbol: '3' } ] },
+        { left: 'G', right: [ { type: 'TERMINAL', symbol: '4' } ] }
+      ];
+      let rulesForH = [
+        { left: 'H', right: [ { type: 'TERMINAL', symbol: '5' } ] },
+        { left: 'H', right: [ { type: 'TERMINAL', symbol: '6' } ] }
+      ];
+      let rulesForI = [
+        { left: 'I', right: [
+          { type: 'NONTERMINAL', symbol: 'J' },
+          { type: 'NONTERMINAL', symbol: 'K' },
+          { type: 'NONTERMINAL', symbol: 'L' }
+        ]},
+        { left: 'I', right: [
+          { type: 'NONTERMINAL', symbol: 'M' },
+          { type: 'NONTERMINAL', symbol: 'N' },
+          { type: 'NONTERMINAL', symbol: 'O' }
+        ]}
+      ];
+      let rulesForJ = [
+        { left: 'J', right: [ { type: 'TERMINAL', symbol: '1' } ] },
+        { left: 'J', right: [ ] }
+      ];
+      let rulesForK = [
+        { left: 'K', right: [ { type: 'TERMINAL', symbol: '2' } ] }
+      ];
+      let rulesForL = [
+        { left: 'L', right: [ { type: 'TERMINAL', symbol: '3' } ] },
+        { left: 'L', right: [ ] }
+      ];
+      let rulesForM = [
+        { left: 'M', right: [ { type: 'TERMINAL', symbol: '4' } ] },
+        { left: 'M', right: [ ] }
+      ];
+      let rulesForN = [
+        { left: 'N', right: [ { type: 'TERMINAL', symbol: '5' } ] },
+        { left: 'N', right: [ ] }
+      ];
+      let rulesForO = [
+        { left: 'O', right: [ { type: 'TERMINAL', symbol: '6' } ] },
+        { left: 'O', right: [ ] }
+      ];
+      ruleIndex = followTableCompiler.testAPI.generateRuleIndex([].concat(rulesForC));
     });
+    */
 
     it('should return cached values', function (done) {
-      _follow_table_compiler2.default.testAPI.generateFollowFor('JUNK', table, ruleIndex).then(function () {
-        assert.deepEqual(table['JUNK'], 'VALUE');
+      var followTable = { 'A': ['a', 'b', 'c'] };
+      var firstTable = {};
+      var ruleIndex = {};
+      _follow_table_compiler2.default.testAPI.generateFollowFor('A', followTable, firstTable, ruleIndex).then(function () {
+        assert.deepEqual(followTable['A'], ['a', 'b', 'c']);
         done();
       }).catch(done);
     });
 
     it('should obey rule 1', function (done) {
-      _follow_table_compiler2.default.testAPI.generateFollowFor('D', table, ruleIndex).then(function () {
-        assert.equal(table['D'], ['3']);
+      var followTable = {};
+      var firstTable = {};
+      var ruleIndex = { B: [{ left: 'A', right: [{ type: 'TERMINAL', symbol: 'a' }, { type: 'NONTERMINAL', symbol: 'B' }, { type: 'TERMINAL', symbol: 'b' }] }] };
+      _follow_table_compiler2.default.testAPI.generateFollowFor('B', followTable, firstTable, ruleIndex).then(function () {
+        assert.deepEqual(followTable['B'], ['b']);
         done();
       }).catch(done);
     });

@@ -54,9 +54,9 @@ let generateRuleIndex = function(rules) {
   }, {});
 };
 
-let generateFollowFor = function(symbol, table, ruleIndex) {
+let generateFollowFor = function(symbol, followTable, firstTable, ruleIndex) {
   let result = Promise.resolve();
-  if (!table[symbol]) {
+  if (!followTable[symbol]) {
     ruleIndex[symbol].forEach(rule => {
       console.log(JSON.stringify(rule));
     });
@@ -69,7 +69,7 @@ let generateFollowTable = function(options) {
   let ruleIndex = generateRuleIndex(options.rules);
   let result = Promise.resolve();
   Object.keys(ruleIndex).forEach(symbol => {
-    result = result.then(() => generateFollowFor(symbol, table, ruleIndex));
+    result = result.then(() => generateFollowFor(symbol, table, options.firstTable, ruleIndex));
   });
   return result;
 };

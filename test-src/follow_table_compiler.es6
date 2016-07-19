@@ -23,6 +23,7 @@ describe('followTableCompiler', () => {
 
     */
 
+    /*
     let terminalRecord;
     let table;
     let ruleIndex;
@@ -108,17 +109,28 @@ describe('followTableCompiler', () => {
       ];
       ruleIndex = followTableCompiler.testAPI.generateRuleIndex([].concat(rulesForC));
     });
+    */
 
     it('should return cached values', done => {
-      followTableCompiler.testAPI.generateFollowFor('JUNK', table, ruleIndex).then(() => {
-        assert.deepEqual(table['JUNK'], 'VALUE');
+      let followTable = { 'A': ['a','b','c'] };
+      let firstTable = {};
+      let ruleIndex = {};
+      followTableCompiler.testAPI.generateFollowFor('A', followTable, firstTable, ruleIndex).then(() => {
+        assert.deepEqual(followTable['A'], ['a','b','c']);
         done();
       }).catch(done);
     });
 
     it('should obey rule 1', done => {
-      followTableCompiler.testAPI.generateFollowFor('D', table, ruleIndex).then(() => {
-        assert.equal(table['D'], ['3']);
+      let followTable = {};
+      let firstTable = {};
+      let ruleIndex = { B: [{ left: 'A', right: [
+          { type: 'TERMINAL', symbol: 'a' },
+          { type: 'NONTERMINAL', symbol: 'B' },
+          { type: 'TERMINAL', symbol: 'b' }
+      ]}]};
+      followTableCompiler.testAPI.generateFollowFor('B', followTable, firstTable, ruleIndex).then(() => {
+        assert.deepEqual(followTable['B'], ['b']);
         done();
       }).catch(done);
     });
